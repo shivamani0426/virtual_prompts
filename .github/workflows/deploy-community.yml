@@ -26,4 +26,7 @@ jobs:
         env:
           CLOUDFLARE_ACCOUNT_ID: c37eaec570d5c0261dd4b3fdf8764ce4
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_D1_API_TOKEN: ${{ secrets.CLOUDFLARE_D1_API_TOKEN }}
         run: node scripts/deploy-community.mjs
+      - name: Live community D1 and moderation smoke (no public posts)
+        run: node scripts/smoke-community-live.mjs

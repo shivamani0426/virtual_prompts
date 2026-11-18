@@ -5,7 +5,8 @@
 import {readFileSync} from "node:fs";
 import {execFileSync} from "node:child_process";
 const account="c37eaec570d5c0261dd4b3fdf8764ce4";
-const token=process.env.CLOUDFLARE_API_TOKEN;
+const workerToken=process.env.CLOUDFLARE_API_TOKEN;
+const d1Token=process.env.CLOUDFLARE_D1_API_TOKEN;
 const workerName="winter-smog-community";
 const dbName="winter-smog-community";
 const source=readFileSync("apps/community/worker.mjs","utf8");
@@ -15,11 +16,12 @@ if(!source.includes("CREATE TABLE") && !schema.includes("community_reports"))thr
 if(process.env.COMMUNITY_DRY_RUN==="1"){
   console.log("PASS Community Worker syntax and D1 schema present");process.exit(0);
 }
-if(!token)throw Error("CLOUDFLARE_API_TOKEN missing from GitHub secrets");
+if(!workerToken||!d1Token)throw Error("Missing Cloudflare Workers or dedicated D1 GitHub secret");
 if(process.env.CLOUDFLARE_ACCOUNT_ID!==account)throw Error("Cloudflare account mismatch");
 const root="https://api.cloudflare.com/client/v4/accounts/"+account;
-const auth={Authorization:"Bearer "+token};
+
 async function api(path,opts={}){
+  const auth={Authorization:"Bearer "+(path.startsWith("/d1/")?d1Token:workerToken)};
   const r=await fetch(root+path,{...opts,headers:{...auth,...(opts.headers||{})}});
   const data=await r.json();
   if(!r.ok||data.success===false)throw Error(path+" HTTP "+r.status+": "+(data.errors||[]).map(x=>x.message).join("; "));

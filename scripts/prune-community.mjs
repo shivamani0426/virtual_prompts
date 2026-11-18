@@ -5,7 +5,7 @@
  */
 import {retentionStatements} from "../apps/community/retention.mjs";
 const account="c37eaec570d5c0261dd4b3fdf8764ce4",dbName="winter-smog-community";
-const token=process.env.CLOUDFLARE_API_TOKEN;
+const token=process.env.CLOUDFLARE_D1_API_TOKEN;
 const statements=retentionStatements();
 if(process.env.COMMUNITY_DRY_RUN==="1"){
   if(statements.length!==6)throw Error("Unexpected retention plan");

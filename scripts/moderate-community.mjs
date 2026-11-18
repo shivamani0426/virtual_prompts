@@ -4,7 +4,7 @@
  * Cloudflare write token to browser; no public admin API exists.
  */
 const account="c37eaec570d5c0261dd4b3fdf8764ce4";
-const token=process.env.CLOUDFLARE_API_TOKEN;
+const token=process.env.CLOUDFLARE_D1_API_TOKEN;
 const uuid=process.env.REPORT_ID,decision=process.env.DECISION;
 if(!/^[a-f0-9-]{36}$/.test(uuid||"")||!["approved","rejected"].includes(decision))
   throw Error("Valid UUID and approved/rejected decision required");
