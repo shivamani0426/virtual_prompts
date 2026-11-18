@@ -99,6 +99,34 @@ def test_assistant_separate_rate_limit():
     assert response.status_code == 200
 
 
+def test_model_cannot_swap_averaging_time_or_unit_using_approved_numbers():
+    selected = retrieve("WHO PM2.5 annual and 24-hour guideline")
+    original = selected[0]["fact"]
+    assert generation_supported(original, selected)
+
+    # The correct two numbers exist in WHO evidence. The wrong proposition
+    # MUST STILL FAIL instead of receiving a trusted WHO citation.
+    swapped = (
+        "The WHO 2021 air quality guideline for PM2.5 is 15 micrograms per "
+        "cubic metre as an annual average and 5 micrograms per cubic metre "
+        "as a 24-hour average. These reference concentrations must be "
+        "compared with measurements over the same averaging periods, not "
+        "with a single instantaneous sensor reading."
+    )
+    assert not generation_supported(swapped, selected)
+    wrong_units = original.replace("micrograms per cubic metre", "milligrams per cubic metre")
+    assert not generation_supported(wrong_units, selected)
+
+    # A genuinely cited but rephrased quantitative claim must conservatively
+    # return the exact verified evidence as evidence_only.
+    paraphrase = (
+        "WHO 2021 suggests 5 micrograms per cubic metre for annual PM2.5 "
+        "and 15 micrograms per cubic metre for a 24-hour PM2.5 average. "
+        "These reference concentrations must use the correct periods."
+    )
+    assert not generation_supported(paraphrase, selected)
+
+
 def test_generated_unknown_numbers_are_rejected():
     relevant = retrieve("WHO PM2.5 annual guideline")
     assert not generation_supported("The PM2.5 annual limit is 9999 micrograms.", relevant)

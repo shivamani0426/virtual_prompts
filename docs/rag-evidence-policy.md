@@ -29,3 +29,7 @@ The API accepts only a short question and returns stateless answers. No personal
 ## Qualitative impact tracking
 
 Impact means **completed habits and sustained engagement**, not measured emissions reduction, improvements in health, or a claim that pollution in a neighborhood decreased. Badges are awarded for verified local completion status (self-reported), labeled honestly, and can be revoked by undo/reset. Device-local storage cannot verify the underlying actions actually happened.
+
+## Quantitative claim integrity hardening
+
+Numerical WHO/CPCB model sentences must match an entire approved source sentence (normalized whitespace/case), not merely reuse numbers present anywhere in the retrieved documents. This guards against swapping WHO 24-hour and annual values, changing concentration units, and incorrectly presenting an index number as a pollutant concentration. If the model paraphrases a quantitative sentence, the server safely falls back to the reviewed passage. This intentionally favors evidence precision over conversational variety; it does **not** establish a formal scientific entailment guarantee for qualitative claims. See `test_model_cannot_swap_averaging_time_or_unit_using_approved_numbers`.
