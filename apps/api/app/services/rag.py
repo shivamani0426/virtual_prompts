@@ -61,26 +61,25 @@ def extractive_answer(passages: list[dict]) -> str:
 
 
 def reviewed_numerical_claims_only(answer: str, passages: list[dict]) -> bool:
-    """Numerical model sentences must exactly match a reviewed evidence sentence.
+    """Numeric model sentences must match complete reviewed evidence sentences.
 
-    A bag-of-numbers check cannot detect a model swapping 5/15 across the WHO
-    annual and 24-hour PM2.5 guidelines. We deliberately fail closed: if a model
-    rephrases quantitative evidence, we show the original reviewed source instead.
+    Matching only a bag of known numbers cannot detect swapped WHO annual and
+    24-hour concentrations. Any rephrased numerical sentence fails closed.
     """
     def sentences(value: str) -> list[str]:
-        return re.split(r"(?<=[.!?])\\s+(?=[A-Za-z0-9])", value.strip())
+        return re.split(r"(?<=[.!?])\s+(?=[A-Za-z0-9])", value.strip())
 
     def canonical(value: str) -> str:
-        return re.sub(r"\\s+", " ", value.casefold()).strip(" \\t\\r\\n.!?*\\\"'")
+        return re.sub(r"\s+", " ", value.casefold()).strip().strip(".!?*")
 
     evidence = {
         canonical(sentence)
         for passage in passages
         for sentence in sentences(passage["fact"])
-        if re.search(r"\\d", sentence)
+        if re.search(r"\d", sentence)
     }
     for sentence in sentences(answer):
-        if re.search(r"\\d", sentence) and canonical(sentence) not in evidence:
+        if re.search(r"\d", sentence) and canonical(sentence) not in evidence:
             return False
     return True
 
