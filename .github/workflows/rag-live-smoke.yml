@@ -1,0 +1,21 @@
+name: Smoke test WHO/CPCB assistant public release
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/smoke-rag-live.mjs'
+      - '.github/workflows/rag-live-smoke.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  public-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify public FastAPI + reviewed AI Worker + React
+        run: node scripts/smoke-rag-live.mjs
