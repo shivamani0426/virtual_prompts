@@ -137,7 +137,14 @@ export default {
     if (request.method === "OPTIONS") return new Response(null, {status:204,headers});
     if (!env.DB) return respond({error:"Community database unavailable"},503,headers);
     if (path === "/health" && request.method === "GET") {
-      try { await env.DB.prepare("SELECT 1 AS ok").first(); return respond({ok:true,storage:"D1",service:"Winter Smog community"},200,headers); }
+      try {
+        // A bound empty D1 database must NOT be marked healthy: verify the
+        // core migrated tables before greenlighting the public React release.
+        for(const table of ["community_sessions","community_reports","challenge_members","challenge_checkins","alert_preferences"]){
+          await env.DB.prepare("SELECT 1 AS ok FROM "+table+" LIMIT 1").first();
+        }
+        return respond({ok:true,storage:"D1",service:"Winter Smog community"},200,headers);
+      }
       catch { return respond({ok:false,storage:"unavailable"},503,headers); }
     }
     try {
