@@ -63,6 +63,13 @@ describe("Deterministic, safety-first briefing", () => {
     );
   });
 
+  it("adapts home guidance for shared housing without claiming indoor sensor data", () => {
+    const shared = buildBriefing(airWithAqi(90), { ...defaultPreferences, home: "shared" });
+    expect(shared.find((item) => item.label === "Inside your home")?.message).toContain(
+      "smoke-free common areas",
+    );
+  });
+
   it("formats forecast labels without assuming the browser timezone", () => {
     expect(formatLocalHour("2026-11-18T00:30")).toBe("12:30 AM");
     expect(formatLocalHour("2026-11-18T18:00")).toBe("6:00 PM");

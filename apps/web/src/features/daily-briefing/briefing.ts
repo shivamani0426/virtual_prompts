@@ -76,12 +76,21 @@ export function buildBriefing(
             : "Shared public transport may reduce emissions per passenger compared with solo driving.",
   });
 
+  const indoorBudgetTip =
+    preferences.budget === "low"
+      ? "Avoid burning candles, incense or waste indoors; close windows during nearby smoke events."
+      : preferences.budget === "medium"
+        ? "Consider a correctly sized HEPA purifier if affordable and avoid indoor smoke."
+        : "If using a correctly sized HEPA purifier, follow filter maintenance instructions and avoid indoor smoke.";
+  const indoorHomeTip =
+    preferences.home === "shared"
+      ? "Agree on smoke-free common areas with housemates."
+      : preferences.home === "apartment"
+        ? "Keep kitchen extraction and ventilation equipment maintained."
+        : "Keep outdoor burning or generator exhaust away from doors and windows.";
   items.push({
     label: "Inside your home",
-    message:
-      preferences.budget === "low"
-        ? "Avoid burning candles, incense or waste indoors. Close windows during nearby smoke events."
-        : "If available, use a correctly sized HEPA purifier and avoid creating indoor smoke.",
+    message: indoorBudgetTip + " " + indoorHomeTip,
   });
   return items;
 }

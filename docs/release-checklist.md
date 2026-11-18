@@ -2,12 +2,12 @@
 
 **Acceptance policy:** Every item must be **PASS** with a test artifact or reproducible manual evidence before the project is called demo-ready or production-ready. **PENDING** means it has not yet been verified. **BLOCKED** means an external prerequisite prevents completion. Architecture docs, source files or passing unit tests alone do **not** count as end-to-end success.
 
-Progress updated: 2026-11-18. Phase 2 PostgreSQL schema and Phase 3 read-only FastAPI environmental API pass automated GitHub CI. The existing ClearSkies Worker is the deployed public preview; new React/FastAPI code is not yet deployed. The legacy ClearSkies preview is deployed and accessible, but the new React/FastAPI product is not deployed. Production authentication is pending.
+Progress updated: 2026-11-18. Milestone 2 database schema, Milestone 3 FastAPI environmental endpoints and Milestone 4 React dashboard pass automated CI. The original ClearSkies Worker is publicly live. The React/FastAPI stack is developed and tested but **not yet publicly deployed or connected to a production database**. Authentication, community mode, real-user trials and final deployment remain pending.
 
 ## 1. Functionality
-- [ ] PENDING — Personalized daily briefing, planner, chat, alerts and community workflow end-to-end
-- [ ] PENDING — Multiple locations, household categories and budgets
-- [ ] PENDING — Empty/invalid location, offline and very high AQI boundary cases
+- [ ] PENDING — Daily briefing implemented and React-tested in Milestone 4; full planner, chat, alerts and community workflow end-to-end remain pending
+- [ ] PENDING — City selection, household categories, home types and budget guidance implemented; real-world multi-location/budget manual validation pending
+- [ ] PENDING — FastAPI invalid location, offline, high-AQI tests and React offline-state tests pass; full browser/offline E2E pending
 - [ ] PENDING — AQI/weather/LLM outage fallback tested end to end
 - [ ] PENDING — Manual audit for dead links, buttons and placeholder text
 
@@ -22,7 +22,7 @@ Progress updated: 2026-11-18. Phase 2 PostgreSQL schema and Phase 3 read-only Fa
 ## 3. Code quality
 - [ ] PENDING — ESLint/Prettier and Black/Flake8 in strict CI
 - [ ] PENDING — Unused code/debug traces and comments cleaned
-- [ ] PENDING — Modular structure reviewed; Phase 2 database package created and integration tested
+- [ ] PENDING — Database/API/React feature directories implemented; overall modularity and code quality audit pending
 - [ ] PENDING — Unit/integration/E2E test coverage thresholds set and passed
 - [ ] PENDING — README instructions and tested screenshots
 
@@ -43,9 +43,9 @@ Progress updated: 2026-11-18. Phase 2 PostgreSQL schema and Phase 3 read-only Fa
 - [ ] PENDING — Concurrent-user load and LLM quota controls
 
 ## 6. UI/UX
-- [ ] PENDING — Mobile/tablet/desktop screen verification
+- [ ] PENDING — Responsive CSS layouts implemented; actual mobile/tablet/desktop browser verification pending
 - [ ] PENDING — Design consistency review
-- [ ] PENDING — Loading/error/empty states accessible
+- [ ] PENDING — React loading/error/empty/stale components built and basic test assertions pass; complete accessibility audit pending
 - [ ] PENDING — Readable contrast, keyboard support and screen reader audit
 - [ ] PENDING — Elder/family usability feedback
 

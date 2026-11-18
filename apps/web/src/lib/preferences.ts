@@ -3,7 +3,7 @@ import type { HouseholdPreferences } from "./types";
 const STORAGE_KEY = "winter-smog:household-v1";
 
 export const defaultPreferences: HouseholdPreferences = {
-  children: true,
+  children: false,
   olderAdults: false,
   breathingSensitive: false,
   commute: "public",

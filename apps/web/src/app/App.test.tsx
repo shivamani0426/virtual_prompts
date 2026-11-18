@@ -86,6 +86,8 @@ describe("Dashboard API integration", () => {
     expect(screen.getByRole("img", { name: "US AQI 135" })).toBeInTheDocument();
     expect(screen.getByText("19.5 °C")).toBeInTheDocument();
     expect(screen.getByText(/not official CPCB AQI/i)).toBeInTheDocument();
+    expect(screen.queryByText(/Shorten or reschedule strenuous outdoor play/i)).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("checkbox", { name: /Children/i }));
     expect(screen.getByText(/Shorten or reschedule strenuous outdoor play/i)).toBeInTheDocument();
   });
 
