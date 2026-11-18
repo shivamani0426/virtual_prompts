@@ -17,7 +17,7 @@ Alert preferences are stored in D1 (city, modelled **US AQI** threshold, opt-in)
 
 ## Deployment
 
-`.github/workflows/deploy-community.yml` (main branch only) creates or reuses a dedicated database, idempotently applies `schema.sql`, then uploads the Worker with a D1 binding. It requires the `CLOUDFLARE_API_TOKEN` repository secret to include **Workers Scripts: Edit and D1: Edit** permissions for the selected Cloudflare account. A token scoped only to Workers cannot create D1 and should fail without altering other services.
+`.github/workflows/deploy-community.yml` (main branch only) creates or reuses a dedicated database, idempotently applies `schema.sql`, then uploads the Worker with a D1 binding. Two separate GitHub Actions repository secrets are required, scoped to the **1nc24cs197** Cloudflare account: `CLOUDFLARE_API_TOKEN` with **Workers Scripts: Edit** (existing Worker deploys), and **`CLOUDFLARE_D1_API_TOKEN`** with **D1: Edit** (new permission for this database only). The second must be created in the target Cloudflare account and saved directly in GitHub → repository Settings → Secrets and variables → Actions. Do **not** send the token to chat. A token scoped only to Workers cannot list or create D1 and returns HTTP 401. No worker or database mutation occurs until both tokens are present.
 
 For moderator access, use GitHub Actions only; moderation is not exposed through an end-user API. Do not publish a moderator key or expose a moderation endpoint to clients.
 
