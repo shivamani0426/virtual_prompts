@@ -46,6 +46,7 @@ describe("Deterministic, safety-first briefing", () => {
   it("generates child, older adult and sensitive breathing advice", () => {
     const result = buildBriefing(airWithAqi(260), {
       ...defaultPreferences,
+      children: true,
       olderAdults: true,
       breathingSensitive: true,
     });
