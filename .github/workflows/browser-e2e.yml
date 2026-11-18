@@ -1,0 +1,28 @@
+name: Browser E2E — Winter Smog public assistant and impact
+on:
+  push:
+    paths:
+      - 'scripts/test-winter-browser.mjs'
+      - '.github/workflows/browser-e2e.yml'
+  pull_request:
+    paths:
+      - 'scripts/test-winter-browser.mjs'
+      - '.github/workflows/browser-e2e.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install pinned Playwright browser dependency
+        run: |
+          npm install --no-save --no-package-lock playwright@1.58.2
+          npx playwright install --with-deps chromium
+      - name: Exercise public site in real desktop and mobile browsers
+        run: node scripts/test-winter-browser.mjs
