@@ -1,0 +1,32 @@
+name: Validate Winter Smog React dashboard
+on:
+  push:
+    paths:
+      - 'apps/web/**'
+      - '.github/workflows/web.yml'
+  pull_request:
+    paths:
+      - 'apps/web/**'
+      - '.github/workflows/web.yml'
+permissions:
+  contents: read
+jobs:
+  react:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: apps/web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+      - name: Typecheck and production build
+        run: npm run build
+      - name: Unit and dashboard integration tests
+        run: npm test
+      - name: ESLint
+        run: npm run lint
