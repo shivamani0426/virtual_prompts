@@ -1,0 +1,23 @@
+name: Deploy Winter Smog environmental data relay
+on:
+  push:
+    paths:
+      - "scripts/deploy-data-relay.mjs"
+      - ".github/workflows/deploy-relay.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Upload fixed-upstream environmental data relay
+        env:
+          CLOUDFLARE_ACCOUNT_ID: c37eaec570d5c0261dd4b3fdf8764ce4
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: node scripts/deploy-data-relay.mjs
