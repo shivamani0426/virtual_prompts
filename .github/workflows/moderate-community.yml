@@ -1,0 +1,28 @@
+name: Moderate one community report (maintainers only)
+on:
+  workflow_dispatch:
+    inputs:
+      report_id:
+        description: 'Pending community report UUID from /my/reports or D1 moderation queue'
+        required: true
+        type: string
+      decision:
+        description: 'Review decision'
+        required: true
+        type: choice
+        options: [approved, rejected]
+permissions:
+  contents: read
+jobs:
+  moderate:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - name: Apply restricted human moderation decision
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          REPORT_ID: ${{ inputs.report_id }}
+          DECISION: ${{ inputs.decision }}
+        run: node scripts/moderate-community.mjs
