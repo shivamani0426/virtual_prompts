@@ -35,7 +35,7 @@ describe("Evidence-first assistant UI", () => {
     fireEvent.click(screen.getByRole("button", { name: /WHO recommend for PM2.5/i }));
     expect(await screen.findByText(/WHO 2021 PM2.5 24-hour guideline/i)).toBeInTheDocument();
     const official = screen.getByRole("link", { name: /Read official source/i });
-    expect(official).toHaveAttribute("href", valid.citations[0].url);
+    expect(official).toHaveAttribute("href", valid.citations[0]!.url);
     expect(screen.getByText(/Reviewed source summaries/i)).toBeInTheDocument();
     const [, request] = fetchMock.mock.calls[0] as unknown as [string, RequestInit];
     expect(request.method).toBe("POST");
