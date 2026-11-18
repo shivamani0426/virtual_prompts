@@ -9,6 +9,8 @@ from datetime import datetime, timezone
 import time
 from collections.abc import Awaitable, Callable
 
+from app.integrations.open_meteo import ProviderUnavailable
+
 
 @dataclass(frozen=True)
 class CacheResult:
@@ -55,7 +57,7 @@ class TTLCache:
                 return CacheResult(entry.data, "cached", entry.fetched_at)
             try:
                 data = await loader()
-            except Exception:
+            except ProviderUnavailable:
                 if entry is not None and now < entry.stale_until:
                     return CacheResult(entry.data, "stale", entry.fetched_at)
                 raise

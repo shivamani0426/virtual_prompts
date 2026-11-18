@@ -198,6 +198,32 @@ async def test_deduplicates_concurrent_requests():
     assert sum(result.freshness == "cached" for result in results) == 7
 
 
+@pytest.mark.asyncio
+async def test_cache_respects_twelve_minute_ttl():
+    now = [0.0]
+    loads = [0]
+    cache = TTLCache(
+        ttl_seconds=720, stale_max_seconds=3600, clock=lambda: now[0]
+    )
+
+    async def loader():
+        loads[0] += 1
+        return {"seq": loads[0]}
+
+    first = await cache.get_or_fetch("bengaluru", loader)
+    now[0] = 719.0
+    cached = await cache.get_or_fetch("bengaluru", loader)
+    now[0] = 720.0
+    refreshed = await cache.get_or_fetch("bengaluru", loader)
+    assert [first.freshness, cached.freshness, refreshed.freshness] == [
+        "live", "cached", "live"
+    ]
+    assert [first.data["seq"], cached.data["seq"], refreshed.data["seq"]] == [
+        1, 1, 2
+    ]
+    assert loads[0] == 2
+
+
 def test_settings_enforce_cache_and_cors(monkeypatch):
     monkeypatch.setenv("CACHE_TTL_SECONDS", "600")
     monkeypatch.setenv("CORS_ALLOWED_ORIGINS", "*")
