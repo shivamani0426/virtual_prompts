@@ -6,6 +6,6 @@
   "description": "Smog and pollution companion powered by Cloudflare Workers AI",
   "scripts": {
     "build": "node scripts/build.mjs",
-    "test": "node tests/guidance.test.mjs && node --check src/worker.js && node --check public/app.js"
+    "test": "node scripts/build.mjs && node tests/guidance.test.mjs && node tests/routes.test.mjs && node --check public/app.js && node --check dist/worker.js"
   }
 }
