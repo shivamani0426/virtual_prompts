@@ -27,6 +27,17 @@ jobs:
           npm test
           npm run lint
           npm run build
+      - name: Require healthy community D1 service before changing live dashboard
+        run: |
+          for i in $(seq 1 12); do
+            if curl --max-time 15 --fail --silent --show-error               https://winter-smog-community.1nc24cs197.workers.dev/health | grep -q '"ok":true'; then
+              echo "Community database and service are ready."
+              exit 0
+            fi
+            echo "Community service not ready; refusing unsafe frontend deployment."
+            sleep 10
+          done
+          exit 1
       - name: Deploy React Worker
         env:
           CLOUDFLARE_ACCOUNT_ID: c37eaec570d5c0261dd4b3fdf8764ce4
