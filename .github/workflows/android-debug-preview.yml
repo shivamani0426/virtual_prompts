@@ -26,7 +26,8 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - uses: android-actions/setup-android@v3
+      # Ubuntu GitHub-hosted runners already include a configured Android SDK.
+      # Avoid setup-android@v3 which requests obsolete 'tools' packages on SDK 16.
       - name: Install Expo and verify TypeScript
         run: |
           npm install --no-audit --no-fund
