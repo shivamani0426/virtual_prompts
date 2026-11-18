@@ -66,6 +66,7 @@ export function saveRoutineProgress(progress: RoutineProgress): boolean {
       Object.entries(progress.rescheduled).filter(([id]) => id.slice(0, 10) >= minDate).slice(-200),
     );
     localStorage.setItem(ROUTINE_STORAGE_KEY, JSON.stringify({ version: 1, statuses, rescheduled }));
+    window.dispatchEvent(new Event("winter-smog:routines-updated"));
     return true;
   } catch {
     return false;
