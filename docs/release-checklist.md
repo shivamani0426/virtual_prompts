@@ -2,7 +2,7 @@
 
 **Acceptance policy:** Every item must be **PASS** with a test artifact or reproducible manual evidence before the project is called demo-ready or production-ready. **PENDING** means it has not yet been verified. **BLOCKED** means an external prerequisite prevents completion. Architecture docs, source files or passing unit tests alone do **not** count as end-to-end success.
 
-Progress updated: 2026-11-18. Phase 2 database schema and migration are verified in GitHub CI; existing ClearSkies Worker remains a separate prototype. Full authorization and production deployment are still pending.
+Progress updated: 2026-11-18. Phase 2 database schema and migration are verified in GitHub CI; existing ClearSkies Worker remains a separate prototype. The legacy ClearSkies preview is deployed and accessible, but the new React/FastAPI product is not deployed. Production authentication is pending.
 
 ## 1. Functionality
 - [ ] PENDING — Personalized daily briefing, planner, chat, alerts and community workflow end-to-end
@@ -31,12 +31,12 @@ Progress updated: 2026-11-18. Phase 2 database schema and migration are verified
 - [ ] PENDING — .env ignored, .env.example present for every app
 - [ ] PENDING — Input validation, XSS, injection and bad-URL test cases
 - [ ] PENDING — Login/logout, token verification and tenant isolation end-to-end
-- [ ] BLOCKED — TLS verified on live deployment after Cloudflare account access
+- [ ] PENDING — HTTPS configuration and authentication verified for the final React/FastAPI production deployment (existing prototype has HTTPS)
 - [ ] PENDING — npm audit, pip-audit and dependency update review
 - [ ] PENDING — Generic error responses without stack trace leakage
 
 ## 5. Efficiency and performance
-- [ ] PENDING — AQI/weather cache TTL tested (10–15 min)
+- [ ] PENDING — 12-minute per-process AQI/weather TTL unit tested in Phase 3; shared distributed cache pending
 - [ ] PENDING — Lighthouse on actual deployment, realistic network profiles
 - [ ] PENDING — Database EXPLAIN ANALYZE on seeded production-like data
 - [ ] PENDING — Memory/leak/API dedupe tests
@@ -62,7 +62,7 @@ Progress updated: 2026-11-18. Phase 2 database schema and migration are verified
 - [ ] PENDING — Defect tracker, severity and fix evidence
 
 ## 9. Deployment
-- [ ] BLOCKED — Verified live site on requested Cloudflare account c37eaec570d5c0261dd4b3fdf8764ce4
+- [ ] PENDING — Final React/FastAPI site deployed and verified on Cloudflare account c37eaec570d5c0261dd4b3fdf8764ce4 (existing ClearSkies preview is verified live)
 - [ ] PENDING — Production environment/secrets validation
 - [ ] PENDING — PostgreSQL encrypted backup/restore drill
 - [ ] PENDING — Logs, sanitized metrics, tracing and error alerts
@@ -100,4 +100,4 @@ Progress updated: 2026-11-18. Phase 2 database schema and migration are verified
 | Phase 2 schema | apps/api/alembic/versions/0001_winter_smog.py; PostgreSQL CI on 2026-11-18 | PASS: migration up/down/up and 22 tables |
 | Phase 2 isolation helpers | apps/api/app/db/access.py; apps/api/tests/test_schema.py | PASS: database-level membership helper tests, **not** proof of API-wide authorization |
 | Legacy prototype | Existing JavaScript CI | Not evidence for React/FastAPI end-to-end acceptance |
-| Live production | Target account authorization unresolved | BLOCKED |
+| Legacy ClearSkies preview | https://clearskies-ai.1nc24cs197.workers.dev/ | PASS: homepage, health, city search and modelled air API independently verified |\n| New React/FastAPI deployment | Not yet deployed | PENDING |

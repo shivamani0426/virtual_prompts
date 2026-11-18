@@ -51,3 +51,7 @@ Open-Meteo sources and CAMS attribution are shown in the application footer; rev
 - public/app.js — browser UI, city search, visual forecast, personalized plans, AI chat
 - scripts/build.mjs — single-module bundling
 - tests/guidance.test.mjs — basic validation tests
+
+## Next-generation Winter Smog Assistant (separate development)
+
+The next-generation Python FastAPI backend and PostgreSQL schema are developed under [apps/api/](apps/api/). This is **not currently connected to the deployed ClearSkies frontend**. Phase 3 introduces versioned read-only air-quality, weather and geocoding routes with provider outage handling and per-process caching. See [apps/api/README.md](apps/api/README.md), [docs/api-contracts.md](docs/api-contracts.md), and the [final release checklist](docs/release-checklist.md) before using it. The current workers.dev deployment remains the original prototype until a separately tested frontend/backend replacement is approved.
