@@ -60,6 +60,30 @@ def extractive_answer(passages: list[dict]) -> str:
     return "\n\n".join(p["fact"] for p in passages[:2])
 
 
+def reviewed_numerical_claims_only(answer: str, passages: list[dict]) -> bool:
+    """Numeric model sentences must match complete reviewed evidence sentences.
+
+    Matching only a bag of known numbers cannot detect swapped WHO annual and
+    24-hour concentrations. Any rephrased numerical sentence fails closed.
+    """
+    def sentences(value: str) -> list[str]:
+        return re.split(r"(?<=[.!?])\s+(?=[A-Za-z0-9])", value.strip())
+
+    def canonical(value: str) -> str:
+        return re.sub(r"\s+", " ", value.casefold()).strip().strip(".!?*")
+
+    evidence = {
+        canonical(sentence)
+        for passage in passages
+        for sentence in sentences(passage["fact"])
+        if re.search(r"\d", sentence)
+    }
+    for sentence in sentences(answer):
+        if re.search(r"\d", sentence) and canonical(sentence) not in evidence:
+            return False
+    return True
+
+
 def generation_supported(answer: str, passages: list[dict]) -> bool:
     if not isinstance(answer, str) or len(answer) < 30 or len(answer) > 950:
         return False
@@ -70,6 +94,8 @@ def generation_supported(answer: str, passages: list[dict]) -> bool:
     evidence_numbers = set(re.findall(r"\b\d+(?:\.\d+)?\b", evidence))
     generated_numbers = set(re.findall(r"\b\d+(?:\.\d+)?\b", answer))
     if not generated_numbers.issubset(evidence_numbers):
+        return False
+    if not reviewed_numerical_claims_only(answer, passages):
         return False
     meaningful = tokens(answer)
     supported = tokens(evidence)
