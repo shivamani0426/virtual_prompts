@@ -14,7 +14,7 @@ export function IndoorAirAssistant({
     <section className="indoor-section" id="indoor-air" aria-labelledby="indoor-title">
       <div className="section-head">
         <div>
-          <p className="eyebrow">05 / CLEANER SPACES</p>
+          <p className="eyebrow">06 / CLEANER SPACES</p>
           <h2 id="indoor-title">Make your indoor air a priority.</h2>
           <p>Low-cost first steps, with optional upgrades tailored to your home and budget.</p>
         </div>

@@ -81,7 +81,7 @@ export function WeeklyPlanner({ preferences, aqi }: Props) {
     <section id="planner" className="weekly-section" aria-labelledby="weekly-title">
       <div className="section-head">
         <div>
-          <p className="eyebrow">03 / YOUR SEVEN-DAY PLAN</p>
+          <p className="eyebrow">04 / YOUR SEVEN-DAY PLAN</p>
           <h2 id="weekly-title">Small habits. A clearer week.</h2>
           <p>Three practical activities a day, matched to your household and the modelled AQI.</p>
         </div>

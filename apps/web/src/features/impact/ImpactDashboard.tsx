@@ -24,7 +24,7 @@ export function ImpactDashboard() {
     <section id="impact" className="impact-section" aria-labelledby="impact-title">
       <div className="section-head">
         <div>
-          <p className="eyebrow">06 / YOUR REPORTED PROGRESS</p>
+          <p className="eyebrow">07 / YOUR REPORTED PROGRESS</p>
           <h2 id="impact-title">Small actions, visible progress.</h2>
           <p>Track the activities you mark complete. Badges celebrate consistency, not measured pollution reduction.</p>
         </div>

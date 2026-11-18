@@ -14,7 +14,7 @@ export function LowEmissionAlternatives({
     <section className="alternatives-section" id="low-emission" aria-labelledby="alternatives-title">
       <div className="section-head">
         <div>
-          <p className="eyebrow">04 / GENTLER CHOICES</p>
+          <p className="eyebrow">05 / GENTLER CHOICES</p>
           <h2 id="alternatives-title">Move smarter. Waste a little less.</h2>
           <p>Alternatives that can reduce some emissions, without inventing CO₂ savings.</p>
         </div>
