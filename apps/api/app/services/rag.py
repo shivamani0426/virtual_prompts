@@ -19,7 +19,7 @@ _MEDICAL = re.compile(
 )
 _CURRENT = re.compile(
     r"(?i)\b(right now|currently|at this moment|live aqi|today'?s aqi|"
-    r"aqi today|current pollution in|actual air quality in|air quality now|"
+    r"aqi today|weather now|current weather in|current pollution in|actual air quality in|air quality now|"
     r"pollution level in .* today)\b"
 )
 _INJECTION = re.compile(

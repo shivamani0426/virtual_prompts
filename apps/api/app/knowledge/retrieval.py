@@ -27,7 +27,6 @@ _SYNONYMS = {
     "run": {"exercise", "running"},
     "play": {"exercise", "children", "outdoor"},
     "indoors": {"indoor", "home"},
-    "indoors": {"indoor", "home"},
     "airfilter": {"filter", "purifier", "hepa"},
     "n95": {"n95", "mask", "respirator"},
     "index": {"index", "aqi", "scale"},
@@ -41,7 +40,7 @@ _SYNONYMS = {
 
 def tokens(value: str) -> set[str]:
     normalized = unicodedata.normalize("NFKD", value.lower())
-    normalized = normalized.replace("₂", "2").replace("₅", "5")
+    normalized = normalized.replace("₂", "2").replace("₅", "5").replace("pm2.5", "pm25")
     words = set(re.findall(r"[a-z0-9]+", normalized)) - _STOP
     # A query can contain malicious instructions; only its topic terms affect retrieval.
     expanded = set(words)

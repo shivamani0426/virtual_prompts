@@ -114,7 +114,7 @@
         "breathing",
         "school"
       ],
-      "fact": "WHO identifies children, pregnant people, older adults, outdoor workers and people with pre-existing heart or lung conditions among groups at increased vulnerability or exposure. Individual advice should consider clinical circumstances and local official alerts."
+      "fact": "WHO lists children, pregnant people, older adults, outdoor workers and people with existing heart or lung disease among groups needing particular care about air-pollution exposure."
     },
     {
       "id": "WHO-EXERCISE",
@@ -139,7 +139,7 @@
         "aqi",
         "fitness"
       ],
-      "fact": "WHO recommends weighing the health benefits of activity against pollution exposure. During high-pollution episodes, sensitive people may need to reduce moderate or vigorous outdoor exertion and adapt activity timing or location. A lower forecast is not a guarantee of a safe outdoor window."
+      "fact": "During high pollution, sensitive people may need to reduce strenuous outdoor activity or change its time or location. A forecast cannot guarantee a safe hour; physical activity also has benefits."
     },
     {
       "id": "WHO-INDOOR",
@@ -163,7 +163,7 @@
         "purifier",
         "room"
       ],
-      "fact": "Staying inside can lower outdoor pollution exposure, but actual indoor air depends on cooking, smoking, incense burning, building ventilation and pollution entering from outside. Outdoor AQI alone does not measure indoor concentrations, and ventilation decisions must consider safety."
+      "fact": "Being indoors may reduce outdoor exposure, but cooking, smoking, incense, building ventilation and outdoor infiltration also affect indoor air. Outdoor AQI cannot measure indoor pollutant levels."
     },
     {
       "id": "WHO-FILTER",
@@ -182,10 +182,9 @@
         "cleaner",
         "indoor",
         "cadR",
-        "home",
-        "price"
+        "home"
       ],
-      "fact": "WHO reports that portable air cleaners can reduce indoor particles in studied settings, but health-outcome evidence and real-world effectiveness vary. Filter maintenance, cost, building ventilation and the device's suitability matter. Do not promise a fixed health benefit or percentage improvement for a household."
+      "fact": "Portable air filters can lower particles in some settings, but real-world health outcomes and effectiveness vary. Maintenance, cost and building conditions matter; fixed benefits cannot be promised."
     },
     {
       "id": "WHO-MASK",
@@ -206,7 +205,7 @@
         "who",
         "outdoor"
       ],
-      "fact": "Properly selected, certified and correctly fitted particle-filtering respirators can reduce inhalation of particles. Fit, correct use and individual suitability matter; no respirator guarantees protection, and people with respiratory conditions may need clinical advice."
+      "fact": "Certified, well-fitted and correctly used particulate respirators can reduce particle inhalation. Fit varies; no mask guarantees safety. People with medical conditions may need professional advice."
     },
     {
       "id": "WHO-EMISSIONS",
@@ -230,7 +229,7 @@
         "pollution",
         "reduce"
       ],
-      "fact": "WHO emphasizes population-level reduction of pollution at its sources as the preferred strategy. Personal choices can help, but an individual's logged activity alone does not prove a specific amount of CO2 reduction, improved outdoor AQI or avoided disease."
+      "fact": "WHO prioritizes reducing pollution at its sources. Logging personal habits cannot itself establish a specific reduction in CO2 emissions, citywide AQI or health problems."
     },
     {
       "id": "CPCB-AQI-CATEGORIES",
@@ -304,7 +303,7 @@
         "india",
         "units"
       ],
-      "fact": "WHO notes there is no internationally harmonized AQI methodology. National indices use different thresholds and calculations, so they should not be directly compared or converted as though equivalent. Report pollutant concentrations and their measurement units and averaging times when available."
+      "fact": "WHO cautions that countries calculate AQIs differently. Their numeric indices are not directly comparable. Display pollutant units and averaging periods as well as the relevant local index."
     }
   ]
 }
