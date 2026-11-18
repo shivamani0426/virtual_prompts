@@ -1,0 +1,1 @@
+"""Allowlisted external provider adapters."""
