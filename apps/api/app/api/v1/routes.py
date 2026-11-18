@@ -3,10 +3,13 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, Query, Request
+from pydantic import BaseModel, ConfigDict, Field
 from fastapi.responses import JSONResponse
 
 from app.services.data import DataService
 from app.services.cache import CacheResult
+from app.services.rag import RAGAssistant
+from app.knowledge.retrieval import citation, registry
 
 router = APIRouter(prefix="/api/v1", tags=["environment"])
 
@@ -81,3 +84,38 @@ async def places(
     service: Annotated[DataService, Depends(get_data_service)],
 ) -> JSONResponse:
     return render(await service.places(q.strip()))
+
+
+class AssistantQuestion(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    question: str = Field(min_length=5, max_length=400)
+
+
+def get_rag_assistant(request: Request) -> RAGAssistant:
+    return request.app.state.rag_assistant
+
+
+@router.get("/assistant/sources", tags=["assistant"])
+async def assistant_sources() -> JSONResponse:
+    data = registry()
+    return JSONResponse(
+        content={
+            "registry_version": data["registry_version"],
+            "policy": data["editorial_policy"],
+            "sources": [citation(s) for s in data["sources"]],
+            "disclaimer": "Reviewed, versioned source summaries; not live government data.",
+        },
+        headers={"Cache-Control": "public, max-age=3600"},
+    )
+
+
+@router.post("/assistant", tags=["assistant"])
+async def assistant(
+    body: AssistantQuestion,
+    service: Annotated[RAGAssistant, Depends(get_rag_assistant)],
+) -> JSONResponse:
+    return JSONResponse(
+        content=await service.answer(body.question),
+        headers={"Cache-Control": "no-store"},
+    )
