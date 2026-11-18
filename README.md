@@ -67,3 +67,13 @@ This frontend lives in [apps/web/](apps/web/) and the Python backend with tested
 Read [apps/web/README.md](apps/web/README.md), [apps/api/README.md](apps/api/README.md), [docs/rag-evidence-policy.md](docs/rag-evidence-policy.md), [docs/api-contracts.md](docs/api-contracts.md) and the [release checklist](docs/release-checklist.md).
 
 Cloudflare React publishing happens only from `main` via `.github/workflows/deploy-react.yml`. The dedicated model Worker deploys through `.github/workflows/deploy-rag-ai.yml`. The real Python API is hosted on Render. Strong shared rate limits, AI account budget controls, identity, full clinical review and browser accessibility testing remain production readiness gates.
+
+## Milestone 8 — Moderated community, challenges and advisory alerts
+
+The new [community API](apps/community/) uses a **dedicated Cloudflare D1 database** rather than the unrelated Render free database. It supports pseudonymous sessions, pending/reviewed city-level reports, a human-only GitHub Actions moderation workflow, three practical daily-checkin challenges and opt-in foreground US AQI advisory checks. Source/hosting: `winter-smog-community.1nc24cs197.workers.dev`. Reports are not official readings or government complaints. See [community README](apps/community/README.md) for security, schema and administrator instructions. The new React community UI is released only after D1 health verifies on merge.
+
+## Milestone 9 — Native preview, regional UI labels and speech
+
+[Expo mobile app](apps/mobile/) contains React Native screens for modelled AQI, source-cited WHO/CPCB assistant, moderated reports, self-reported challenges and alert preferences. Seven locale options: English, Hindi, Kannada, Telugu, Tamil, Bengali, Marathi. The web assistant supports optional browser microphone dictation/TTS; the native app supports device text-to-speech and keyboard speech-to-text where supplied by the OS. **Not a signed Android/iOS store app.** Language labels are not independently reviewed clinical translations, and neither client has remote background push. See [mobile README](apps/mobile/README.md) for setup and verification limitations.
+
+**Release controls:** D1-specific GitHub Actions CI and Expo TypeScript/iOS+Android JS export checks run before merging. The React production deployment refuses to update if the community service/database health endpoint fails. Final store signing, independent medical/language QA, push delivery and privacy auditing remain scheduled for Milestone 10.
