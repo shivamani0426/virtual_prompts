@@ -1,0 +1,52 @@
+name: Validate Winter Smog database
+on:
+  push:
+    paths:
+      - 'apps/api/**'
+      - '.github/workflows/api-database.yml'
+  pull_request:
+    paths:
+      - 'apps/api/**'
+      - '.github/workflows/api-database.yml'
+permissions:
+  contents: read
+jobs:
+  postgres-schema:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: winter_test
+          POSTGRES_PASSWORD: local_ci_only
+          POSTGRES_DB: winter_smog_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U winter_test -d winter_smog_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    defaults:
+      run:
+        working-directory: apps/api
+    env:
+      DATABASE_URL: postgresql+psycopg://winter_test:local_ci_only@localhost:5432/winter_smog_test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: apps/api/pyproject.toml
+      - name: Install schema/test dependencies
+        run: python -m pip install -e '.[dev]'
+      - name: Check Python syntax
+        run: python -m compileall -q app alembic tests
+      - name: Apply and inspect migration
+        run: alembic upgrade head
+      - name: Test integrity and household access
+        run: pytest -q
+      - name: Verify migration rollback and replay
+        run: alembic downgrade base && alembic upgrade head
