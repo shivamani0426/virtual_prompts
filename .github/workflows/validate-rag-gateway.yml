@@ -1,0 +1,27 @@
+name: Validate reviewed AI gateway
+on:
+  push:
+    paths:
+      - 'scripts/deploy-rag-ai.mjs'
+      - 'apps/api/app/knowledge/verified_sources.json'
+      - '.github/workflows/validate-rag-gateway.yml'
+  pull_request:
+    paths:
+      - 'scripts/deploy-rag-ai.mjs'
+      - 'apps/api/app/knowledge/verified_sources.json'
+      - '.github/workflows/validate-rag-gateway.yml'
+permissions:
+  contents: read
+jobs:
+  gateway-dry-run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate worker and reviewed-source compilation without model usage
+        env:
+          RAG_DRY_RUN: '1'
+        run: node scripts/deploy-rag-ai.mjs

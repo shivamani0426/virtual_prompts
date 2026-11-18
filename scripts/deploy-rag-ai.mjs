@@ -5,12 +5,13 @@
  * request caps; enforce account spend limits and stronger auth before wide use.
  */
 import { readFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
 
 const account = "c37eaec570d5c0261dd4b3fdf8764ce4";
 const token = process.env.CLOUDFLARE_API_TOKEN;
 if (process.env.CLOUDFLARE_ACCOUNT_ID && process.env.CLOUDFLARE_ACCOUNT_ID !== account)
   throw Error("Wrong Cloudflare account: deployment rejected.");
-if (!token) throw Error("Missing GitHub CLOUDFLARE_API_TOKEN secret.");
+if (!token && process.env.RAG_DRY_RUN !== "1") throw Error("Missing GitHub CLOUDFLARE_API_TOKEN secret.");
 const workerName = "winter-smog-rag-ai";
 const corpus = JSON.parse(
   readFileSync("apps/api/app/knowledge/verified_sources.json", "utf-8"),
@@ -60,6 +61,16 @@ const moduleBody = [
   "  } catch {return json({error:'Model inference unavailable'},503);}",
   "} };",
 ].join("\n");
+
+// Verify generated Worker module syntax without exposing a token or running inference.
+execFileSync(process.execPath, ["--input-type=module", "--check"], {
+  input: moduleBody,
+  stdio: ["pipe", "pipe", "pipe"],
+});
+if (process.env.RAG_DRY_RUN === "1") {
+  console.log("Dry-run passed: " + Object.keys(facts).length + " reviewed evidence facts, valid Worker module.");
+  process.exit(0);
+}
 
 const endpoint = "https://api.cloudflare.com/client/v4/accounts/" + account;
 const headers = { Authorization: "Bearer " + token };
