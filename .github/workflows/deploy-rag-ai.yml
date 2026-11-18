@@ -1,0 +1,29 @@
+name: Deploy reviewed WHO/CPCB Workers AI gateway
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/deploy-rag-ai.mjs'
+      - 'apps/api/app/knowledge/verified_sources.json'
+      - '.github/workflows/deploy-rag-ai.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate deployment script syntax and source registry
+        run: |
+          node --check scripts/deploy-rag-ai.mjs
+          node -e "const x=require('./apps/api/app/knowledge/verified_sources.json'); if(x.sources.length<8) process.exit(1)"
+      - name: Publish separate metered AI Worker
+        env:
+          CLOUDFLARE_ACCOUNT_ID: c37eaec570d5c0261dd4b3fdf8764ce4
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: node scripts/deploy-rag-ai.mjs

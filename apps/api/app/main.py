@@ -15,6 +15,7 @@ from app.api.v1.routes import router
 from app.core.config import Settings
 from app.integrations.open_meteo import OpenMeteoAdapter, ProviderUnavailable
 from app.services.data import DataService
+from app.services.rag import RAGAssistant
 
 
 class ProcessRateLimiter:
@@ -60,15 +61,19 @@ def create_app(
                 app.state.data_service = DataService(
                     OpenMeteoAdapter(client), settings
                 )
+                app.state.rag_assistant = RAGAssistant(client)
                 yield
         else:
             app.state.data_service = service
-            yield
+            # For isolated FastAPI tests, use the same shared client if available.
+            async with httpx.AsyncClient(timeout=15.0, follow_redirects=False) as ai_client:
+                app.state.rag_assistant = RAGAssistant(ai_client)
+                yield
 
     production = os.getenv("APP_ENV", "development") == "production"
     app = FastAPI(
         title="Winter Smog Assistant API",
-        version="0.3.0",
+        version="0.6.0",
         description="Read-only public environmental endpoints; not official CPCB AQI.",
         docs_url=None if production else "/docs",
         redoc_url=None if production else "/redoc",
@@ -78,16 +83,29 @@ def create_app(
     app.add_middleware(
         CORSMiddleware,
         allow_origins=list(settings.allowed_origins),
-        allow_methods=["GET"],
+        allow_methods=["GET", "POST"],
         allow_headers=["Content-Type"],
         allow_credentials=False,
     )
     app.include_router(router)
     limiter = ProcessRateLimiter(settings.public_rate_limit_per_minute)
+    assistant_limiter = ProcessRateLimiter(10)
 
     @app.middleware("http")
     async def secure_public_api(request: Request, call_next):
         if (
+            request.url.path == "/api/v1/assistant"
+            and request.method == "POST"
+            and not await assistant_limiter.allow(
+                request.client.host if request.client else "unknown"
+            )
+        ):
+            response = JSONResponse(
+                status_code=429,
+                content={"detail": "Assistant request limit reached. Try again shortly."},
+                headers={"Retry-After": "60", "Cache-Control": "no-store"},
+            )
+        elif (
             request.url.path.startswith("/api/v1/")
             and not request.url.path.endswith("/health")
             and request.method != "OPTIONS"
@@ -107,6 +125,8 @@ def create_app(
         response.headers["X-Frame-Options"] = "DENY"
         if request.url.path.startswith("/api/v1/"):
             response.headers["Content-Security-Policy"] = "default-src 'none'"
+        if request.url.path.startswith("/api/v1/assistant"):
+            response.headers["Cache-Control"] = "no-store"
         return response
 
     @app.exception_handler(ProviderUnavailable)

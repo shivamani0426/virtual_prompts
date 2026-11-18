@@ -2,7 +2,7 @@
 
 **Acceptance policy:** Every item must be **PASS** with a test artifact or reproducible manual evidence before the project is called demo-ready or production-ready. **PENDING** means it has not yet been verified. **BLOCKED** means an external prerequisite prevents completion. Architecture docs, source files or passing unit tests alone do **not** count as end-to-end success.
 
-Progress updated: 2026-11-18. Milestones 2–4 passed CI. The React frontend is live at https://winter-smog-web.1nc24cs197.workers.dev/ and FastAPI/Uvicorn is live on Render; environmental data was independently verified. Milestone 5 weekly planner, indoor-air guidance and low-emission alternatives have been merged and released to the existing React dashboard; 33 frontend tests and the production deploy workflow passed. Public homepage and FastAPI health/AQI were verified. Manual browser/device testing of routine persistence remains pending. The existing legacy ClearSkies worker is preserved. The PostgreSQL schema is tested but not linked to a production account system; authentication, community functions, full RAG, mobile, device/accessibility audits and final release gates remain pending.
+Progress updated: 2026-11-18. Milestones 2–4 passed CI. The React frontend is live at https://winter-smog-web.1nc24cs197.workers.dev/ and FastAPI/Uvicorn is live on Render; environmental data was independently verified. Milestone 5 planner, indoor-air and low-emission alternatives were released; 33 frontend tests and production deployment passed. Milestone 6 adds a reviewed 13-passage WHO/CPCB RAG registry, a citation-first assistant API with constrained optional Cloudflare model generation and safety refusals. Milestone 7 adds browser-local self-reported impact metrics and reversible badges. Automated M6/M7 CI is underway; live model quality, security and accessibility require verification. Manual browser/device testing of routine persistence remains pending. The existing legacy ClearSkies worker is preserved. The PostgreSQL schema is tested but not linked to a production account system; authentication, community functions, full RAG, mobile, device/accessibility audits and final release gates remain pending.
 
 ## 1. Functionality
 - [ ] PENDING — Daily briefing is tested; Milestone 5 seven-day planner, rescheduling and local storage implemented with automated tests; chat, alerts, community and complete user acceptance remain pending
@@ -12,10 +12,10 @@ Progress updated: 2026-11-18. Milestones 2–4 passed CI. The React frontend is 
 - [ ] PENDING — Manual audit for dead links, buttons and placeholder text
 
 ## 2. AI / GenAI quality
-- [ ] PENDING — Reviewed WHO/CPCB-grounded answers with cited source versions
+- [ ] PENDING — Versioned 13-passage curated WHO/CPCB source registry, public citations and safety tests implemented; independent medical/scientific editorial review and model answer entailment evaluation pending
 - [ ] PENDING — Child/elder/respiratory safety and medical disclaimer scenarios
-- [ ] PENDING — Numeric answer provenance and hallucination prevention
-- [ ] PENDING — Prompt injection red-team suite
+- [ ] PENDING — Numeric evidence whitelist and citation-free-model-output validation implemented; broad hallucination/entailment red-team evaluation pending
+- [ ] PENDING — Basic prompt-injection and model-outage test suite added; adversarial red team beyond these cases pending
 - [ ] PENDING — Regional language and voice accuracy with human review
 - [ ] PENDING — Response latency and LLM cost budget measured
 
@@ -56,7 +56,7 @@ Progress updated: 2026-11-18. Milestones 2–4 passed CI. The React frontend is 
 - [ ] PENDING — Account/data export and permanent deletion flow tested
 
 ## 8. Testing
-- [ ] PENDING — Unit, integration, browser and manual user tests run
+- [ ] PENDING — Automated unit/HTTP/component tests for M6/M7 run; independent device, browser, live model and manual end-user testing pending
 - [ ] PENDING — Cross-browser and real device testing
 - [ ] PENDING — Friends/family usability trials and feedback records
 - [ ] PENDING — Defect tracker, severity and fix evidence
@@ -104,3 +104,4 @@ Progress updated: 2026-11-18. Milestones 2–4 passed CI. The React frontend is 
 | Phase 3 FastAPI public environmental API | https://github.com/shivamani0426/virtual_prompts/actions/runs/44317021168 | PASS: 18 total PostgreSQL/API tests, including geocoding, weather, validation, 12-minute TTL, stale/error handling, rate limiting and migration roundtrip |
 | Phase 4 React dashboard | https://github.com/shivamani0426/virtual_prompts/actions/runs/44320757262 | PASS: first React TypeScript build, component/unit tests, ESLint; final opt-in regression rerun pending |
 | React + FastAPI deployment (Milestone 4 preview) | https://winter-smog-web.1nc24cs197.workers.dev/ and https://winter-smog-fastapi.onrender.com/api/v1/health | PASS: live frontend and public health/AQI/weather endpoints individually verified; later full E2E production acceptance PENDING |\n| Milestone 5 planner and guidance | https://github.com/shivamani0426/virtual_prompts/pull/1 and https://github.com/shivamani0426/virtual_prompts/actions/runs/44351013489 | PASS: merged, build/lint and 33 frontend tests, Cloudflare upload; public page shows planner, indoor and alternatives sections. Manual cross-device/localStorage verification PENDING |
+| Milestone 6 assistant and Milestone 7 badges | Feature branch `feat/milestones-06-07-trustworthy-rag-impact` | Backend and React automated tests in progress; separate model gateway dry-run passed. Public model inference and live end-to-end verification PENDING |

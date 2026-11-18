@@ -70,3 +70,11 @@ External provider documentation and attribution: https://open-meteo.com/en/docs/
 ### Environment-specific upstream fallback (production preview)
 
 If the Render free instance cannot access Open-Meteo air and weather endpoints directly, set `OPEN_METEO_RELAY_ENABLED=1` on the FastAPI host. The adapter then tries the fixed-host, read-only `winter-smog-relay.1nc24cs197.workers.dev` Cloudflare Worker **only after a direct provider request fails**. The relay forwards approximate coordinates (two decimals) to Open-Meteo, caches the provider request at Cloudflare for ten minutes and returns unmodified provider JSON. Python still normalizes and validates all readings. If both providers fail, the endpoint returns 503 without fabricated values. This relay is an availability workaround for the preview, not a substitute for a production provider SLA, rate-limit controls and user consent.
+
+## Milestone 6 — WHO/CPCB-grounded assistant
+
+`POST /api/v1/assistant` accepts `{"question":"What does WHO say about PM2.5?"}` (5–400 characters; no household or exact location input). `GET /api/v1/assistant/sources` exposes the reviewed evidence registry and its verification dates. Every returned source has an official URL, publisher and section. No live AQI is inferred from the chat request.
+
+Generation is optional: `RAG_MODEL_ENABLED=0` returns carefully reviewed extractive summaries and never silently calls an LLM. If enabled, the server sends only an allowlisted evidence ID set and the short question to `winter-smog-rag-ai`, then screens the generated response for unsupported numbers, bogus citations and excessive divergence. It falls back to reviewed evidence if inference fails or is rejected. Clinical or emergency requests are not sent to the model.
+
+**Do not claim that statistical generation guarantees factual accuracy.** Reviewed evidence and a lexical support gate are a first safeguard, not clinical assurance. Full source versioning, independent entailment tests, data-policy approvals, AI spend/rate caps and prompt-injection testing are part of the production release gates. The worker is deployed separately using `.github/workflows/deploy-rag-ai.yml`; Cloudflare model charges and per-location rate limits may apply.
