@@ -1,0 +1,33 @@
+name: Deploy Winter Smog React to Cloudflare
+on:
+  push:
+    paths:
+      - "apps/web/**"
+      - "scripts/deploy-react-cloudflare.mjs"
+      - ".github/workflows/deploy-react.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Build and test React dashboard
+        working-directory: apps/web
+        env:
+          VITE_API_BASE_URL: https://winter-smog-fastapi.onrender.com
+        run: |
+          npm install --no-audit --no-fund
+          npm test
+          npm run lint
+          npm run build
+      - name: Deploy React Worker
+        env:
+          CLOUDFLARE_ACCOUNT_ID: c37eaec570d5c0261dd4b3fdf8764ce4
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: node scripts/deploy-react-cloudflare.mjs
