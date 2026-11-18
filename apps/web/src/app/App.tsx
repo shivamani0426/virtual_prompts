@@ -2,6 +2,9 @@ import {
   ArrowRight,
   ArrowUpRight,
   CheckCircle2,
+  CalendarDays,
+  Bus,
+  House,
   Cloud,
   CloudFog,
   Compass,
@@ -23,6 +26,9 @@ import type { FormEvent } from "react";
 import { AirOverview } from "../features/air-quality/AirOverview";
 import { DailyBriefing } from "../features/daily-briefing/DailyBriefing";
 import { HouseholdSettings } from "../features/household/HouseholdSettings";
+import { WeeklyPlanner } from "../features/routines/WeeklyPlanner";
+import { IndoorAirAssistant } from "../features/indoor-air/IndoorAirAssistant";
+import { LowEmissionAlternatives } from "../features/low-emission/LowEmissionAlternatives";
 import { getAir, getWeather, searchCities } from "../lib/api";
 import { readPreferences, savePreferences } from "../lib/preferences";
 import type {
@@ -180,6 +186,9 @@ export function App() {
           <a className="nav-active" href="#main" onClick={navClick}><Compass size={19} aria-hidden="true" /> Today</a>
           <a href="#air" onClick={navClick}><CloudFog size={19} aria-hidden="true" /> Air outlook</a>
           <a href="#briefing" onClick={navClick}><Sparkles size={19} aria-hidden="true" /> Daily briefing</a>
+          <a href="#planner" onClick={navClick}><CalendarDays size={19} aria-hidden="true" /> Weekly plan</a>
+          <a href="#low-emission" onClick={navClick}><Bus size={19} aria-hidden="true" /> Low-emission choices</a>
+          <a href="#indoor-air" onClick={navClick}><House size={19} aria-hidden="true" /> Indoor air</a>
           <a href="#household" onClick={navClick}><Heart size={19} aria-hidden="true" /> Your household</a>
           <a href="#about" onClick={navClick}><Info size={19} aria-hidden="true" /> Our approach</a>
         </nav>
@@ -189,7 +198,7 @@ export function App() {
             <h3>Better air, little by little.</h3>
             <p>Good decisions start with good information.</p>
           </div>
-          <p className="sidebar-copyright">Winter Smog Assistant · Phase 4</p>
+          <p className="sidebar-copyright">Winter Smog Assistant · Phase 5</p>
         </div>
       </aside>
 
@@ -330,6 +339,9 @@ export function App() {
               </section>
             )}
           </div>
+          <WeeklyPlanner preferences={prefs} aqi={air?.current.us_aqi ?? null} />
+          <LowEmissionAlternatives preferences={prefs} aqi={air?.current.us_aqi ?? null} />
+          <IndoorAirAssistant preferences={prefs} aqi={air?.current.us_aqi ?? null} />
           <HouseholdSettings value={prefs} onChange={setPrefs} />
           {storageWarning && (
             <p className="inline-warning" role="alert">

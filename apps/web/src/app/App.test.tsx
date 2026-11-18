@@ -103,7 +103,7 @@ describe("Dashboard API integration", () => {
     await waitFor(() => {
       expect(fetchMock.mock.calls.some((call) => String(call[0]).includes("lat=28.61"))).toBe(true);
     });
-    expect(screen.getByText(/Your selected location/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/Your selected location/i).length).toBeGreaterThan(0);
   });
 
   it("updates household advice on user input without sending preferences to the API", async () => {

@@ -52,6 +52,12 @@ Open-Meteo sources and CAMS attribution are shown in the application footer; rev
 - scripts/build.mjs — single-module bundling
 - tests/guidance.test.mjs — basic validation tests
 
-## Next-generation Winter Smog Assistant (separate development)
+## Winter Smog Assistant (separate React + FastAPI application)
 
-The new **React + TypeScript dashboard** lives in [apps/web/](apps/web/), and its **FastAPI backend and PostgreSQL schema** live in [apps/api/](apps/api/). Milestone 4 adds a responsive dashboard, city search, US AQI and weather panels, 12-hour forecast, household-based briefing and local-only preferences. The web frontend calls the FastAPI `/api/v1` endpoints using a local Vite proxy. Read [apps/web/README.md](apps/web/README.md) for running both apps. The React/FastAPI stack is **not yet connected to the deployed ClearSkies preview**; the existing production worker remains untouched until separately tested release approval. See [docs/api-contracts.md](docs/api-contracts.md) and the [final acceptance checklist](docs/release-checklist.md).
+**Live React dashboard:** https://winter-smog-web.1nc24cs197.workers.dev/
+
+**Live FastAPI (Uvicorn):** https://winter-smog-fastapi.onrender.com/api/v1/health
+
+The new [React + TypeScript dashboard](apps/web/) and [FastAPI + PostgreSQL schema](apps/api/) are separate from the legacy ClearSkies Worker. Milestone 4 introduced location-aware modelled US AQI, weather and forecasts; Milestone 5 adds a **Monday–Sunday, 21-activity weekly planner**, done/skip/undo/rescheduling, browser-local persistence, safer AQI-adapted routine advice, low-emission alternatives and a practical indoor-air guide. See [apps/web/README.md](apps/web/README.md) for run and verification instructions.
+
+Deployment: the React Worker updates from `main` through `.github/workflows/deploy-react.yml` (tests, lint and build before deployment); feature branches do not modify the live site. The older `clearskies-ai` Worker remains intact. No planner data is sent to the Python API or stored in PostgreSQL yet; secure accounts and cloud synchronization are later milestones. Official CPCB AQI is **not** provided: values are modelled **US AQI**. See [docs/api-contracts.md](docs/api-contracts.md) and [docs/release-checklist.md](docs/release-checklist.md) before claiming production readiness.
