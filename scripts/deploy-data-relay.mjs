@@ -7,11 +7,11 @@ if (process.env.CLOUDFLARE_ACCOUNT_ID && process.env.CLOUDFLARE_ACCOUNT_ID !== e
 }
 if (!token) throw new Error("GitHub Actions must provide CLOUDFLARE_API_TOKEN.");
 const workerName = "winter-smog-relay";
-const workerSource = String.raw\`
+const workerSource = String.raw`
 const airUrl = "https://air-quality-api.open-meteo.com/v1/air-quality";
 const weatherUrl = "https://api.open-meteo.com/v1/forecast";
 function coordinate(value, minimum, maximum) {
-  if (value === null || !/^-?\\d{1,3}(?:\\.\\d{1,2})?$/.test(value)) return null;
+  if (value === null || !/^-?\d{1,3}(?:\.\d{1,2})?$/.test(value)) return null;
   const number = Number(value);
   return Number.isFinite(number) && number >= minimum && number <= maximum ? number : null;
 }
@@ -62,7 +62,7 @@ export default {
     }
   },
 };
-\`.replaceAll("\\\`", "\`");
+`;
 const root = "https://api.cloudflare.com/client/v4/accounts/" + expected;
 const headers = { Authorization: "Bearer " + token };
 async function check(response, action) {
