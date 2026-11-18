@@ -146,11 +146,17 @@ export default {
       }
       if (path === "/session" && request.method === "POST") {
         if (request.headers.get("Origin") && !("Access-Control-Allow-Origin" in headers)) return respond({error:"Origin forbidden"},403,headers);
+        if(!env.SESSION_LIMIT)return respond({error:"Missing anti-abuse protection"},503,headers);
+        const limited=await env.SESSION_LIMIT.limit({key:request.headers.get("CF-Connecting-IP")||"unknown"});
+        if(!limited.success)return respond({error:"Session limit reached. Please try later."},429,headers);
         return respond(await createSession(env.DB),201,headers);
       }
       const sessionId = await authorize(request,env.DB);
       if (!sessionId) return respond({error:"Start or renew your community session."},401,headers);
       if (path === "/reports" && request.method === "POST") {
+        if(!env.REPORT_LIMIT)return respond({error:"Missing anti-abuse protection"},503,headers);
+        const limited=await env.REPORT_LIMIT.limit({key:request.headers.get("CF-Connecting-IP")||"unknown"});
+        if(!limited.success)return respond({error:"Report submission limit reached."},429,headers);
         const body = await parseBody(request,headers);
         if (!body) return validationError("Invalid or oversized report.",headers);
         return makeReport(env.DB,sessionId,body,headers);
