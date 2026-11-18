@@ -72,8 +72,9 @@ assert(["generated","evidence_only"].includes(q.mode), "Unsupported answer mode"
 assert(Array.isArray(q.citations) && q.citations.length > 0, "Assistant answer lacks citations");
 assert(q.live_data_used === false, "Assistant falsely claims live readings");
 assert(q.citations[0].url.startsWith("https://www.who.int/"), "Assistant cites non-WHO source");
+assert(typeof q.citations[0].reviewed_summary === "string" && q.citations[0].reviewed_summary.length > 30, "Missing exact reviewed source summary");
 assert(/PM2.5|PM25|fine particles/i.test(q.answer), "Answer is irrelevant");
-console.log("PASS: assistant returned " + q.mode + " with official citations");
+console.log("PASS: assistant returned " + q.mode + " with official citations and source evidence excerpts");
 
 const injection = await (await call(
   api + "/api/v1/assistant",
