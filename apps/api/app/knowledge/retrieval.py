@@ -84,7 +84,10 @@ def retrieve(question: str, limit: int = 3) -> list[dict]:
 
 
 def citation(item: dict) -> dict:
-    return {
+    result = {
         field: item[field]
         for field in ("id", "publisher", "title", "url", "section", "published", "verified")
     }
+    # Give users the exact editorial evidence used, not just a plausible-looking URL.
+    result["reviewed_summary"] = item["fact"]
+    return result

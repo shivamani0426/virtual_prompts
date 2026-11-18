@@ -8,6 +8,7 @@ const valid = {
   citations: [
     {
       id: "WHO-2021-PM25",
+      reviewed_summary: "The WHO guideline for PM2.5 is 15 micrograms per cubic metre as a 24-hour average.",
       publisher: "World Health Organization",
       title: "WHO global air quality guidelines",
       section: "2021 guideline levels",
@@ -37,6 +38,8 @@ describe("Evidence-first assistant UI", () => {
     const official = screen.getByRole("link", { name: /Read official source/i });
     expect(official).toHaveAttribute("href", valid.citations[0]!.url);
     expect(screen.getByText(/Reviewed source summaries/i)).toBeInTheDocument();
+    expect(screen.getByText(/Evidence used:/i)).toBeInTheDocument();
+    expect(screen.getByText(/The WHO guideline for PM2.5 is 15 micrograms/)).toBeInTheDocument();
     const [, request] = fetchMock.mock.calls[0] as unknown as [string, RequestInit];
     expect(request.method).toBe("POST");
     expect(JSON.stringify(request.body)).not.toContain("city");

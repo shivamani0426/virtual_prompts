@@ -79,6 +79,7 @@ export async function searchCities(query: string, signal?: AbortSignal): Promise
 
 export type AssistantCitation = {
   id: string;
+  reviewed_summary: string;
   publisher: string;
   title: string;
   url: string;

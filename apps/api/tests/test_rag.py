@@ -51,6 +51,8 @@ def test_public_sources_and_evidence_only_response(monkeypatch):
     assert body["mode"] == "evidence_only"
     assert body["live_data_used"] is False
     assert body["citations"][0]["url"].startswith("https://www.who.int/")
+    assert "reviewed_summary" in body["citations"][0]
+    assert "PM2.5" in body["citations"][0]["reviewed_summary"]
     assert "24-hour" in body["answer"]
     assert answer.headers["cache-control"] == "no-store"
 

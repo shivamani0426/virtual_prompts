@@ -125,7 +125,10 @@ export function TrustedAssistant() {
                           <li key={source.id}>
                             <strong>{source.publisher}</strong>
                             <span>{source.section} · {source.title}</span>
-                            <small>Published {source.published} · Reviewed {source.verified}</small>
+                            <small>Published {source.published} · Registry checked {source.verified}</small>
+                            <span className="assistant-reviewed-evidence">
+                              <strong>Evidence used:</strong> {source.reviewed_summary}
+                            </span>
                             {officialLink(source.url) && (
                               <a href={officialLink(source.url)!} target="_blank" rel="noopener noreferrer">
                                 Read official source <ArrowUpRight size={14} aria-hidden="true"/>
