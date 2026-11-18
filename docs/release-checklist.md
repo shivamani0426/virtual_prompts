@@ -2,13 +2,13 @@
 
 **Acceptance policy:** Every item must be **PASS** with a test artifact or reproducible manual evidence before the project is called demo-ready or production-ready. **PENDING** means it has not yet been verified. **BLOCKED** means an external prerequisite prevents completion. Architecture docs, source files or passing unit tests alone do **not** count as end-to-end success.
 
-Progress updated: 2026-11-18. Milestones 2–4 passed CI. The React frontend is live at https://winter-smog-web.1nc24cs197.workers.dev/ and FastAPI/Uvicorn is live on Render; environmental data was independently verified. Milestone 5 planner, indoor-air and low-emission alternatives were released; 33 frontend tests and production deployment passed. Milestone 6 adds a reviewed 13-passage WHO/CPCB RAG registry, a citation-first assistant API with constrained optional Cloudflare model generation and safety refusals. Milestone 7 adds browser-local self-reported impact metrics and reversible badges. Automated M6/M7 CI is underway; live model quality, security and accessibility require verification. Manual browser/device testing of routine persistence remains pending. The existing legacy ClearSkies worker is preserved. The PostgreSQL schema is tested but not linked to a production account system; authentication, community functions, full RAG, mobile, device/accessibility audits and final release gates remain pending.
+Progress updated: 2026-11-18. Milestones 1–5 are implemented, with the React dashboard and Python FastAPI/Uvicorn publicly accessible. Milestone 6 (source-grounded WHO/CPCB assistant) and Milestone 7 (self-reported habit metrics and reversible badges) have also been merged and deployed. M6/7 passed 36 backend/PostgreSQL tests, 43 frontend tests and live public release smoke checks including actual Cloudflare AI inference, server-owned WHO citations, prompt-injection refusal, and urgent medical escalation. The source catalog has 13 editorial summaries and now exposes the reviewed evidence supporting each answer. **Do not call this clinically validated, exhaustive RAG or fully production ready.** Independent scientific/medical review, broad hallucination/entailment testing, model usage-cost controls, identity/cloud synchronization, browser/device accessibility and manual multi-user QA remain pending. The original ClearSkies Worker is preserved. PostgreSQL schema is tested, but not connected to production user profiles.
 
 ## 1. Functionality
-- [ ] PENDING — Daily briefing is tested; Milestone 5 seven-day planner, rescheduling and local storage implemented with automated tests; chat, alerts, community and complete user acceptance remain pending
+- [ ] PENDING — Daily briefing and weekly planner are tested; M6 WHO/CPCB cited assistant is live and passes automated smoke checks; alerts, community workflows and full manual user acceptance remain pending
 - [ ] PENDING — City selection, household categories, home types and budget guidance implemented; real-world multi-location/budget manual validation pending
 - [ ] PENDING — FastAPI invalid location, offline, high-AQI tests and React offline-state tests pass; full browser/offline E2E pending
-- [ ] PENDING — AQI/weather/LLM outage fallback tested end to end
+- [ ] PENDING — AQI/weather fallback and mocked model-outage fallback pass automated tests; broader live outage and recovery drill pending
 - [ ] PENDING — Manual audit for dead links, buttons and placeholder text
 
 ## 2. AI / GenAI quality
@@ -17,7 +17,7 @@ Progress updated: 2026-11-18. Milestones 2–4 passed CI. The React frontend is 
 - [ ] PENDING — Numeric evidence whitelist and citation-free-model-output validation implemented; broad hallucination/entailment red-team evaluation pending
 - [ ] PENDING — Basic prompt-injection and model-outage test suite added; adversarial red team beyond these cases pending
 - [ ] PENDING — Regional language and voice accuracy with human review
-- [ ] PENDING — Response latency and LLM cost budget measured
+- [ ] PENDING — Cloudflare live inference succeeded; model request billing, strict account budget alerts, global abuse throttling and latency SLO measurement pending
 
 ## 3. Code quality
 - [ ] PENDING — ESLint/Prettier and Black/Flake8 in strict CI
@@ -70,7 +70,7 @@ Progress updated: 2026-11-18. Milestones 2–4 passed CI. The React frontend is 
 
 ## 10. Documentation and submission
 - [x] PASS — Initial architecture and proposed folder structure are in docs/ (Phase 1)
-- [ ] PENDING — Up-to-date README, API specification and runnable service docs
+- [ ] PENDING — README, API contracts and source policy updated for M6/M7; fresh-machine independent verification and docs audit pending
 - [ ] PENDING — Report/abstract with problem, method, results, limitations, references
 - [ ] PENDING — Presentation slides
 - [ ] PENDING — Recorded demo/screenshots
@@ -103,5 +103,9 @@ Progress updated: 2026-11-18. Milestones 2–4 passed CI. The React frontend is 
 | Legacy ClearSkies preview | https://clearskies-ai.1nc24cs197.workers.dev/ | PASS: homepage, health, city search and modelled air API independently verified |
 | Phase 3 FastAPI public environmental API | https://github.com/shivamani0426/virtual_prompts/actions/runs/44317021168 | PASS: 18 total PostgreSQL/API tests, including geocoding, weather, validation, 12-minute TTL, stale/error handling, rate limiting and migration roundtrip |
 | Phase 4 React dashboard | https://github.com/shivamani0426/virtual_prompts/actions/runs/44320757262 | PASS: first React TypeScript build, component/unit tests, ESLint; final opt-in regression rerun pending |
-| React + FastAPI deployment (Milestone 4 preview) | https://winter-smog-web.1nc24cs197.workers.dev/ and https://winter-smog-fastapi.onrender.com/api/v1/health | PASS: live frontend and public health/AQI/weather endpoints individually verified; later full E2E production acceptance PENDING |\n| Milestone 5 planner and guidance | https://github.com/shivamani0426/virtual_prompts/pull/1 and https://github.com/shivamani0426/virtual_prompts/actions/runs/44351013489 | PASS: merged, build/lint and 33 frontend tests, Cloudflare upload; public page shows planner, indoor and alternatives sections. Manual cross-device/localStorage verification PENDING |
-| Milestone 6 assistant and Milestone 7 badges | Feature branch `feat/milestones-06-07-trustworthy-rag-impact` | Backend and React automated tests in progress; separate model gateway dry-run passed. Public model inference and live end-to-end verification PENDING |
+| React + FastAPI deployment (Milestone 4 preview) | https://winter-smog-web.1nc24cs197.workers.dev/ and https://winter-smog-fastapi.onrender.com/api/v1/health | PASS: live frontend and public health/AQI/weather endpoints individually verified; later full E2E production acceptance PENDING |
+| Milestone 5 planner and guidance | https://github.com/shivamani0426/virtual_prompts/pull/1 and https://github.com/shivamani0426/virtual_prompts/actions/runs/44351013489 | PASS: merged, build/lint and 33 frontend tests, Cloudflare upload; public page shows planner, indoor and alternatives sections. Manual cross-device/localStorage verification PENDING |
+| Milestone 6 WHO/CPCB RAG | https://github.com/shivamani0426/virtual_prompts/pull/2 and https://github.com/shivamani0426/virtual_prompts/actions/runs/44362248792 | PASS: versioned 13-source catalog, citation metadata and reviewed evidence excerpts, FastAPI/PostgreSQL 36-test suite; independent medical validation PENDING |
+| Milestone 6 live generated answers | https://github.com/shivamani0426/virtual_prompts/actions/runs/44362724226 | PASS: public model inference, cited FastAPI response, prompt-injection refusal and emergency escalation; model answer entailment/clinical review PENDING |
+| Milestone 7 impact and badges | https://github.com/shivamani0426/virtual_prompts/actions/runs/44362248663 and https://github.com/shivamani0426/virtual_prompts/actions/runs/44362248877 | PASS: 43 frontend tests, React build/lint and Cloudflare deploy; manual live click/refresh and cross-device validation PENDING |
+| Cloudflare AI gateway | https://github.com/shivamani0426/virtual_prompts/actions/runs/44361521333 | PASS: separate metered inference Worker deployed; quota and spending controls require independent audit |
