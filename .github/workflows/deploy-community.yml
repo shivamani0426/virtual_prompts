@@ -1,0 +1,29 @@
+name: Deploy isolated community API and database
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/community/**'
+      - 'scripts/deploy-community.mjs'
+      - '.github/workflows/deploy-community.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  deploy:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify community Worker source
+        env:
+          COMMUNITY_DRY_RUN: '1'
+        run: node scripts/deploy-community.mjs
+      - name: Provision D1, apply idempotent schema, and deploy Worker
+        env:
+          CLOUDFLARE_ACCOUNT_ID: c37eaec570d5c0261dd4b3fdf8764ce4
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: node scripts/deploy-community.mjs

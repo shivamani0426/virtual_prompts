@@ -1,0 +1,35 @@
+name: Validate community D1 service
+on:
+  push:
+    paths:
+      - 'apps/community/**'
+      - 'scripts/deploy-community.mjs'
+      - 'scripts/moderate-community.mjs'
+      - '.github/workflows/community.yml'
+  pull_request:
+    paths:
+      - 'apps/community/**'
+      - 'scripts/deploy-community.mjs'
+      - 'scripts/moderate-community.mjs'
+      - '.github/workflows/community.yml'
+permissions:
+  contents: read
+jobs:
+  community:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - name: Validate Worker and deployment scripts
+        run: |
+          node --check apps/community/worker.mjs
+          node --check scripts/deploy-community.mjs
+          node --check scripts/moderate-community.mjs
+      - name: Test D1 behavior with real SQLite semantics, without external costs
+        run: node --test apps/community/tests/*.test.mjs
+      - name: Validate deployment manifest (dry run)
+        env:
+          COMMUNITY_DRY_RUN: '1'
+        run: node scripts/deploy-community.mjs

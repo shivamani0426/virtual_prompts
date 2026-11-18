@@ -118,3 +118,19 @@ Progress updated: 2026-11-18. Milestones 1–5 are implemented, with the React d
 - Verified no horizontal document overflow at 390px and no uncaught JavaScript errors in this smoke journey.
 - Automated with `scripts/test-winter-browser.mjs` and `.github/workflows/browser-e2e.yml`. Uses ephemeral browser localStorage and no accounts or personal data.
 - **Limits:** This is a single end-to-end journey, not full assistive-technology, security, clinical entailment, real-device performance or regional-language coverage. Test execution can consume one metered model request and GitHub Actions minutes. The source registry still needs ongoing editorial governance and independent scientific review.
+
+
+## Milestones 8–9 implementation evidence and acceptance boundaries
+
+- Milestone 8 community D1 Worker + database schema, pseudonymous reports, moderator-only approval, opt-in foreground AQI alert controls and daily check-in challenges: `apps/community`. **Offline Node SQLite simulation** and deploy-dry-run CI passed at [44380031854](https://github.com/shivamani0426/virtual_prompts/actions/runs/44380031854) (4 tests). Actual Cloudflare D1 deployment and public write-path smoke verification **pending until merge and D1 token permission validation**.
+- Milestone 8 React community flow: city-scoped approved reports, user submissions, challenge actions and alert preferences; 48 web tests, TypeScript, lint and build passed at [44380800822](https://github.com/shivamani0426/virtual_prompts/actions/runs/44380800822). **Not an end-to-end public D1 write-flow verification**.
+- Milestone 9 Expo native mobile source at `apps/mobile`: TypeScript, 3 locale tests and Android/iOS JavaScript exports passed at [44380235457](https://github.com/shivamani0426/virtual_prompts/actions/runs/44380235457). **This is not a signed APK/IPA, an app-store release or a physical-device QA test**.
+- Milestone 9 regional languages: 7 UI dictionary options, English fallback. Important safety notes translated, but full copy and evidence **not** independently reviewed in each language.
+- Milestone 9 voice: optional browser speech recognition, web TTS and native Expo TTS; no first-party offline STT engine, no guarantee that a target browser supports a regional recognizer, and no recorded permission/device acceptance matrix.
+- Release blockers retained: cross-device accounts, anti-abuse hardening, mobile signing, native device tests, independent translations, clinical trust reviews, backend push, scheduled alert delivery, monitoring and data privacy/export/deletion policy. These must not be represented as 100% finished.
+
+### Additional data lifecycle checks
+
+- D1 report deletion now executes an actual parameterized `DELETE` (not a hidden `status=deleted` record); integration test asserts the row is absent.
+- Challenge check-in deduplication uses the India local calendar day rather than UTC date.
+- A daily GitHub Actions workflow (`.github/workflows/prune-community.yml`) removes expired reports, pseudonymous sessions and linked progress/alert preferences; new retention SQL is covered with actual SQLite tests in `apps/community/tests/retention.test.mjs`. Scheduled job execution in the live Cloudflare account is still pending first deployment.

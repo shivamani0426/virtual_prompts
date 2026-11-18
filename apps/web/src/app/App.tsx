@@ -5,6 +5,9 @@ import {
   CalendarDays,
   BookOpenCheck,
   Award,
+  UsersRound,
+  Bell,
+  Languages,
   Bus,
   House,
   Cloud,
@@ -33,6 +36,9 @@ import { IndoorAirAssistant } from "../features/indoor-air/IndoorAirAssistant";
 import { LowEmissionAlternatives } from "../features/low-emission/LowEmissionAlternatives";
 import { TrustedAssistant } from "../features/assistant/TrustedAssistant";
 import { ImpactDashboard } from "../features/impact/ImpactDashboard";
+import { CommunityHub } from "../features/community/CommunityHub";
+import { LANGUAGES,selectLocale,t } from "../features/language/locale";
+import type { Locale } from "../features/language/locale";
 import { getAir, getWeather, searchCities } from "../lib/api";
 import { readPreferences, savePreferences } from "../lib/preferences";
 import type {
@@ -60,6 +66,14 @@ function errorMessage(error: unknown): string {
 }
 
 export function App() {
+  const [locale,setLocale]=useState<Locale>(()=>{
+    try{return selectLocale(localStorage.getItem("winter-smog:locale")||navigator.language.split("-")[0] || "en");}
+    catch{return "en";}
+  });
+  useEffect(()=>{
+    document.documentElement.lang=locale;
+    try{localStorage.setItem("winter-smog:locale",locale);}catch{/*browser may block storage*/}
+  },[locale]);
   const [city, setCity] = useState<Place>(EXAMPLE_CITY);
   const [exampleCity, setExampleCity] = useState(true);
   const [search, setSearch] = useState("");
@@ -195,6 +209,9 @@ export function App() {
           <a href="#low-emission" onClick={navClick}><Bus size={19} aria-hidden="true" /> Low-emission choices</a>
           <a href="#indoor-air" onClick={navClick}><House size={19} aria-hidden="true" /> Indoor air</a>
           <a href="#impact" onClick={navClick}><Award size={19} aria-hidden="true" /> Impact &amp; badges</a>
+          <a href="#community" onClick={navClick}><UsersRound size={19} aria-hidden="true" /> {t(locale,"community")}</a>
+          <a href="#challenges" onClick={navClick}><Heart size={19} aria-hidden="true" /> {t(locale,"challenges")}</a>
+          <a href="#alerts" onClick={navClick}><Bell size={19} aria-hidden="true" /> {t(locale,"alerts")}</a>
           <a href="#household" onClick={navClick}><Heart size={19} aria-hidden="true" /> Your household</a>
           <a href="#about" onClick={navClick}><Info size={19} aria-hidden="true" /> Our approach</a>
         </nav>
@@ -225,6 +242,13 @@ export function App() {
             <span>Air-aware living</span>
           </div>
           <div className="topbar-actions">
+            <label className="language-control">
+              <Languages size={16} aria-hidden="true"/>
+              <span className="visually-hidden">{t(locale,"language")}</span>
+              <select aria-label="Interface language" value={locale} onChange={e=>setLocale(selectLocale(e.target.value))}>
+                {Object.entries(LANGUAGES).map(([code,value])=><option value={code} key={code}>{value.native}</option>)}
+              </select>
+            </label>
             <span className="topbar-model"><span className="status-dot" /> Modelled air data</span>
             <button type="button" className="refresh-button" onClick={() => setRefresh((n) => n + 1)} disabled={loadingAir}>
               <RefreshCcw size={16} aria-hidden="true" /> Refresh data
@@ -345,11 +369,12 @@ export function App() {
               </section>
             )}
           </div>
-          <TrustedAssistant />
+          <TrustedAssistant locale={locale} />
           <WeeklyPlanner preferences={prefs} aqi={air?.current.us_aqi ?? null} />
           <LowEmissionAlternatives preferences={prefs} aqi={air?.current.us_aqi ?? null} />
           <IndoorAirAssistant preferences={prefs} aqi={air?.current.us_aqi ?? null} />
           <ImpactDashboard />
+          <CommunityHub selectedCity={city.name} locale={locale} />
           <HouseholdSettings value={prefs} onChange={setPrefs} />
           {storageWarning && (
             <p className="inline-warning" role="alert">

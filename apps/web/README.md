@@ -59,7 +59,7 @@ The frontend does not include any API keys. `VITE_API_BASE_URL` can point at the
 - **US AQI is not the official Indian CPCB AQI.** The modelled Open-Meteo data is appropriate only when plainly labeled as an estimate; local sensor measurements can differ.
 - The default displayed location is **Bengaluru, explicitly labeled an example city** until the visitor searches or enables approximate location.
 - Outdoor planning shows the lowest modelled hour, never certifies a safe window in polluted conditions. Advice is informational, not medical advice.
-- This stage is a dashboard, not a fully verified RAG system. It does not contain login, alerts, community reports, *cloud-synchronized* planning, or any official CPCB integration. They remain in later milestones.
+- The dashboard has a source-cited RAG assistant and moderated community reports with opt-in **foreground-only** US AQI alert checks. It does **not** have user-account login, independent CPCB live AQI, cross-device sync, or background push notifications. Independent clinical source and anti-abuse reviews are still required.
 - Household preferences and routine completion/rescheduling are in browser localStorage and can be reset. Routine data is not synced across devices; history older than approximately 90 days is pruned on subsequent saves. On shared devices, others using the same browser profile may see them. Application cookies/auth are not configured in this phase.
 - City and optional approximate geocoordinates are sent to the backend/provider for environmental data. The app does not retain the user's continuous location history.
 - Production release requires shared API caching/rate limits, authentication for household-specific operations, accessibility audits and manual browser/device testing.
@@ -107,3 +107,13 @@ pytest -q
 ```
 
 Do not call this entire application clinically verified or fully production ready: WHO/CPCB content must undergo editorial revalidation, hallucination/entailment and prompt-injection reviews, and model billing safeguards and multi-device/end-to-end testing remain open.
+
+## Milestone 8 — Community and alerts
+
+The **Community reports** section selects one of eight supported cities. Pseudonymous users can submit reports (25–500 chars), see their pending/rejected history and remove their own submissions. Only a repo maintainer can approve a pending submission through `.github/workflows/moderate-community.yml`; only approved, unexpired reports appear in the public feed, labeled as unverified observations. Three habit challenges allow one self-reported check-in per date; no independently measured carbon savings are inferred. Alert settings require opt-in and trigger only when the user explicitly checks a fresh modelled US AQI. Browser notifications are subject to permission; no background push or emergency guarantee exists.
+
+The independent [D1 service](../community/README.md) lives at `winter-smog-community.1nc24cs197.workers.dev`. Community browser sessions use a random token in localStorage, and are **not recovered across devices**. Never enter identity, names, contact details or an exact street address into reports.
+
+## Milestone 9 — Internationalization and voice
+
+The web top bar includes interface language choices for English, Hindi, Kannada, Telugu, Tamil, Bengali and Marathi. **Only selected interface strings** have reviewed-scope translations; WHO/CPCB evidence remains in its reviewed English source wording. Optional microphone input uses the browser speech recognition service where supported and requires a user interaction/permission. Answer read-aloud uses browser text-to-speech in English. These features have fallbacks when microphones/speech engines are unsupported. See [Expo Android/iOS preview](../mobile/README.md) for the native client. Final language/clinical review, device compatibility, accessible captions and store signing are still pending.

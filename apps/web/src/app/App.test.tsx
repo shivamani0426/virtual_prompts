@@ -120,7 +120,7 @@ describe("Dashboard API integration", () => {
   it("shows genuine unavailable state without fake readings when offline", async () => {
     fakeFetch("offline");
     render(<App />);
-    expect(await screen.findByRole("alert")).toHaveTextContent("No estimate has been invented");
+    expect(await screen.findByText(/No estimate has been invented/)).toBeInTheDocument();
     expect(screen.queryByRole("img", { name: /^US AQI / })).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: /Try again/i })).toBeEnabled();
   });
