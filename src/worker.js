@@ -2,7 +2,7 @@
 const MODEL = "@cf/meta/llama-3.1-8b-instruct-fast";
 const headers = {"content-type":"application/json; charset=utf-8","cache-control":"no-store","x-content-type-options":"nosniff"};
 const json = (data, status=200) => new Response(JSON.stringify(data),{status,headers});
-const number = (value) => {const n=Number(value);return Number.isFinite(n)?n:null;};
+const number = (value) => {if(value===null||value===undefined||value==="")return null;const n=Number(value);return Number.isFinite(n)?n:null;};
 const safe = (value, length=120) => String(value == null ? "" : value).trim().slice(0,length);
 export function aqiInfo(aqi) {
   if (aqi == null || !Number.isFinite(Number(aqi))) return {name:"Unavailable",tone:"unknown",message:"Live data is unavailable. Check local official alerts."};
