@@ -8,7 +8,7 @@ A location-aware air-quality companion for families and communities during urban
 - Daily routine cards adapt to the air, household sensitive groups, commute and HEPA filtration.
 - Clearly separates **personal exposure reduction** from **pollution/emissions reduction**, with qualitative rather than made-up savings.
 - Real text generation with **Cloudflare Workers AI** when the AI binding is configured; explicitly labeled rule-based fallback otherwise.
-- Browser-local preferences and habit checklists; no third-party analytics, account system, or backend profile database.
+- Browser-local preferences and habit checklists; no third-party analytics, account system, or backend profile database. Selected city, current AQI and household preferences are sent to Cloudflare Workers AI when a user asks a chat question.
 - Responsive, keyboard-friendly UI with reduced-motion support.
 
 ## Development
@@ -18,7 +18,7 @@ Requires Node.js 20+ for the dependency-free build and tests.
     npm run test
     npm run build
 
-The build embeds HTML/CSS/client JavaScript from public/ into a **single** deployable ES module at dist/worker.js. Deploy that module as a Cloudflare Worker and attach a Workers AI binding named **AI**. The Worker uses the model @cf/meta/llama-3.1-8b-instruct-fast.
+The build embeds HTML/CSS/client JavaScript from public/ into a **single** deployable ES module at dist/worker.js. Deploy that module as a Cloudflare Worker and attach a Workers AI binding named **AI**. The Worker uses the model @cf/google/gemma-4-26b-a4b-it.
 
 **Cloudflare deployment:** Create a Worker named clearskies-ai in your intended Cloudflare account, upload dist/worker.js as the main module, add a Workers AI binding with variable name AI, and enable a workers.dev route. The app routes itself; no additional static hosting or environment secrets are needed. Cloudflare usage limits and Workers AI billing depend on the account plan.
 
