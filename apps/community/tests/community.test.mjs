@@ -71,6 +71,8 @@ test("D1 session, report privacy, human moderation, deletion and request validat
   assert.equal(removed.body.deleted,true);
   const after=await response(env,"/reports?city=Bengaluru");
   assert.deepEqual(after.body.reports,[]);
+  assert.equal(sqlite.prepare("SELECT COUNT(*) AS n FROM community_reports WHERE id=?").get(report.body.id).n,0,
+    "User removal must delete stored report content rather than merely hiding it");
   sqlite.close();
 });
 test("Challenges are joined and deduplicated once per calendar date",async()=>{
@@ -120,5 +122,19 @@ test("D1 report per-session daily rate cap and PII screening",async()=>{
   assert.equal((await response(env,"/reports","POST",body,token)).status,429);
   const second=(await response(env,"/session","POST")).body.token;
   assert.equal((await response(env,"/reports","POST",{...body,description:"Call my phone at +91 98765 43210 for more details."},second)).status,422);
+  sqlite.close();
+});
+
+test("Daily challenge date follows India local day, not UTC midnight", async()=>{
+  const {sqlite,env}=environment();
+  const token=(await response(env,"/session","POST")).body.token;
+  await response(env,"/challenges/smoke-free-home/join","POST",undefined,token);
+  await response(env,"/challenges/smoke-free-home/checkin","POST",undefined,token);
+  const row=sqlite.prepare("SELECT day FROM challenge_checkins").get();
+  const parts=new Intl.DateTimeFormat("en-GB",{
+    timeZone:"Asia/Kolkata",year:"numeric",month:"2-digit",day:"2-digit"
+  }).formatToParts(new Date());
+  const get=(type)=>parts.find(item=>item.type===type).value;
+  assert.equal(row.day,[get("year"),get("month"),get("day")].join("-"));
   sqlite.close();
 });

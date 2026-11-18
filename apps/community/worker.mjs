@@ -41,7 +41,15 @@ function respond(data, status, headers) {
 }
 function validationError(message, headers) { return respond({ error: message }, 422, headers); }
 function isoNow() { return new Date().toISOString(); }
-function today() { return new Date().toISOString().slice(0, 10); }
+function today() {
+  // All supported community cities are in India; a local date is essential to
+  // prevent a second or missing "daily" check-in around 05:30 IST.
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Asia/Kolkata", year: "numeric", month: "2-digit", day: "2-digit",
+  }).formatToParts(new Date());
+  const field = (type) => parts.find((part) => part.type === type)?.value;
+  return [field("year"), field("month"), field("day")].join("-");
+}
 async function digest(value) {
   const data = new TextEncoder().encode(value);
   const hash = await crypto.subtle.digest("SHA-256", data);
@@ -169,7 +177,7 @@ export default {
       if (path.startsWith("/my/reports/") && request.method === "DELETE") {
         const id = path.slice("/my/reports/".length);
         if (!/^[a-f0-9-]{36}$/.test(id)) return validationError("Invalid report id",headers);
-        const result = await env.DB.prepare("UPDATE community_reports SET status='deleted' WHERE id=? AND session_id=? AND status IN ('pending','approved','rejected')")
+        const result = await env.DB.prepare("DELETE FROM community_reports WHERE id=? AND session_id=?")
           .bind(id,sessionId).run();
         return respond({deleted:result.meta.changes === 1},200,headers);
       }

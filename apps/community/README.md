@@ -9,7 +9,7 @@ The Community API uses a **dedicated Cloudflare Worker + D1 database** under the
 - **All reports are pending** until a maintainer manually approves or rejects them. No public API can alter moderation decisions. Run `Moderate one community report (maintainers only)` from GitHub Actions → Run workflow with UUID and decision.
 - Approved reports are publicly displayed for up to 14 days with the warning that they are *unverified community observations, not AQI sensor measurements*.
 - Sessions and submissions have two layers of abuse limits: Cloudflare per-IP rate limit bindings (approximate per location) and D1 per-session counters. No anonymous user can publish directly.
-- Daily challenge participation is self-reported, deduplicated per date and not treated as independently measured emissions impact.
+- Removing your own report now permanently deletes its record from D1. Daily challenge participation is self-reported, deduplicated by India local date and not treated as independently measured emissions impact.
 
 ## Alert delivery
 
