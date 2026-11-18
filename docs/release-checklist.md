@@ -2,10 +2,10 @@
 
 **Acceptance policy:** Every item must be **PASS** with a test artifact or reproducible manual evidence before the project is called demo-ready or production-ready. **PENDING** means it has not yet been verified. **BLOCKED** means an external prerequisite prevents completion. Architecture docs, source files or passing unit tests alone do **not** count as end-to-end success.
 
-Progress updated: 2026-11-18. Milestone 2 database schema, Milestone 3 FastAPI environmental endpoints and Milestone 4 React dashboard pass automated CI. The original ClearSkies Worker is publicly live. The React/FastAPI stack is developed and tested but **not yet publicly deployed or connected to a production database**. Authentication, community mode, real-user trials and final deployment remain pending.
+Progress updated: 2026-11-18. Milestones 2–4 passed CI. The React frontend is live at https://winter-smog-web.1nc24cs197.workers.dev/ and FastAPI/Uvicorn is live on Render; environmental data was independently verified. Milestone 5 planner is being added with browser-only persistence and tested separately. The existing legacy ClearSkies worker is preserved. The PostgreSQL schema is tested but not linked to a production account system; authentication, community functions, full RAG, mobile, device/accessibility audits and final release gates remain pending.
 
 ## 1. Functionality
-- [ ] PENDING — Daily briefing implemented and React-tested in Milestone 4; full planner, chat, alerts and community workflow end-to-end remain pending
+- [ ] PENDING — Daily briefing is tested; Milestone 5 seven-day planner, rescheduling and local storage implemented with automated tests; chat, alerts, community and complete user acceptance remain pending
 - [ ] PENDING — City selection, household categories, home types and budget guidance implemented; real-world multi-location/budget manual validation pending
 - [ ] PENDING — FastAPI invalid location, offline, high-AQI tests and React offline-state tests pass; full browser/offline E2E pending
 - [ ] PENDING — AQI/weather/LLM outage fallback tested end to end
@@ -31,7 +31,7 @@ Progress updated: 2026-11-18. Milestone 2 database schema, Milestone 3 FastAPI e
 - [ ] PENDING — .env ignored, .env.example present for every app
 - [ ] PENDING — Input validation, XSS, injection and bad-URL test cases
 - [ ] PENDING — Login/logout, token verification and tenant isolation end-to-end
-- [ ] PENDING — HTTPS configuration and authentication verified for the final React/FastAPI production deployment (existing prototype has HTTPS)
+- [ ] PENDING — React and FastAPI HTTPS preview is publicly accessible; production auth, user data isolation and full security audit remain pending
 - [ ] PENDING — npm audit, pip-audit and dependency update review
 - [ ] PENDING — Generic error responses without stack trace leakage
 
@@ -62,7 +62,7 @@ Progress updated: 2026-11-18. Milestone 2 database schema, Milestone 3 FastAPI e
 - [ ] PENDING — Defect tracker, severity and fix evidence
 
 ## 9. Deployment
-- [ ] PENDING — Final React/FastAPI site deployed and verified on Cloudflare account c37eaec570d5c0261dd4b3fdf8764ce4 (existing ClearSkies preview is verified live)
+- [ ] PENDING — React dashboard is deployed on Cloudflare account c37eaec570d5c0261dd4b3fdf8764ce4 and FastAPI on Render; production-level auth, storage, E2E monitoring and final deployment gate still pending
 - [ ] PENDING — Production environment/secrets validation
 - [ ] PENDING — PostgreSQL encrypted backup/restore drill
 - [ ] PENDING — Logs, sanitized metrics, tracing and error alerts
@@ -103,4 +103,4 @@ Progress updated: 2026-11-18. Milestone 2 database schema, Milestone 3 FastAPI e
 | Legacy ClearSkies preview | https://clearskies-ai.1nc24cs197.workers.dev/ | PASS: homepage, health, city search and modelled air API independently verified |
 | Phase 3 FastAPI public environmental API | https://github.com/shivamani0426/virtual_prompts/actions/runs/44317021168 | PASS: 18 total PostgreSQL/API tests, including geocoding, weather, validation, 12-minute TTL, stale/error handling, rate limiting and migration roundtrip |
 | Phase 4 React dashboard | https://github.com/shivamani0426/virtual_prompts/actions/runs/44320757262 | PASS: first React TypeScript build, component/unit tests, ESLint; final opt-in regression rerun pending |
-| New React/FastAPI deployment | Not yet deployed | PENDING |
+| React + FastAPI deployment (Milestone 4 preview) | https://winter-smog-web.1nc24cs197.workers.dev/ and https://winter-smog-fastapi.onrender.com/api/v1/health | PASS: live frontend and public health/AQI/weather endpoints individually verified; later full E2E production acceptance PENDING |\n| Milestone 5 planner and guidance | feature branch feat/milestone-05-routine-planner | PENDING: CI + production browser smoke checks before marking released |
