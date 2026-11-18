@@ -2,7 +2,7 @@
 
 **Acceptance policy:** Every item must be **PASS** with a test artifact or reproducible manual evidence before the project is called demo-ready or production-ready. **PENDING** means it has not yet been verified. **BLOCKED** means an external prerequisite prevents completion. Architecture docs, source files or passing unit tests alone do **not** count as end-to-end success.
 
-Progress updated: 2026-11-18. Phase 2 database schema and migration are verified in GitHub CI; existing ClearSkies Worker remains a separate prototype. The legacy ClearSkies preview is deployed and accessible, but the new React/FastAPI product is not deployed. Production authentication is pending.
+Progress updated: 2026-11-18. Phase 2 PostgreSQL schema and Phase 3 read-only FastAPI environmental API pass automated GitHub CI. The existing ClearSkies Worker is the deployed public preview; new React/FastAPI code is not yet deployed. The legacy ClearSkies preview is deployed and accessible, but the new React/FastAPI product is not deployed. Production authentication is pending.
 
 ## 1. Functionality
 - [ ] PENDING — Personalized daily briefing, planner, chat, alerts and community workflow end-to-end
@@ -36,7 +36,7 @@ Progress updated: 2026-11-18. Phase 2 database schema and migration are verified
 - [ ] PENDING — Generic error responses without stack trace leakage
 
 ## 5. Efficiency and performance
-- [ ] PENDING — 12-minute per-process AQI/weather TTL unit tested in Phase 3; shared distributed cache pending
+- [ ] PENDING — 12-minute per-process AQI/weather TTL unit **PASS** in Phase 3; shared distributed production cache still pending
 - [ ] PENDING — Lighthouse on actual deployment, realistic network profiles
 - [ ] PENDING — Database EXPLAIN ANALYZE on seeded production-like data
 - [ ] PENDING — Memory/leak/API dedupe tests
@@ -100,4 +100,4 @@ Progress updated: 2026-11-18. Phase 2 database schema and migration are verified
 | Phase 2 schema | apps/api/alembic/versions/0001_winter_smog.py; PostgreSQL CI on 2026-11-18 | PASS: migration up/down/up and 22 tables |
 | Phase 2 isolation helpers | apps/api/app/db/access.py; apps/api/tests/test_schema.py | PASS: database-level membership helper tests, **not** proof of API-wide authorization |
 | Legacy prototype | Existing JavaScript CI | Not evidence for React/FastAPI end-to-end acceptance |
-| Legacy ClearSkies preview | https://clearskies-ai.1nc24cs197.workers.dev/ | PASS: homepage, health, city search and modelled air API independently verified |\n| New React/FastAPI deployment | Not yet deployed | PENDING |
+| Legacy ClearSkies preview | https://clearskies-ai.1nc24cs197.workers.dev/ | PASS: homepage, health, city search and modelled air API independently verified |\n| Phase 3 FastAPI public environmental API | https://github.com/shivamani0426/virtual_prompts/actions/runs/44317021168 | PASS: 18 total PostgreSQL/API tests, including geocoding, weather, validation, 12-minute TTL, stale/error handling, rate limiting and migration roundtrip |\n| New React/FastAPI deployment | Not yet deployed | PENDING |
