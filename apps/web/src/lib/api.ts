@@ -75,3 +75,60 @@ export async function searchCities(query: string, signal?: AbortSignal): Promise
       : [],
   };
 }
+
+
+export type AssistantCitation = {
+  id: string;
+  publisher: string;
+  title: string;
+  url: string;
+  section: string;
+  published: string;
+  verified: string;
+};
+
+export type AssistantAnswer = {
+  mode: "generated" | "evidence_only" | "abstained" | "urgent_safety";
+  answer: string;
+  citations: AssistantCitation[];
+  limitations: string[];
+  disclaimer: string;
+  registry_version: string;
+  live_data_used: false;
+};
+
+export async function askEvidenceAssistant(
+  question: string,
+  signal?: AbortSignal,
+): Promise<AssistantAnswer> {
+  const value = question.trim();
+  if (value.length < 5 || value.length > 400) {
+    throw new Error("Ask a question between 5 and 400 characters.");
+  }
+  const response = await fetch(API_BASE + "/api/v1/assistant", {
+    method: "POST",
+    signal,
+    headers: { Accept: "application/json", "Content-Type": "application/json" },
+    body: JSON.stringify({ question: value }),
+  });
+  if (!response.ok) {
+    throw new ApiError(
+      response.status,
+      response.status === 429
+        ? "The assistant is busy. Try again in a minute."
+        : "Evidence assistant is temporarily unavailable. Please try again.",
+    );
+  }
+  const data: unknown = await response.json();
+  if (!data || typeof data !== "object") {
+    throw new Error("Assistant returned an invalid response.");
+  }
+  const answer = data as Partial<AssistantAnswer>;
+  if (!["generated", "evidence_only", "abstained", "urgent_safety"].includes(answer.mode || "") ||
+      typeof answer.answer !== "string" || answer.answer.length > 1800 ||
+      !Array.isArray(answer.citations) || !Array.isArray(answer.limitations) ||
+      answer.live_data_used !== false) {
+    throw new Error("Assistant returned an invalid or unsupported response.");
+  }
+  return answer as AssistantAnswer;
+}
