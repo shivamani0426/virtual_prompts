@@ -102,4 +102,5 @@ Progress updated: 2026-11-18. Milestone 2 database schema, Milestone 3 FastAPI e
 | Legacy prototype | Existing JavaScript CI | Not evidence for React/FastAPI end-to-end acceptance |
 | Legacy ClearSkies preview | https://clearskies-ai.1nc24cs197.workers.dev/ | PASS: homepage, health, city search and modelled air API independently verified |
 | Phase 3 FastAPI public environmental API | https://github.com/shivamani0426/virtual_prompts/actions/runs/44317021168 | PASS: 18 total PostgreSQL/API tests, including geocoding, weather, validation, 12-minute TTL, stale/error handling, rate limiting and migration roundtrip |
-| Phase 4 React dashboard | https://github.com/shivamani0426/virtual_prompts/actions/runs/44320757262 | PASS: first React TypeScript build, component/unit tests, ESLint; final opt-in regression rerun pending |\n| New React/FastAPI deployment | Not yet deployed | PENDING |
+| Phase 4 React dashboard | https://github.com/shivamani0426/virtual_prompts/actions/runs/44320757262 | PASS: first React TypeScript build, component/unit tests, ESLint; final opt-in regression rerun pending |
+| New React/FastAPI deployment | Not yet deployed | PENDING |
