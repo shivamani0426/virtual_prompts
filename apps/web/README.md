@@ -1,4 +1,4 @@
-# Winter Smog Assistant — React Dashboard (Milestones 4–5)
+# Winter Smog Assistant — React Dashboard (Milestones 4–7)
 
 An accessible, mobile-responsive React/TypeScript/Vite interface for the new **Python FastAPI backend**. Production frontend: [Winter Smog Assistant](https://winter-smog-web.1nc24cs197.workers.dev/), deployed separately from the original [ClearSkies AI preview](https://clearskies-ai.1nc24cs197.workers.dev/). The public FastAPI API is hosted at [winter-smog-fastapi.onrender.com](https://winter-smog-fastapi.onrender.com/api/v1/health). The original ClearSkies Worker is unchanged.
 
@@ -45,6 +45,8 @@ The frontend does not include any API keys. `VITE_API_BASE_URL` can point at the
 - Deterministic personalized advice for children, older adults and breathing sensitivities plus commute and indoor-air tips.
 - Browser-local opt-in household preferences, including home and budget category (no sensitive details sent to FastAPI or an LLM).
 - Loading/error/empty/stale states, cancellation of outdated requests, data source attribution, reduced-motion styling.
+- **Milestone 6:** Cited WHO/CPCB assistant with source validation, prompt-injection/medical refusal, evidence-only fallback and optional AI paraphrasing. Each question is independent and transient; the assistant does not know today's AQI from chat alone.
+- **Milestone 7:** Honest impact tracking: category completion totals, seven-day history, active-day streak and six reversible achievement badges; no fabricated kg CO₂ or health savings.
 - **Milestone 5:** Monday–Sunday seven-day routine planner (21 tasks total), with activity categories for personal exposure precautions, low-emission travel and indoor-air habits.
 - Mark activities complete/skip/undo; reschedule activities inside the current week; track total completion and reset the week after a confirmation step.
 - **Persistent browser-local habit progress:** completion and rescheduling stored using a versioned bounded localStorage record. Task identities are date/category-based and remain stable when AQI and preferences change.
@@ -75,7 +77,7 @@ References: [FastAPI API contract](../../docs/api-contracts.md), [project releas
 5. Read **Low-emission choices** and **Indoor air** for explanations of benefits and limitations, then review the official alerts relevant to your area.
 6. To clear local planner records manually: open browser developer tools → Application/Storage → Local Storage and remove `winter-smog:routines-v1`. The dashboard's Reset week button clears the currently displayed week only.
 
-The planner does **not** save city, modelled AQI, health flags, or identity in routine storage; it stores only completion and date changes. It is browser-local, not encrypted, and other users of a shared browser profile could see the activity history.
+The assistant does not store chat history, health flags, exact coordinates or identity. Entering personally identifiable medical details is discouraged because generation may be sent to Cloudflare Workers AI. The planner does **not** save city, modelled AQI, health flags, or identity in routine storage; it stores only completion and date changes. It is browser-local, not encrypted, and other users of a shared browser profile could see the activity history.
 
 ## Tests
 
@@ -88,3 +90,20 @@ npm run lint
 ```
 
 Automated tests cover calendar boundaries, stable task identities as AQI changes, high AQI / missing AQI advice, budget and home variations, persistence after remount, skip/reschedule/undo/reset, malformed storage and failure handling. Real-device, screen-reader, production smoke testing and household usability tests remain separate acceptance requirements.
+
+## Milestone 6 and 7 validation
+
+Source registry: `apps/api/app/knowledge/verified_sources.json`, editorial version `2026-11-18.1`, comprising curated official WHO and CPCB summary passages. Each answer shows original source URLs plus publication/review dates. The model may never invent citations. The retrieval is curated keyword-based retrieval, not an exhaustive search or automatic verification that an official page has not changed. See [RAG evidence and release policy](../../docs/rag-evidence-policy.md).
+
+Try these in the live **Evidence AI assistant**: `What does WHO recommend for PM2.5?`, `How does India's CPCB AQI differ from US AQI?`, and `What makes indoor air less polluted?`. Unsupported questions should abstain; urgent symptoms trigger emergency guidance instead of diagnosis. The model has explicit costs and rate limits; generation can be disabled without preventing reviewed-source answers.
+
+**Impact & badges** shows completion counts based on the local routine task status. Undoing or resetting a completed task revokes earned badge status immediately. Current streak counts consecutive dates with at least one self-reported completion, anchored on today or yesterday. Old activity history is pruned on subsequent saves after approximately 90 days. Badges are not independent evidence that any real-world action occurred.
+
+```bash
+cd apps/web
+npm run build && npm test && npm run lint
+cd ../api
+pytest -q
+```
+
+Do not call this entire application clinically verified or fully production ready: WHO/CPCB content must undergo editorial revalidation, hallucination/entailment and prompt-injection reviews, and model billing safeguards and multi-device/end-to-end testing remain open.

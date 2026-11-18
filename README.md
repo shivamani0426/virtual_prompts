@@ -52,12 +52,18 @@ Open-Meteo sources and CAMS attribution are shown in the application footer; rev
 - scripts/build.mjs — single-module bundling
 - tests/guidance.test.mjs — basic validation tests
 
-## Winter Smog Assistant (separate React + FastAPI application)
+## Winter Smog Assistant — React + FastAPI application
 
 **Live React dashboard:** https://winter-smog-web.1nc24cs197.workers.dev/
 
-**Live FastAPI (Uvicorn):** https://winter-smog-fastapi.onrender.com/api/v1/health
+**Live Python FastAPI/Uvicorn:** https://winter-smog-fastapi.onrender.com/api/v1/health
 
-The new [React + TypeScript dashboard](apps/web/) and [FastAPI + PostgreSQL schema](apps/api/) are separate from the legacy ClearSkies Worker. Milestone 4 introduced location-aware modelled US AQI, weather and forecasts; Milestone 5 adds a **Monday–Sunday, 21-activity weekly planner**, done/skip/undo/rescheduling, browser-local persistence, safer AQI-adapted routine advice, low-emission alternatives and a practical indoor-air guide. See [apps/web/README.md](apps/web/README.md) for run and verification instructions.
+This frontend lives in [apps/web/](apps/web/) and the Python backend with tested PostgreSQL schema in [apps/api/](apps/api/). The original `clearskies-ai` Worker is a separate preserved prototype. The dashboard includes location-aware **modelled US AQI** (not official India CPCB AQI), weather, forecasts, personalized daily briefings, a 21-activity weekly routine planner, indoor-air and low-emission recommendations.
 
-Deployment: the React Worker updates from `main` through `.github/workflows/deploy-react.yml` (tests, lint and build before deployment); feature branches do not modify the live site. The older `clearskies-ai` Worker remains intact. No planner data is sent to the Python API or stored in PostgreSQL yet; secure accounts and cloud synchronization are later milestones. Official CPCB AQI is **not** provided: values are modelled **US AQI**. See [docs/api-contracts.md](docs/api-contracts.md) and [docs/release-checklist.md](docs/release-checklist.md) before claiming production readiness.
+**Milestone 6 — cited WHO/CPCB assistant:** A stateless `POST /api/v1/assistant` endpoint retrieves from a **fixed, 13-passage reviewed source registry**, refuses unsupported or medical/live-diagnosis requests and supplies official cited sources with publication and verification dates. Inference through a separate metered Cloudflare Workers AI gateway can paraphrase these references only when enabled and must pass a validation gate; otherwise reviewed-source summaries are shown. This is not unrestricted web browsing or a guarantee of clinical factual accuracy.
+
+**Milestone 7 — truthful impact tracking and badges:** 90-day browser-local activity totals, day streak, category counts and six reversible achievement badges. This tracks **self-reported completed tasks**, not measured CO₂ savings, changes in air quality or prevented disease. No account/cloud synchronization yet.
+
+Read [apps/web/README.md](apps/web/README.md), [apps/api/README.md](apps/api/README.md), [docs/rag-evidence-policy.md](docs/rag-evidence-policy.md), [docs/api-contracts.md](docs/api-contracts.md) and the [release checklist](docs/release-checklist.md).
+
+Cloudflare React publishing happens only from `main` via `.github/workflows/deploy-react.yml`. The dedicated model Worker deploys through `.github/workflows/deploy-rag-ai.yml`. The real Python API is hosted on Render. Strong shared rate limits, AI account budget controls, identity, full clinical review and browser accessibility testing remain production readiness gates.

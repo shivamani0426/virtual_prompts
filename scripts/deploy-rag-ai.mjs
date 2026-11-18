@@ -89,8 +89,8 @@ form.set("metadata", new Blob([JSON.stringify({
   compatibility_date:"2026-11-18",
   bindings:[
     {type:"ai",name:"AI"},
-    {type:"ratelimit",name:"USER_RATE",namespace_id:"66061",simple:{limit:5,period:60}},
-    {type:"ratelimit",name:"GLOBAL_RATE",namespace_id:"66062",simple:{limit:30,period:60}},
+    {type:"ratelimit",name:"USER_RATE",namespace_id:"66061",simple:{limit:3,period:60}},
+    {type:"ratelimit",name:"GLOBAL_RATE",namespace_id:"66062",simple:{limit:10,period:60}},
   ],
 })],{type:"application/json"}));
 form.set("worker.js",new Blob([moduleBody],{type:"application/javascript+module"}),"worker.js");
