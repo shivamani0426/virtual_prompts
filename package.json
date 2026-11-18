@@ -1,0 +1,11 @@
+{
+  "name": "clearskies-ai",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Smog and pollution companion powered by Cloudflare Workers AI",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node tests/guidance.test.mjs && node --check src/worker.js && node --check public/app.js"
+  }
+}

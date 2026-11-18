@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f7f8f1">
+  <meta name="description" content="ClearSkies AI helps families make safer air-quality choices, plan daily routines, and reduce pollution with location-aware, practical guidance.">
+  <title>ClearSkies AI — breathe easier, together</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="ClearSkies AI home"><span class="brand-mark"><span>≋</span></span><span>clearskies<span class="brand-dot">.</span><small>YOUR AIR COMPANION</small></span></a>
+      <nav class="top-nav" aria-label="Main navigation"><a class="nav-current" href="#overview">Overview</a><a href="#your-plan">Daily plan</a><a href="#assistant">Ask AI</a><a href="#learn">Learn</a></nav>
+      <div class="top-right"><span class="live-dot" aria-hidden="true"></span><span>Made for clearer days</span></div>
+    </header>
+    <main>
+      <section class="intro" id="overview">
+        <div class="intro-copy"><span class="eyebrow"><span class="eyebrow-dot"></span> AIR QUALITY, MADE HUMAN</span><h1>Make room for<br><em>better breathing.</em></h1><p>A little clarity goes a long way. Understand your city's air, protect the people you love, and make small choices that add up.</p></div>
+        <div class="intro-art" aria-hidden="true"><div class="art-sun"></div><div class="art-hill art-hill-back"></div><div class="art-hill art-hill-front"></div><div class="art-cloud cloud-one"></div><div class="art-cloud cloud-two"></div><span class="art-caption">A CLEARER OUTLOOK, TOGETHER ✳</span></div>
+      </section>
+      <section class="location-bar" aria-label="Your area">
+        <div class="location-group"><span class="location-icon">⌖</span><div><span class="field-mini">YOUR LOCATION</span><strong id="current-city">Delhi, India <span class="sample-pill">Example</span></strong></div></div>
+        <div class="search-wrap"><label class="sr-only" for="city-search">Search for your city</label><input id="city-search" autocomplete="off" placeholder="Search another city..." maxlength="75"><button id="find-city" type="button" class="search-button">Find city <span aria-hidden="true">↗</span></button><div id="city-results" class="city-results" role="listbox" hidden></div></div>
+        <button class="location-button" id="use-location" type="button" title="Use my approximate browser location">◎ <span>Use my location</span></button>
+      </section>
+      <div id="global-message" class="notice" role="status" hidden></div>
+      <section class="dashboard-grid" aria-label="Air quality dashboard">
+        <article class="aqi-card">
+          <div class="card-head light-head"><span>LIVE AIR OUTLOOK</span><span class="data-status" id="source-tag">● Connecting</span></div>
+          <div class="aqi-content"><div class="aqi-number" id="aqi-number">—</div><div class="aqi-descriptor"><span>US AIR QUALITY INDEX</span><h2 id="aqi-label">Loading air quality</h2><p id="aqi-message">Getting the latest modelled forecast for your area.</p></div></div>
+          <div class="aqi-meter" aria-hidden="true"><div class="aqi-gradient"></div><div class="aqi-pointer" id="aqi-pointer"></div></div>
+          <div class="aqi-footer"><span id="aqi-time">Checking forecast...</span><span>US AQI · model estimate</span></div>
+        </article>
+        <article class="forecast-card white-card">
+          <div class="card-head"><span>THE NEXT 12 HOURS</span><span class="mini-tag">Forecast</span></div>
+          <div class="forecast-title"><h2>Find your better hours.</h2><p>Pollution can change through the day. Check before you head out.</p></div>
+          <div class="forecast-graph" id="forecast-graph"><div class="empty-graph">Loading hourly forecast…</div></div>
+          <div class="graph-legend"><span><i></i> US AQI forecast</span><span>Lower is better ↓</span></div>
+        </article>
+      </section>
+      <section class="metrics-row" aria-label="Air pollutant readings">
+        <article class="metric"><span class="metric-icon">✦</span><div><span class="metric-label">FINE PARTICLES</span><strong id="pm25">—</strong><small>PM2.5 · µg/m³</small></div></article>
+        <article class="metric"><span class="metric-icon">☁</span><div><span class="metric-label">LARGER PARTICLES</span><strong id="pm10">—</strong><small>PM10 · µg/m³</small></div></article>
+        <article class="metric"><span class="metric-icon">◌</span><div><span class="metric-label">TRAFFIC POLLUTANT</span><strong id="no2">—</strong><small>NO₂ · µg/m³</small></div></article>
+        <article class="metric"><span class="metric-icon">◉</span><div><span class="metric-label">GROUND-LEVEL OZONE</span><strong id="ozone">—</strong><small>O₃ · µg/m³</small></div></article>
+      </section>
+      <section class="plan-section" id="your-plan">
+        <div class="section-intro"><div><span class="section-kicker">01 / PERSONALIZE YOUR DAY</span><h2>A plan that fits <em>your life.</em></h2><p>A few details help us suggest routines that feel realistic for your family.</p></div><span class="section-decoration" aria-hidden="true">✳</span></div>
+        <div class="personalize-card white-card">
+          <fieldset class="people-field"><legend>WHO ARE YOU LOOKING AFTER?</legend><div class="pill-row"><label class="choice-pill"><input type="checkbox" name="people" value="children"><span>👧 &nbsp; Children</span></label><label class="choice-pill"><input type="checkbox" name="people" value="older"><span>👵 &nbsp; Older adults</span></label><label class="choice-pill"><input type="checkbox" name="people" value="respiratory"><span>💚 &nbsp; Sensitive breathing</span></label></div></fieldset>
+          <div class="select-fields"><label>HOW DO YOU USUALLY TRAVEL?<select id="commute"><option value="public">Bus / metro / shared transport</option><option value="car">Personal car</option><option value="bike">Two-wheeler</option><option value="walk">Walk / cycle</option><option value="home">Mostly from home</option></select></label><label>AIR FILTRATION AT HOME<select id="home-filter"><option value="none">No air purifier</option><option value="hepa">HEPA purifier available</option></select></label></div>
+          <div class="profile-bottom"><span>🔒 Preferences stay in this browser, not in an account.</span><button id="refresh-plan" class="small-dark-button" type="button">Refresh my plan ↗</button></div>
+        </div>
+        <div class="plan-heading"><div><h3>Small shifts, big picture.</h3><p>Practical steps for today, personalized to your air and routine.</p></div><span id="plan-status" class="mini-tag">4 suggestions</span></div>
+        <div id="plan-cards" class="plan-grid"></div>
+      </section>
+      <section class="impact-section" aria-label="Your impact tracker">
+        <div class="impact-left"><span class="section-kicker">02 / YOUR EVERYDAY IMPACT</span><h2>Every choice <em>counts.</em></h2><p>Track a few lower-pollution habits. We'll explain what each choice can influence — without pretending to measure emissions or health benefits.</p><div class="impact-progress"><strong id="impact-count">0 / 4</strong><span>habits tried</span><div class="progress-track"><div id="impact-fill"></div></div></div></div>
+        <div class="impact-tasks" id="impact-tasks">
+          <label class="impact-task"><input type="checkbox" data-habit="idling"><span class="fake-check">✓</span><span><b>Skip engine idling</b><small>Can reduce unnecessary exhaust near people.</small></span></label>
+          <label class="impact-task"><input type="checkbox" data-habit="shared"><span class="fake-check">✓</span><span><b>Combine or share a trip</b><small>May reduce vehicle kilometres and emissions.</small></span></label>
+          <label class="impact-task"><input type="checkbox" data-habit="indoor"><span class="fake-check">✓</span><span><b>Swap outdoor exertion on smoggy days</b><small>Can reduce personal exposure, not emissions.</small></span></label>
+          <label class="impact-task"><input type="checkbox" data-habit="clean"><span class="fake-check">✓</span><span><b>Keep smoke out of the home</b><small>Removes an avoidable source of indoor pollution.</small></span></label>
+        </div>
+      </section>
+      <section class="assistant-section" id="assistant">
+        <div class="assistant-copy"><span class="section-kicker">03 / HERE WHEN YOU NEED US</span><h2>Questions about the air?<br><em>Just ask.</em></h2><p>From school runs to cooking and commuting, get plain-language guidance shaped by your city's conditions and household needs.</p><div class="assistant-bubble">✦ <span>Powered by Cloudflare Workers AI when configured</span></div></div>
+        <div class="chat-card"><div class="chat-top"><div class="chat-avatar">✳</div><div><b>ClearSkies Assistant</b><span>Everyday air-quality advice</span></div><span class="ai-status" id="ai-mode">Ready to help</span></div><div class="chat-messages" id="chat-messages" aria-live="polite"><div class="chat-msg bot"><span class="message-icon">✳</span><p>Hi there! I'm here to help your family make sense of the air. Ask me about school runs, indoor air, commuting, or little things that make a difference. 🌱</p></div></div><div class="chat-suggestions"><button type="button" class="prompt-chip">Is it safe for kids to play outside?</button><button type="button" class="prompt-chip">How can I make my room cleaner?</button></div><form id="chat-form" class="chat-input-row"><label class="sr-only" for="chat-input">Ask an air-quality question</label><input id="chat-input" maxlength="800" placeholder="Ask anything about your air..." required><button id="chat-send" type="submit" aria-label="Send message">↗</button></form><small class="chat-disclaimer">Guidance is informational, not medical advice. Real AI replies require the Workers AI binding.</small></div>
+      </section>
+      <section class="learn-section" id="learn"><div><span class="section-kicker">GOOD TO KNOW</span><h2>Better air starts<br>with <em>better knowledge.</em></h2></div><div class="learn-grid"><article><span>01</span><h3>Exposure ≠ emissions</h3><p>A mask or purifier may lower what you breathe. A shared ride can reduce emissions. Both matter, in different ways.</p></article><article><span>02</span><h3>Model, not a sensor</h3><p>Forecasts estimate broad-area conditions. Local streets, traffic and indoor air may differ significantly.</p></article><article><span>03</span><h3>Stay prepared</h3><p>Use official local air-quality alerts, avoid indoor smoke, and seek medical care for serious symptoms.</p></article></div></section>
+    </main>
+    <footer><div class="footer-brand"><b>clearskies.</b><span>Let's make the next breath a little easier.</span></div><div class="foot-right">Data: <a href="https://open-meteo.com/en/docs/air-quality-api" target="_blank" rel="noopener noreferrer">Open-Meteo / CAMS</a> · <a href="https://www.airnow.gov/aqi/aqi-basics/" target="_blank" rel="noopener noreferrer">US AQI basics</a><span>Forecast data is modelled. Not an official alert service.</span></div></footer>
+  </div>
+</body>
+</html>

@@ -1,0 +1,14 @@
+import assert from "node:assert/strict";
+import { aqiInfo, localGuidance } from "../src/worker.js";
+assert.equal(aqiInfo(20).name,"Good");
+assert.equal(aqiInfo(100).name,"Moderate");
+assert.equal(aqiInfo(150).name,"Unhealthy for sensitive groups");
+assert.equal(aqiInfo(151).name,"Unhealthy");
+assert.equal(aqiInfo(260).name,"Very unhealthy");
+assert.equal(aqiInfo(320).name,"Hazardous");
+assert.equal(aqiInfo(null).name,"Unavailable");
+const tips=localGuidance({people:["children"],commute:"car"},180);
+assert.ok(tips.length>=4);
+assert.match(tips[0].title,/sensitive/i);
+assert.match(tips.some(t=>/idling/.test(t.detail))?"yes":"no",/yes/);
+console.log("All 9 ClearSkies guidance tests passed");
