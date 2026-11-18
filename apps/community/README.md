@@ -28,4 +28,4 @@ COMMUNITY_DRY_RUN=1 node scripts/deploy-community.mjs
 
 ## Known limits
 
-No account login, no community photos or user-location history, no abuse appeal queue yet, no scheduled push delivery, no retention janitor yet. These must be completed during release hardening, and an actual moderator must review test reports before public posts can appear.
+No account login, no community photos or user-location history, no abuse appeal queue yet, no scheduled push delivery. The `Daily community privacy retention` workflow now prunes report records after 14 days, expired pseudonymous sessions and their linked challenge/alert data, and obsolete rate records (48 hours). It is scheduled via GitHub Actions and may be delayed by GitHub's scheduler. The final release still requires a complete privacy-policy, deletion/export audit and independent moderators. An actual moderator must review test reports before public posts can appear.

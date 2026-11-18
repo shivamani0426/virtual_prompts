@@ -128,3 +128,9 @@ Progress updated: 2026-11-18. Milestones 1–5 are implemented, with the React d
 - Milestone 9 regional languages: 7 UI dictionary options, English fallback. Important safety notes translated, but full copy and evidence **not** independently reviewed in each language.
 - Milestone 9 voice: optional browser speech recognition, web TTS and native Expo TTS; no first-party offline STT engine, no guarantee that a target browser supports a regional recognizer, and no recorded permission/device acceptance matrix.
 - Release blockers retained: cross-device accounts, anti-abuse hardening, mobile signing, native device tests, independent translations, clinical trust reviews, backend push, scheduled alert delivery, monitoring and data privacy/export/deletion policy. These must not be represented as 100% finished.
+
+### Additional data lifecycle checks
+
+- D1 report deletion now executes an actual parameterized `DELETE` (not a hidden `status=deleted` record); integration test asserts the row is absent.
+- Challenge check-in deduplication uses the India local calendar day rather than UTC date.
+- A daily GitHub Actions workflow (`.github/workflows/prune-community.yml`) removes expired reports, pseudonymous sessions and linked progress/alert preferences; new retention SQL is covered with actual SQLite tests in `apps/community/tests/retention.test.mjs`. Scheduled job execution in the live Cloudflare account is still pending first deployment.
