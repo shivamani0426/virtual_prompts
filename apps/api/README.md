@@ -66,3 +66,7 @@ Responses include `freshness` (`live`, `cached`, or `stale`) and `fetched_at` (U
 - See `../../docs/api-contracts.md` for the response contract and `../../docs/release-checklist.md` for full launch readiness.
 
 External provider documentation and attribution: https://open-meteo.com/en/docs/air-quality-api and https://open-meteo.com/en/docs . Check terms and fair-use provisions before commercial deployment.
+
+### Environment-specific upstream fallback (production preview)
+
+If the Render free instance cannot access Open-Meteo air and weather endpoints directly, set `OPEN_METEO_RELAY_ENABLED=1` on the FastAPI host. The adapter then tries the fixed-host, read-only `winter-smog-relay.1nc24cs197.workers.dev` Cloudflare Worker **only after a direct provider request fails**. The relay forwards approximate coordinates (two decimals) to Open-Meteo, caches the provider request at Cloudflare for ten minutes and returns unmodified provider JSON. Python still normalizes and validates all readings. If both providers fail, the endpoint returns 503 without fabricated values. This relay is an availability workaround for the preview, not a substitute for a production provider SLA, rate-limit controls and user consent.

@@ -233,3 +233,74 @@ def test_settings_enforce_cache_and_cors(monkeypatch):
     settings = Settings.from_env()
     assert settings.cache_ttl_seconds == 600
     assert settings.allowed_origins == ("https://example.org",)
+
+
+def test_environmental_relay_used_only_after_primary_failure(monkeypatch):
+    monkeypatch.setenv("OPEN_METEO_RELAY_ENABLED", "1")
+    visited = []
+
+    def handler(request):
+        visited.append(request.url.host)
+        if request.url.host == "air-quality-api.open-meteo.com":
+            return httpx.Response(503, json={"error": "temporary"})
+        if request.url.host == "winter-smog-relay.1nc24cs197.workers.dev":
+            assert request.url.path == "/air"
+            assert request.url.params.get("lat") == "12.97"
+            return httpx.Response(200, json=air_payload(aqi=128))
+        return httpx.Response(404)
+
+    client, _ = make_client(handler)
+    with client:
+        response = client.get("/api/v1/air-quality?lat=12.97&lon=77.59")
+    assert response.status_code == 200
+    assert response.json()["current"]["us_aqi"] == 128
+    assert response.json()["source"] == "Open-Meteo / CAMS"
+    assert visited == [
+        "air-quality-api.open-meteo.com",
+        "winter-smog-relay.1nc24cs197.workers.dev",
+    ]
+
+
+def test_weather_relay_does_not_invent_values(monkeypatch):
+    monkeypatch.setenv("OPEN_METEO_RELAY_ENABLED", "1")
+    visited = []
+
+    def handler(request):
+        visited.append(request.url.host)
+        if request.url.host == "api.open-meteo.com":
+            return httpx.Response(503)
+        return httpx.Response(
+            200,
+            json={
+                "timezone": "Asia/Kolkata",
+                "current": {
+                    "time": "2026-11-18T21:30",
+                    "temperature_2m": 21.7,
+                    "relative_humidity_2m": 48,
+                    "wind_speed_10m": 9.1,
+                },
+            },
+        )
+
+    client, _ = make_client(handler)
+    with client:
+        result = client.get("/api/v1/weather?lat=12.97&lon=77.59")
+    assert result.status_code == 200
+    assert result.json()["temperature_c"] == 21.7
+    assert visited == [
+        "api.open-meteo.com",
+        "winter-smog-relay.1nc24cs197.workers.dev",
+    ]
+
+
+def test_relay_failure_preserves_unavailable_state(monkeypatch):
+    monkeypatch.setenv("OPEN_METEO_RELAY_ENABLED", "1")
+
+    def handler(_request):
+        return httpx.Response(503, json={"error": "upstream failed"})
+
+    client, _ = make_client(handler)
+    with client:
+        result = client.get("/api/v1/air-quality?lat=12.97&lon=77.59")
+    assert result.status_code == 503
+    assert "current" not in result.json()

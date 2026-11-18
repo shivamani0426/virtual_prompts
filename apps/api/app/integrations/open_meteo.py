@@ -1,5 +1,6 @@
 """Async adapters for Open-Meteo's modelled air quality and weather feeds."""
 
+import os
 import httpx
 
 
@@ -23,7 +24,32 @@ class OpenMeteoAdapter:
             if not isinstance(payload, dict) or payload.get("error"):
                 raise ProviderUnavailable("Invalid provider response")
             return payload
-        except (httpx.HTTPError, ValueError, TypeError) as exc:
+        except (ProviderUnavailable, httpx.HTTPError, ValueError, TypeError) as exc:
+            kind = (
+                "air" if url == self.AIR_URL else
+                "weather" if url == self.WEATHER_URL else None
+            )
+            if not kind or os.getenv("OPEN_METEO_RELAY_ENABLED") != "1":
+                raise ProviderUnavailable("Environmental provider unavailable") from exc
+            return await self._from_relay(kind, params)
+
+    async def _from_relay(self, kind: str, params: dict[str, object]) -> dict:
+        """Fixed-origin Cloudflare fallback; does not accept arbitrary URLs."""
+        if kind not in ("air", "weather"):
+            raise ProviderUnavailable("Unknown environmental data source")
+        relay = "https://winter-smog-relay.1nc24cs197.workers.dev/" + kind
+        coords = {
+            "lat": round(float(params["latitude"]), 2),
+            "lon": round(float(params["longitude"]), 2),
+        }
+        try:
+            response = await self.client.get(relay, params=coords)
+            response.raise_for_status()
+            payload = response.json()
+            if not isinstance(payload, dict) or payload.get("error"):
+                raise ProviderUnavailable("Fallback data unavailable")
+            return payload
+        except (ProviderUnavailable, httpx.HTTPError, ValueError, TypeError) as exc:
             raise ProviderUnavailable("Environmental provider unavailable") from exc
 
     async def air(self, latitude: float, longitude: float) -> dict:
