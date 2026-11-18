@@ -88,6 +88,14 @@ def test_invalid_preference_budget_rejected(session):
         session.flush()
 
 
+def test_check_constraints_have_stable_names(engine):
+    names = {
+        item["name"]
+        for item in sa.inspect(engine).get_check_constraints("household_preferences")
+    }
+    assert "ck_household_preferences_rule_1" in names
+
+
 def test_no_fake_percent_savings_column():
     impact = Base.metadata.tables["impact_events"]
     assert "estimated_kg_co2e" in impact.c

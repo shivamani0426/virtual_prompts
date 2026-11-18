@@ -3,3 +3,15 @@ dist/
 .env
 .dev.vars
 .DS_Store
+
+# Python build artifacts and local secrets
+.venv/
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.pyc
+.coverage
+*.egg-info/
+.env.*
+!.env.example

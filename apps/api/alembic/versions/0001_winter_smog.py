@@ -34,8 +34,8 @@ def upgrade() -> None:
         sa.Column('longitude_approx', sa.Numeric(6, 2), nullable=False),
         sa.Column('timezone', sa.String(64), nullable=False),
         sa.Column('created_at', sa.DateTime(timezone=True), nullable=False, server_default=sa.text('CURRENT_TIMESTAMP')),
-        sa.CheckConstraint("latitude_approx BETWEEN -90 AND 90", name='ck_locations_rule_1'),
-        sa.CheckConstraint("longitude_approx BETWEEN -180 AND 180", name='ck_locations_rule_2'),
+        sa.CheckConstraint("latitude_approx BETWEEN -90 AND 90", name='rule_1'),
+        sa.CheckConstraint("longitude_approx BETWEEN -180 AND 180", name='rule_2'),
     )
     op.create_index('ix_locations_1', 'locations', ['country_code', 'place_name'])
 
@@ -55,7 +55,7 @@ def upgrade() -> None:
         sa.Column('user_id', sa.Uuid(as_uuid=True), sa.ForeignKey('users.id', ondelete='CASCADE'), primary_key=True),
         sa.Column('role', sa.String(20), nullable=False, server_default='member'),
         sa.Column('joined_at', sa.DateTime(timezone=True), nullable=False, server_default=sa.text('CURRENT_TIMESTAMP')),
-        sa.CheckConstraint("role IN ('owner','member')", name='ck_household_members_rule_1'),
+        sa.CheckConstraint("role IN ('owner','member')", name='rule_1'),
     )
     op.create_index('ix_household_members_1', 'household_members', ['user_id'])
 
@@ -69,7 +69,7 @@ def upgrade() -> None:
         sa.Column('home_type', sa.String(30), nullable=True),
         sa.Column('budget_band', sa.String(20), nullable=True),
         sa.Column('updated_at', sa.DateTime(timezone=True), nullable=False, server_default=sa.text('CURRENT_TIMESTAMP')),
-        sa.CheckConstraint("budget_band IS NULL OR budget_band IN ('low','medium','high')", name='ck_household_preferences_rule_1'),
+        sa.CheckConstraint("budget_band IS NULL OR budget_band IN ('low','medium','high')", name='rule_1'),
     )
 
     op.create_table(
@@ -85,8 +85,8 @@ def upgrade() -> None:
         sa.Column('observed_at', sa.DateTime(timezone=True), nullable=False),
         sa.Column('fetched_at', sa.DateTime(timezone=True), nullable=False, server_default=sa.text('CURRENT_TIMESTAMP')),
         sa.UniqueConstraint('location_id', 'provider', 'aqi_scale', 'observed_at', name='uq_aqi_snapshots_1'),
-        sa.CheckConstraint("aqi_value IS NULL OR aqi_value >= 0", name='ck_aqi_snapshots_rule_1'),
-        sa.CheckConstraint("aqi_scale IN ('CPCB_INDIA','US_AQI','NONE')", name='ck_aqi_snapshots_rule_2'),
+        sa.CheckConstraint("aqi_value IS NULL OR aqi_value >= 0", name='rule_1'),
+        sa.CheckConstraint("aqi_scale IN ('CPCB_INDIA','US_AQI','NONE')", name='rule_2'),
     )
     op.create_index('ix_aqi_snapshots_1', 'aqi_snapshots', ['location_id', 'observed_at'])
     op.create_index('ix_aqi_snapshots_2', 'aqi_snapshots', ['provider', 'observed_at'])
@@ -124,7 +124,7 @@ def upgrade() -> None:
         sa.Column('category', sa.String(32), nullable=False),
         sa.Column('is_active', sa.Boolean(), nullable=False, server_default=sa.true()),
         sa.Column('created_at', sa.DateTime(timezone=True), nullable=False, server_default=sa.text('CURRENT_TIMESTAMP')),
-        sa.CheckConstraint("category IN ('commute','cooking','heating','indoor_air','other')", name='ck_routines_rule_1'),
+        sa.CheckConstraint("category IN ('commute','cooking','heating','indoor_air','other')", name='rule_1'),
     )
     op.create_index('ix_routines_1', 'routines', ['household_id', 'is_active'])
 
@@ -151,8 +151,8 @@ def upgrade() -> None:
         sa.Column('valid_to', sa.Date(), nullable=True),
         sa.Column('version', sa.String(40), nullable=False),
         sa.UniqueConstraint('country_code', 'activity_type', 'version', name='uq_emissions_factors_1'),
-        sa.CheckConstraint("kg_co2e_per_unit >= 0", name='ck_emissions_factors_rule_1'),
-        sa.CheckConstraint("valid_to IS NULL OR valid_to >= valid_from", name='ck_emissions_factors_rule_2'),
+        sa.CheckConstraint("kg_co2e_per_unit >= 0", name='rule_1'),
+        sa.CheckConstraint("valid_to IS NULL OR valid_to >= valid_from", name='rule_2'),
     )
     op.create_index('ix_emissions_factors_1', 'emissions_factors', ['country_code', 'activity_type', 'valid_from'])
 
@@ -167,8 +167,8 @@ def upgrade() -> None:
         sa.Column('assumptions', postgresql.JSONB(), nullable=False),
         sa.Column('occurred_on', sa.Date(), nullable=False),
         sa.Column('created_at', sa.DateTime(timezone=True), nullable=False, server_default=sa.text('CURRENT_TIMESTAMP')),
-        sa.CheckConstraint("units_avoided >= 0", name='ck_impact_events_rule_1'),
-        sa.CheckConstraint("estimated_kg_co2e IS NULL OR estimated_kg_co2e >= 0", name='ck_impact_events_rule_2'),
+        sa.CheckConstraint("units_avoided >= 0", name='rule_1'),
+        sa.CheckConstraint("estimated_kg_co2e IS NULL OR estimated_kg_co2e >= 0", name='rule_2'),
     )
     op.create_index('ix_impact_events_1', 'impact_events', ['household_id', 'occurred_on'])
 
@@ -179,7 +179,7 @@ def upgrade() -> None:
         sa.Column('location_id', sa.Uuid(as_uuid=True), sa.ForeignKey('locations.id', ondelete='SET NULL'), nullable=True),
         sa.Column('visibility', sa.String(20), nullable=False, server_default='private'),
         sa.Column('created_at', sa.DateTime(timezone=True), nullable=False, server_default=sa.text('CURRENT_TIMESTAMP')),
-        sa.CheckConstraint("visibility IN ('private','public')", name='ck_communities_rule_1'),
+        sa.CheckConstraint("visibility IN ('private','public')", name='rule_1'),
     )
     op.create_index('ix_communities_1', 'communities', ['location_id'])
 
@@ -190,7 +190,7 @@ def upgrade() -> None:
         sa.Column('role', sa.String(24), nullable=False, server_default='member'),
         sa.Column('approved', sa.Boolean(), nullable=False, server_default=sa.false()),
         sa.Column('joined_at', sa.DateTime(timezone=True), nullable=False, server_default=sa.text('CURRENT_TIMESTAMP')),
-        sa.CheckConstraint("role IN ('member','moderator','admin')", name='ck_community_members_rule_1'),
+        sa.CheckConstraint("role IN ('member','moderator','admin')", name='rule_1'),
     )
     op.create_index('ix_community_members_1', 'community_members', ['user_id'])
 
@@ -205,8 +205,8 @@ def upgrade() -> None:
         sa.Column('location_id', sa.Uuid(as_uuid=True), sa.ForeignKey('locations.id', ondelete='SET NULL'), nullable=True),
         sa.Column('created_at', sa.DateTime(timezone=True), nullable=False, server_default=sa.text('CURRENT_TIMESTAMP')),
         sa.Column('expires_at', sa.DateTime(timezone=True), nullable=True),
-        sa.CheckConstraint("category IN ('garbage_burning','construction_dust','traffic_smoke','other')", name='ck_community_reports_rule_1'),
-        sa.CheckConstraint("status IN ('pending','approved','rejected','expired')", name='ck_community_reports_rule_2'),
+        sa.CheckConstraint("category IN ('garbage_burning','construction_dust','traffic_smoke','other')", name='rule_1'),
+        sa.CheckConstraint("status IN ('pending','approved','rejected','expired')", name='rule_2'),
     )
     op.create_index('ix_community_reports_1', 'community_reports', ['community_id', 'created_at'])
     op.create_index('ix_community_reports_2', 'community_reports', ['status', 'created_at'])
@@ -220,7 +220,7 @@ def upgrade() -> None:
         sa.Column('ends_on', sa.Date(), nullable=False),
         sa.Column('target_unit', sa.String(30), nullable=False),
         sa.Column('created_at', sa.DateTime(timezone=True), nullable=False, server_default=sa.text('CURRENT_TIMESTAMP')),
-        sa.CheckConstraint("ends_on >= starts_on", name='ck_community_challenges_rule_1'),
+        sa.CheckConstraint("ends_on >= starts_on", name='rule_1'),
     )
     op.create_index('ix_community_challenges_1', 'community_challenges', ['community_id', 'starts_on'])
 
@@ -230,7 +230,7 @@ def upgrade() -> None:
         sa.Column('household_id', sa.Uuid(as_uuid=True), sa.ForeignKey('households.id', ondelete='CASCADE'), primary_key=True),
         sa.Column('progress_value', sa.Numeric(12, 3), nullable=False, server_default='0'),
         sa.Column('joined_at', sa.DateTime(timezone=True), nullable=False, server_default=sa.text('CURRENT_TIMESTAMP')),
-        sa.CheckConstraint("progress_value >= 0", name='ck_challenge_participation_rule_1'),
+        sa.CheckConstraint("progress_value >= 0", name='rule_1'),
     )
     op.create_index('ix_challenge_participation_1', 'challenge_participation', ['household_id'])
 
@@ -255,7 +255,7 @@ def upgrade() -> None:
         sa.Column('quiet_end', sa.Time(), nullable=True),
         sa.Column('timezone', sa.String(64), nullable=False, server_default='Asia/Kolkata'),
         sa.Column('updated_at', sa.DateTime(timezone=True), nullable=False, server_default=sa.text('CURRENT_TIMESTAMP')),
-        sa.CheckConstraint("aqi_threshold >= 0 AND aqi_threshold <= 500", name='ck_notification_preferences_rule_1'),
+        sa.CheckConstraint("aqi_threshold >= 0 AND aqi_threshold <= 500", name='rule_1'),
     )
 
     op.create_table(
@@ -278,7 +278,7 @@ def upgrade() -> None:
         sa.Column('excerpt', sa.Text(), nullable=False),
         sa.Column('checksum_sha256', sa.String(64), nullable=False),
         sa.UniqueConstraint('source_id', 'chunk_number', name='uq_guideline_chunks_1'),
-        sa.CheckConstraint("chunk_number >= 0", name='ck_guideline_chunks_rule_1'),
+        sa.CheckConstraint("chunk_number >= 0", name='rule_1'),
     )
     op.create_index('ix_guideline_chunks_1', 'guideline_chunks', ['source_id', 'chunk_number'])
 

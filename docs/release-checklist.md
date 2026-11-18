@@ -2,7 +2,7 @@
 
 **Acceptance policy:** Every item must be **PASS** with a test artifact or reproducible manual evidence before the project is called demo-ready or production-ready. **PENDING** means it has not yet been verified. **BLOCKED** means an external prerequisite prevents completion. Architecture docs, source files or passing unit tests alone do **not** count as end-to-end success.
 
-Progress updated: 2026-11-18. Phase 2 (database) in progress; existing ClearSkies Worker remains a separate prototype.
+Progress updated: 2026-11-18. Phase 2 database schema and migration are verified in GitHub CI; existing ClearSkies Worker remains a separate prototype. Full authorization and production deployment are still pending.
 
 ## 1. Functionality
 - [ ] PENDING — Personalized daily briefing, planner, chat, alerts and community workflow end-to-end
@@ -22,7 +22,7 @@ Progress updated: 2026-11-18. Phase 2 (database) in progress; existing ClearSkie
 ## 3. Code quality
 - [ ] PENDING — ESLint/Prettier and Black/Flake8 in strict CI
 - [ ] PENDING — Unused code/debug traces and comments cleaned
-- [ ] PENDING — Modular structure reviewed
+- [ ] PENDING — Modular structure reviewed; Phase 2 database package created and integration tested
 - [ ] PENDING — Unit/integration/E2E test coverage thresholds set and passed
 - [ ] PENDING — README instructions and tested screenshots
 
@@ -97,7 +97,7 @@ Progress updated: 2026-11-18. Phase 2 (database) in progress; existing ClearSkie
 | Gate | Evidence | Result |
 |---|---|---|
 | Phase 1 architecture | docs/architecture.md and docs/project-structure.md | PASS (documentation only) |
-| Phase 2 schema | apps/api/alembic/versions/0001_winter_smog.py | IN PROGRESS (migration tests required) |
-| Phase 2 isolation helpers | apps/api/app/db/access.py; apps/api/tests/test_schema.py | IN PROGRESS (integration CI required) |
+| Phase 2 schema | apps/api/alembic/versions/0001_winter_smog.py; PostgreSQL CI on 2026-11-18 | PASS: migration up/down/up and 22 tables |
+| Phase 2 isolation helpers | apps/api/app/db/access.py; apps/api/tests/test_schema.py | PASS: database-level membership helper tests, **not** proof of API-wide authorization |
 | Legacy prototype | Existing JavaScript CI | Not evidence for React/FastAPI end-to-end acceptance |
 | Live production | Target account authorization unresolved | BLOCKED |
