@@ -17,10 +17,18 @@ Requires Node.js 20+ for the dependency-free build and tests.
 
     npm run test
     npm run build
+    node --check dist/worker.js
 
 The build embeds HTML/CSS/client JavaScript from public/ into a **single** deployable ES module at dist/worker.js. Deploy that module as a Cloudflare Worker and attach a Workers AI binding named **AI**. The Worker uses the model @cf/google/gemma-4-26b-a4b-it.
 
-**Cloudflare deployment:** Create a Worker named clearskies-ai in your intended Cloudflare account, upload dist/worker.js as the main module, add a Workers AI binding with variable name AI, and enable a workers.dev route. The app routes itself; no additional static hosting or environment secrets are needed. Cloudflare usage limits and Workers AI billing depend on the account plan.
+**Cloudflare deployment (target locked):** The prepared manual GitHub Actions workflow deploys only to Cloudflare account `c37eaec570d5c0261dd4b3fdf8764ce4`, the user's requested account.
+
+1. Confirm the Cloudflare account that owns `c37eaec570d5c0261dd4b3fdf8764ce4` and create an API token scoped to it with the necessary Workers deployment permissions. Do not commit the token.
+2. GitHub repo → Settings → Secrets and variables → Actions → New repository secret. Name it `CLOUDFLARE_API_TOKEN` and paste the token.
+3. GitHub repo → Actions → **Deploy ClearSkies AI to selected Cloudflare account** → Run workflow. It validates the app, creates the Worker script, binds Cloudflare Workers AI as `AI`, and enables the `workers.dev` route.
+4. Verify `/api/health`, city search, live air data and an AI chat question on the deployed site. `/api/health` must report `aiConfigured: true`.
+
+The upload command is `npm run deploy:cloudflare`. The deployment will refuse any other Cloudflare account ID; it will fail safely when the correct account token or permissions are missing. No additional static hosting is needed. Before broad public launch, set Workers AI spending alerts/limits and add production API rate limiting to protect `/api/assist`. Cloudflare usage limits and Workers AI billing depend on the account plan.
 
 ## Endpoints
 
