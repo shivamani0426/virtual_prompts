@@ -1,6 +1,7 @@
 name: Deploy Winter Smog React to Cloudflare
 on:
   push:
+    branches: [main]
     paths:
       - "apps/web/**"
       - "scripts/deploy-react-cloudflare.mjs"
