@@ -109,3 +109,12 @@ Progress updated: 2026-11-18. Milestones 1–5 are implemented, with the React d
 | Milestone 6 live generated answers | https://github.com/shivamani0426/virtual_prompts/actions/runs/44362724226 | PASS: public model inference, cited FastAPI response, prompt-injection refusal and emergency escalation; model answer entailment/clinical review PENDING |
 | Milestone 7 impact and badges | https://github.com/shivamani0426/virtual_prompts/actions/runs/44362248663 and https://github.com/shivamani0426/virtual_prompts/actions/runs/44362248877 | PASS: 43 frontend tests, React build/lint and Cloudflare deploy; manual live click/refresh and cross-device validation PENDING |
 | Cloudflare AI gateway | https://github.com/shivamani0426/virtual_prompts/actions/runs/44361521333 | PASS: separate metered inference Worker deployed; quota and spending controls require independent audit |
+
+
+## Milestone 6–7 live browser regression evidence
+
+- Browser-based Chromium desktop and 390px mobile smoke: [GitHub Actions run 44363773759](https://github.com/shivamani0426/virtual_prompts/actions/runs/44363773759) — **PASS**.
+- Verified actual user interaction: WHO PM2.5 question → relevant answer → official WHO link + exact reviewed evidence, browser-local task completion → badge unlock → page reload persistence → undo and badge revocation.
+- Verified no horizontal document overflow at 390px and no uncaught JavaScript errors in this smoke journey.
+- Automated with `scripts/test-winter-browser.mjs` and `.github/workflows/browser-e2e.yml`. Uses ephemeral browser localStorage and no accounts or personal data.
+- **Limits:** This is a single end-to-end journey, not full assistive-technology, security, clinical entailment, real-device performance or regional-language coverage. Test execution can consume one metered model request and GitHub Actions minutes. The source registry still needs ongoing editorial governance and independent scientific review.
