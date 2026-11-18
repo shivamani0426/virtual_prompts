@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { FormEvent } from "react";
 import { Bell, HeartHandshake, RefreshCcw, ShieldCheck } from "lucide-react";
 import { communityRequest } from "./client";
@@ -25,7 +25,7 @@ export function CommunityHub({selectedCity,locale="en"}:{selectedCity:string;loc
   const [error,setError]=useState("");
   const [notice,setNotice]=useState("");
   useEffect(()=>{if(CITIES.includes(selectedCity))setCity(selectedCity);},[selectedCity]);
-  async function refresh(c=city){
+  const refresh=useCallback(async(c=city)=>{
     try{
       const [publicReports,personal,list,joined,alertPreferences]=await Promise.all([
         communityRequest<{reports:Report[]}>("/reports?city="+encodeURIComponent(c)),
@@ -38,8 +38,8 @@ export function CommunityHub({selectedCity,locale="en"}:{selectedCity:string;loc
       setPrefs({...initial,...alertPreferences.preferences,enabled:Boolean(alertPreferences.preferences.enabled)});
       setError("");
     }catch(e){setError(errorText(e));}
-  }
-  useEffect(()=>{void refresh(city);},[city]);
+  },[city]);
+  useEffect(()=>{void refresh(city);},[city,refresh]);
   async function submit(e:FormEvent){
     e.preventDefault();setBusy(true);setNotice("");setError("");
     try{
