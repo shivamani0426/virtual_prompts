@@ -67,7 +67,7 @@ function errorMessage(error: unknown): string {
 
 export function App() {
   const [locale,setLocale]=useState<Locale>(()=>{
-    try{return selectLocale(localStorage.getItem("winter-smog:locale")||navigator.language.split("-")[0]);}
+    try{return selectLocale(localStorage.getItem("winter-smog:locale")||navigator.language.split("-")[0] || "en");}
     catch{return "en";}
   });
   useEffect(()=>{

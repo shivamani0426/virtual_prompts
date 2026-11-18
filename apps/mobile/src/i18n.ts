@@ -27,7 +27,7 @@ const dictionaries:Record<Locale,Partial<Record<Key,string>>>={
   mr:{home:"हवेची गुणवत्ता",assistant:"स्रोताधारित AI",community:"अहवाल",challenges:"आव्हाने",alerts:"इशारे",language:"भाषा",city:"शहर निवडा",refresh:"पुन्हा तपासा",ask:"स्रोतांसह विचारा",speak:"उत्तर ऐका",source:"अधिकृत स्रोत",report:"तपासणीसाठी पाठवा",pending:"मानवी तपासणी प्रलंबित",join:"सामील व्हा",checkIn:"आज नोंदवा",enableAlerts:"इशारे सुरू करा",save:"जतन करा",check:"सध्याचा AQI तपासा",aqiNotice:"हा मॉडेलवर आधारित US AQI आहे; अधिकृत CPCB माहिती नाही.",privacy:"नाव, पत्ता किंवा वैयक्तिक माहिती देऊ नका.",unavailable:"माहिती उपलब्ध नाही.",threshold:"US AQI मर्यादा"},
 };
 export function chooseLocale(code?:string|null):Locale {
-  const first=(code||"en").split("-")[0];
+  const first=(code||"en").split("-")[0] || "en";
   return Object.hasOwn(LANGUAGES,first)?first as Locale:"en";
 }
 export function translate(locale:Locale,key:Key):string{
