@@ -20,7 +20,10 @@ async function call(url, init, label) {
         await new Promise((done) => setTimeout(done, 4500));
         continue;
       }
-      if (!response.ok) throw Error(label + " HTTP " + response.status);
+      if (!response.ok) {
+        const body = (await response.text()).slice(0, 200);
+        throw Error(label + " HTTP " + response.status + " " + body);
+      }
       return response;
     } catch (error) {
       lastError = error;
