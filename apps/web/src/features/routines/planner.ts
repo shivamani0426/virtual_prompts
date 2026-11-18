@@ -15,8 +15,6 @@ export type Routine = {
 
 export type WeekDay = { date: string; label: string; shortLabel: string; isToday: boolean };
 
-const dayMilliseconds = 86_400_000;
-
 export function dateKey(value: Date): string {
   const year = value.getFullYear();
   const month = String(value.getMonth() + 1).padStart(2, "0");
