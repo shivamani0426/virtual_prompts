@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
 import { Bell, HeartHandshake, RefreshCcw, ShieldCheck } from "lucide-react";
 import { communityRequest } from "./client";
+import { t } from "../language/locale";
+import type { Locale } from "../language/locale";
 import type { AlertStatus, Challenge, Report } from "./client";
 
 const CITIES=["Bengaluru","Delhi","Mumbai","Hyderabad","Chennai","Pune","Kolkata","Chikkaballapur"];
@@ -9,7 +11,7 @@ const TYPES:Record<string,string>={garbage_burning:"Garbage burning",constructio
 type AlertPref={city:string;threshold:number;enabled:boolean};
 const initial:AlertPref={city:"Bengaluru",threshold:150,enabled:false};
 const errorText=(e:unknown)=>e instanceof Error?e.message:"Community unavailable.";
-export function CommunityHub({selectedCity}:{selectedCity:string}){
+export function CommunityHub({selectedCity,locale="en"}:{selectedCity:string;locale?:Locale}){
   const [city,setCity]=useState(CITIES.includes(selectedCity)?selectedCity:"Bengaluru");
   const [type,setType]=useState("garbage_burning");
   const [description,setDescription]=useState("");
@@ -80,7 +82,7 @@ export function CommunityHub({selectedCity}:{selectedCity:string}){
   }
   return <section id="community" className="community-section" aria-labelledby="community-heading">
     <div className="section-head"><div><p className="eyebrow">08 / LOCAL AIR COMMUNITY</p>
-      <h2 id="community-heading">Cleaner air, together.</h2>
+      <h2 id="community-heading">Cleaner air, together. · {t(locale,"community")}</h2>
       <p>Human-reviewed reports, self-reported challenges, and advisory air alerts.</p></div>
       <span className="plan-badge"><HeartHandshake size={16}/> Community</span></div>
     <p className="community-caution"><ShieldCheck size={19}/> Community reports are observations, not verified measurements or official complaints. Never enter names, addresses, photos or contact information.</p>
@@ -115,7 +117,7 @@ export function CommunityHub({selectedCity}:{selectedCity:string}){
         <p className="small-muted">These remain unverified accounts of community observations.</p>
       </article>
     </div>
-    <div className="community-section-head" id="challenges"><h3>Community challenges</h3>
+    <div className="community-section-head" id="challenges"><h3>{t(locale,"challenges")}</h3>
       <p>One self-reported completion per day; no claims of measured carbon or health savings.</p></div>
     <div className="community-challenges">{challenges.map(c=>{
       const done=progress[c.id];
@@ -127,7 +129,7 @@ export function CommunityHub({selectedCity}:{selectedCity:string}){
           {done===undefined?"Join challenge":done>=c.target_days?"Completed":"Log today's activity"}</button>
       </article>;
     })}</div>
-    <div className="community-section-head" id="alerts"><h3><Bell size={19}/> Your air-quality alerts</h3>
+    <div className="community-section-head" id="alerts"><h3><Bell size={19}/> {t(locale,"alerts")}</h3>
       <p>Opt-in advisory modelled US AQI checks, not official CPCB alerts. Foreground only: no background push.</p></div>
     <div className="surface-card community-alert">
       <label><input type="checkbox" checked={prefs.enabled} onChange={e=>setPrefs(p=>({...p,enabled:e.target.checked}))}/> Enable alerts</label>

@@ -1,5 +1,8 @@
 import { AlertCircle, ArrowUpRight, BookOpenCheck, Bot, Send, ShieldCheck, Sparkles } from "lucide-react";
 import { useRef, useState } from "react";
+import { BrowserVoice } from "./BrowserVoice";
+import { t } from "../language/locale";
+import type { Locale } from "../language/locale";
 import type { FormEvent } from "react";
 import { askEvidenceAssistant } from "../../lib/api";
 import type { AssistantAnswer } from "../../lib/api";
@@ -25,7 +28,7 @@ function officialLink(url: string): string | null {
   return null;
 }
 
-export function TrustedAssistant() {
+export function TrustedAssistant({locale="en"}:{locale?:Locale}) {
   const [draft, setDraft] = useState("");
   const [history, setHistory] = useState<Message[]>([]);
   const [busy, setBusy] = useState(false);
@@ -151,7 +154,8 @@ export function TrustedAssistant() {
           </div>
         )}
         <form className="assistant-form" onSubmit={submit}>
-          <label htmlFor="assistant-question" className="visually-hidden">Your air-quality question</label>
+          <label htmlFor="assistant-question" className="visually-hidden">{t(locale,"question")}</label>
+          <BrowserVoice locale={locale} onTranscribe={setDraft} answer={history.at(-1)?.response.answer||""}/>
           <textarea
             id="assistant-question"
             value={draft}
@@ -164,7 +168,7 @@ export function TrustedAssistant() {
           <div className="assistant-form-actions">
             <span>{draft.length}/400 · Each question is answered independently</span>
             <button type="submit" disabled={busy || draft.trim().length < 5}>
-              {busy ? "Checking…" : "Ask with sources"} <Send size={15} aria-hidden="true"/>
+              {busy ? "Checking…" : t(locale,"ask")} <Send size={15} aria-hidden="true"/>
             </button>
           </div>
         </form>
