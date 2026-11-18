@@ -5,6 +5,8 @@ import {
   CalendarDays,
   BookOpenCheck,
   Award,
+  UsersRound,
+  Bell,
   Bus,
   House,
   Cloud,
@@ -33,6 +35,7 @@ import { IndoorAirAssistant } from "../features/indoor-air/IndoorAirAssistant";
 import { LowEmissionAlternatives } from "../features/low-emission/LowEmissionAlternatives";
 import { TrustedAssistant } from "../features/assistant/TrustedAssistant";
 import { ImpactDashboard } from "../features/impact/ImpactDashboard";
+import { CommunityHub } from "../features/community/CommunityHub";
 import { getAir, getWeather, searchCities } from "../lib/api";
 import { readPreferences, savePreferences } from "../lib/preferences";
 import type {
@@ -195,6 +198,9 @@ export function App() {
           <a href="#low-emission" onClick={navClick}><Bus size={19} aria-hidden="true" /> Low-emission choices</a>
           <a href="#indoor-air" onClick={navClick}><House size={19} aria-hidden="true" /> Indoor air</a>
           <a href="#impact" onClick={navClick}><Award size={19} aria-hidden="true" /> Impact &amp; badges</a>
+          <a href="#community" onClick={navClick}><UsersRound size={19} aria-hidden="true" /> Community reports</a>
+          <a href="#challenges" onClick={navClick}><Heart size={19} aria-hidden="true" /> Challenges</a>
+          <a href="#alerts" onClick={navClick}><Bell size={19} aria-hidden="true" /> Air alerts</a>
           <a href="#household" onClick={navClick}><Heart size={19} aria-hidden="true" /> Your household</a>
           <a href="#about" onClick={navClick}><Info size={19} aria-hidden="true" /> Our approach</a>
         </nav>
@@ -350,6 +356,7 @@ export function App() {
           <LowEmissionAlternatives preferences={prefs} aqi={air?.current.us_aqi ?? null} />
           <IndoorAirAssistant preferences={prefs} aqi={air?.current.us_aqi ?? null} />
           <ImpactDashboard />
+          <CommunityHub selectedCity={city.name} />
           <HouseholdSettings value={prefs} onChange={setPrefs} />
           {storageWarning && (
             <p className="inline-warning" role="alert">

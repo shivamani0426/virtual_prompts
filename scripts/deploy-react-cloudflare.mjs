@@ -53,7 +53,7 @@ const workerSource = [
   "if(!file)return new Response('Not found',{status:404,headers});",
   "headers['Content-Type']=file.mime;",
   "headers['Cache-Control']=url.pathname.startsWith('/assets/')?'public, max-age=31536000, immutable':'no-cache, no-store, must-revalidate';",
-  "headers['Content-Security-Policy']=\"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://winter-smog-fastapi.onrender.com; object-src 'none'; base-uri 'none'; frame-ancestors 'none'\";",
+  "headers['Content-Security-Policy']=\"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://winter-smog-fastapi.onrender.com https://winter-smog-community.1nc24cs197.workers.dev; object-src 'none'; base-uri 'none'; frame-ancestors 'none'\";",
   "return new Response(request.method==='HEAD'?null:decode(file.base64),{status:200,headers});",
   "}};",
 ].join("\n");

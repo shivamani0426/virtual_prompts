@@ -518,3 +518,47 @@ h2 { letter-spacing: -.045em; }
   .impact-badge-grid { grid-template-columns: 1fr; }
   .impact-panel { padding: 16px; }
 }
+
+
+/* Milestone 8 — moderated community and opt-in air advisories */
+.community-section {margin:32px 0;scroll-margin-top:18px;}
+.community-caution {display:flex;gap:11px;align-items:flex-start;padding:16px;border:1px solid #dce6dc;background:#f0f6ed;border-radius:15px;color:#546d57;font-size:12px;line-height:1.7;}
+.community-caution svg {flex:none;color:#45805e;}
+.community-label,.community-form label {display:block;font-size:12px;color:#365d45;font-weight:800;margin:13px 0 8px;}
+.community-section select,.community-section textarea {border:1px solid #dbe8dc;background:#fff;color:#254e36;border-radius:10px;padding:11px;font:inherit;max-width:100%;}
+.community-section button {border:0;background:#347754;color:#fff;padding:10px 14px;border-radius:9px;font-weight:800;font-size:12px;cursor:pointer;min-height:40px;}
+.community-section button:disabled {opacity:.55;cursor:not-allowed;}
+.community-section button:hover:not(:disabled) {background:#265a40;}
+.community-section .community-secondary {margin-left:9px;background:#eef5eb;color:#326a49;}
+.community-notice {color:#356e4d;background:#eef7e9;border:1px solid #d6e6d4;border-radius:10px;padding:13px 17px;font-size:12px;line-height:1.7;}
+.community-grid {display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:18px;}
+.community-pane {padding:20px;min-width:0;}
+.community-pane h3,.community-section-head h3 {font-size:18px;letter-spacing:-.04em;margin:0 0 12px;display:flex;align-items:center;gap:8px;}
+.community-pane h4 {font-size:13px;margin:21px 0 9px;}
+.community-form {display:grid;gap:8px;margin-top:17px;}
+.community-form label {margin:6px 0 0;}
+.community-form textarea {width:100%;resize:vertical;line-height:1.6;}
+.community-form button {justify-self:start;margin:6px 0;}
+.community-list {padding:0;margin:13px 0;list-style:none;display:grid;gap:10px;}
+.community-list li {border:1px solid #e5eee4;background:#fbfdf9;border-radius:11px;padding:14px;display:grid;gap:7px;overflow-wrap:anywhere;}
+.community-list li strong {font-size:12px;color:#346344;}
+.community-list li small {font-size:10px;color:#829488;}
+.community-list li p {font-size:12px;color:#556a5b;line-height:1.7;margin:0;}
+.community-list li button {justify-self:start;background:#f3e9e2;color:#8f4a37;padding:7px 12px;min-height:34px;}
+.community-empty {padding:35px 12px;text-align:center;color:#829287;font-size:12px;}
+.community-section-head {margin:29px 0 14px;scroll-margin-top:25px;}
+.community-section-head p {font-size:12px;color:#8a9a8d;line-height:1.6;margin:0;}
+.community-challenges {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;}
+.community-challenge {padding:20px;display:flex;flex-direction:column;align-items:start;gap:11px;}
+.community-challenge h4 {font-size:14px;margin:4px 0 0;}
+.community-challenge p {color:#728875;line-height:1.65;font-size:11px;min-height:69px;margin:0;}
+.community-challenge strong {font-size:11px;color:#3c7a51;}
+.community-challenge button {margin-top:auto;}
+.community-alert {padding:18px 21px;display:grid;gap:17px;}
+.community-alert>label {display:flex;gap:10px;align-items:center;color:#416a4f;font-size:12px;font-weight:700;flex-wrap:wrap;}
+.community-alert input[type=checkbox] {width:18px;height:18px;accent-color:#357853;}
+.community-alert select {min-width:145px;}
+.community-actions {display:flex;flex-wrap:wrap;gap:12px;}
+.community-alert-triggered {background:#fff3d9;border:1px solid #efcf87;color:#83572d;border-radius:10px;padding:14px;line-height:1.7;font-size:12px;}
+@media (max-width:950px) {.community-grid {grid-template-columns:1fr;} .community-challenges {grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media (max-width:620px) {.community-challenges {grid-template-columns:1fr;} .community-challenge p {min-height:0;} .community-pane {padding:16px;} .community-alert {padding:14px;}}
