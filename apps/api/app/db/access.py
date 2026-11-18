@@ -8,7 +8,7 @@ import uuid
 import sqlalchemy as sa
 from sqlalchemy.orm import Session
 
-from app.db.models import Household, HouseholdMember, HouseholdPreferences
+from app.db.models import Household, HouseholdMember, HouseholdPreference
 
 
 def visible_households(session: Session, actor_id: uuid.UUID, *, limit: int = 20, offset: int = 0) -> list[Household]:
@@ -46,8 +46,8 @@ def visible_household(session: Session, actor_id: uuid.UUID, household_id: uuid.
     return session.scalar(stmt)
 
 
-def visible_preferences(session: Session, actor_id: uuid.UUID, household_id: uuid.UUID) -> HouseholdPreferences | None:
+def visible_preferences(session: Session, actor_id: uuid.UUID, household_id: uuid.UUID) -> HouseholdPreference | None:
     """Read sensitive aggregate preferences only with household membership."""
     if visible_household(session, actor_id, household_id) is None:
         return None
-    return session.get(HouseholdPreferences, household_id)
+    return session.get(HouseholdPreference, household_id)

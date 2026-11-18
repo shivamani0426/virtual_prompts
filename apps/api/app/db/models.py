@@ -24,7 +24,7 @@ class Base(DeclarativeBase):
     })
 
 
-class Users(Base):
+class User(Base):
     """users records."""
 
     __tablename__ = 'users'
@@ -56,7 +56,7 @@ class Users(Base):
     )
 
 
-class Locations(Base):
+class Location(Base):
     """locations records."""
 
     __tablename__ = 'locations'
@@ -75,7 +75,7 @@ class Locations(Base):
         nullable=False
     )
     country_code: Mapped[str] = mapped_column(
-        ,
+        sa.String(2),
         nullable=False
     )
     latitude_approx: Mapped[Decimal] = mapped_column(
@@ -97,7 +97,7 @@ class Locations(Base):
     )
 
 
-class Households(Base):
+class Household(Base):
     """households records."""
 
     __tablename__ = 'households'
@@ -130,7 +130,7 @@ class Households(Base):
     )
 
 
-class HouseholdMembers(Base):
+class HouseholdMember(Base):
     """household members records."""
 
     __tablename__ = 'household_members'
@@ -160,7 +160,7 @@ class HouseholdMembers(Base):
     )
 
 
-class HouseholdPreferences(Base):
+class HouseholdPreference(Base):
     """household preferences records."""
 
     __tablename__ = 'household_preferences'
@@ -206,7 +206,7 @@ class HouseholdPreferences(Base):
     )
 
 
-class AqiSnapshots(Base):
+class AqiSnapshot(Base):
     """aqi snapshots records."""
 
     __tablename__ = 'aqi_snapshots'
@@ -264,7 +264,7 @@ class AqiSnapshots(Base):
     )
 
 
-class WeatherSnapshots(Base):
+class WeatherSnapshot(Base):
     """weather snapshots records."""
 
     __tablename__ = 'weather_snapshots'
@@ -301,7 +301,7 @@ class WeatherSnapshots(Base):
     )
 
 
-class Briefings(Base):
+class Briefing(Base):
     """briefings records."""
 
     __tablename__ = 'briefings'
@@ -344,7 +344,7 @@ class Briefings(Base):
     )
 
 
-class Routines(Base):
+class Routine(Base):
     """routines records."""
 
     __tablename__ = 'routines'
@@ -382,7 +382,7 @@ class Routines(Base):
     )
 
 
-class RoutineCompletions(Base):
+class RoutineCompletion(Base):
     """routine completions records."""
 
     __tablename__ = 'routine_completions'
@@ -416,7 +416,7 @@ class RoutineCompletions(Base):
     )
 
 
-class EmissionsFactors(Base):
+class EmissionsFactor(Base):
     """emissions factors records."""
 
     __tablename__ = 'emissions_factors'
@@ -432,7 +432,7 @@ class EmissionsFactors(Base):
         server_default=sa.text('gen_random_uuid()')
     )
     country_code: Mapped[str] = mapped_column(
-        ,
+        sa.String(2),
         nullable=False
     )
     activity_type: Mapped[str] = mapped_column(
@@ -465,7 +465,7 @@ class EmissionsFactors(Base):
     )
 
 
-class ImpactEvents(Base):
+class ImpactEvent(Base):
     """impact events records."""
 
     __tablename__ = 'impact_events'
@@ -516,7 +516,7 @@ class ImpactEvents(Base):
     )
 
 
-class Communities(Base):
+class Community(Base):
     """communities records."""
 
     __tablename__ = 'communities'
@@ -550,7 +550,7 @@ class Communities(Base):
     )
 
 
-class CommunityMembers(Base):
+class CommunityMember(Base):
     """community members records."""
 
     __tablename__ = 'community_members'
@@ -585,7 +585,7 @@ class CommunityMembers(Base):
     )
 
 
-class CommunityReports(Base):
+class CommunityReport(Base):
     """community reports records."""
 
     __tablename__ = 'community_reports'
@@ -639,7 +639,7 @@ class CommunityReports(Base):
     )
 
 
-class CommunityChallenges(Base):
+class CommunityChallenge(Base):
     """community challenges records."""
 
     __tablename__ = 'community_challenges'
@@ -710,7 +710,7 @@ class ChallengeParticipation(Base):
     )
 
 
-class NotificationSubscriptions(Base):
+class NotificationSubscription(Base):
     """notification subscriptions records."""
 
     __tablename__ = 'notification_subscriptions'
@@ -751,7 +751,7 @@ class NotificationSubscriptions(Base):
     )
 
 
-class NotificationPreferences(Base):
+class NotificationPreference(Base):
     """notification preferences records."""
 
     __tablename__ = 'notification_preferences'
@@ -793,7 +793,7 @@ class NotificationPreferences(Base):
     )
 
 
-class GuidelineSources(Base):
+class GuidelineSource(Base):
     """guideline sources records."""
 
     __tablename__ = 'guideline_sources'
@@ -834,7 +834,7 @@ class GuidelineSources(Base):
     )
 
 
-class GuidelineChunks(Base):
+class GuidelineChunk(Base):
     """guideline chunks records."""
 
     __tablename__ = 'guideline_chunks'
@@ -867,7 +867,7 @@ class GuidelineChunks(Base):
     )
 
 
-class AuditEvents(Base):
+class AuditEvent(Base):
     """audit events records."""
 
     __tablename__ = 'audit_events'
@@ -890,7 +890,7 @@ class AuditEvents(Base):
         nullable=False
     )
     resource_kind: Mapped[str] = mapped_column(
-        ,
+        sa.String(60),
         nullable=False
     )
     resource_id: Mapped[uuid.UUID | None] = mapped_column(

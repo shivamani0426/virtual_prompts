@@ -1,9 +1,8 @@
 """PostgreSQL integration checks for Phase 2 schema and authorization scope."""
 
-from datetime import date, datetime, timezone
+from datetime import date
 from decimal import Decimal
 import os
-import uuid
 
 from alembic import command
 from alembic.config import Config
@@ -13,7 +12,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.db.access import visible_household, visible_households, visible_preferences
-from app.db.models import Base, Household, HouseholdMember, HouseholdPreferences, User
+from app.db.models import Base, Household, HouseholdMember, HouseholdPreference, User
 
 
 @pytest.fixture(scope="session")
@@ -63,7 +62,7 @@ def test_household_isolation_and_membership(session):
     session.add(household)
     session.flush()
     session.add(HouseholdMember(household_id=household.id, user_id=member.id, role="member"))
-    session.add(HouseholdPreferences(household_id=household.id, has_children=True, has_respiratory_sensitive=True, budget_band="low"))
+    session.add(HouseholdPreference(household_id=household.id, has_children=True, has_respiratory_sensitive=True, budget_band="low"))
     session.flush()
 
     assert visible_household(session, owner.id, household.id) is not None
@@ -84,7 +83,7 @@ def test_invalid_preference_budget_rejected(session):
     household = Household(owner_user_id=owner.id, name="Budget family")
     session.add(household)
     session.flush()
-    session.add(HouseholdPreferences(household_id=household.id, budget_band="unlimited"))
+    session.add(HouseholdPreference(household_id=household.id, budget_band="unlimited"))
     with pytest.raises(IntegrityError):
         session.flush()
 
@@ -109,7 +108,7 @@ def test_impact_nonnegative_constraint(engine, session):
     household = Household(owner_user_id=owner.id, name="Impact home")
     session.add(household)
     session.flush()
-    from app.db.models import ImpactEvents
-    session.add(ImpactEvents(household_id=household.id, activity_type="carpool", units_avoided=Decimal("-1"), assumptions={}, occurred_on=date.today()))
+    from app.db.models import ImpactEvent
+    session.add(ImpactEvent(household_id=household.id, activity_type="carpool", units_avoided=Decimal("-1"), assumptions={}, occurred_on=date.today()))
     with pytest.raises(IntegrityError):
         session.flush()
