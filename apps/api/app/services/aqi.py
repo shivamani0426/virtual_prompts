@@ -11,6 +11,12 @@ def valid_number(value: object) -> float | None:
     return float(value) if math.isfinite(value) and value >= 0 else None
 
 
+def valid_temperature(value: object) -> float | None:
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        return None
+    return float(value) if math.isfinite(value) else None
+
+
 def classify_us_aqi(value: float | None) -> dict[str, str]:
     if value is None:
         return {"level": "Unavailable", "advice": "Check an official local alert."}
@@ -94,7 +100,7 @@ def normalize_weather(payload: dict) -> dict:
         "modelled": True,
         "observed_at": current["time"],
         "timezone": payload.get("timezone", "UTC"),
-        "temperature_c": valid_number(current.get("temperature_2m"))
+        "temperature_c": valid_temperature(current.get("temperature_2m"))
         if current.get("temperature_2m") is not None
         else None,
         "relative_humidity_percent": valid_number(current.get("relative_humidity_2m")),

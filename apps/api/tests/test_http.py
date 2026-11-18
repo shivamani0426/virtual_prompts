@@ -1,7 +1,6 @@
 """Phase 3 public API contract, security and outage tests."""
 
 import asyncio
-from datetime import datetime, timezone
 
 from fastapi.testclient import TestClient
 import httpx
@@ -137,7 +136,7 @@ def test_hazardous_high_aqi_and_missing_reading():
     with client:
         result = client.get("/api/v1/air-quality?lat=12&lon=77")
     assert result.status_code == 503
-    assert "0" not in result.json().get("aqi", "")
+    assert "current" not in result.json()
 
 
 def test_weather_and_place_search_and_cors():

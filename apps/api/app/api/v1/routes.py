@@ -77,7 +77,7 @@ async def weather(
 
 @router.get("/places")
 async def places(
-    q: Annotated[str, Query(min_length=2, max_length=80, pattern=r"[^<>]+")],
+    q: Annotated[str, Query(min_length=2, max_length=80, pattern=r"^[^<>]+$")],
     service: Annotated[DataService, Depends(get_data_service)],
 ) -> JSONResponse:
     return render(await service.places(q.strip()))
