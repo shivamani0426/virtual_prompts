@@ -13,20 +13,29 @@ npx expo start
 
 Install the compatible [Expo Go](https://expo.dev/go) on your Android phone or iPhone, then scan the QR code. The app fetches live environmental data through the existing Python FastAPI/Uvicorn backend at `winter-smog-fastapi.onrender.com`, and D1-backed community state through the independent `winter-smog-community.1nc24cs197.workers.dev` Worker.
 
-## Download Android test APK (developer preview)
+## Install the standalone Android testing preview
 
-The web dashboard's header includes a compact **Android test APK** link. It opens the
-[Android debug preview workflow](https://github.com/shivamani0426/virtual_prompts/actions/workflows/android-debug-preview.yml).
-Choose the latest successful run, open its **Artifacts** section and download
-`winter-smog-android-debug-preview` (GitHub may require sign-in).
-Extract `app-debug.apk` from the ZIP before installing on a test device.
-Artifacts expire after 14 days; the workflow page is a stable entry point.
+Open the [ClearSkies Android preview APK](https://github.com/shivamani0426/virtual_prompts/releases/download/android-preview/clearskies-android-preview.apk)
+from an Android phone. This is a directly downloadable APK (not a ZIP).
+The release is published **only after** the app bundles its JavaScript, passes
+APK-signature checks, installs in an Android 15 emulator, and launches without
+a local Expo/Metro server.
 
-**Important:** This APK is a debug/development preview and may require a local Expo
-Metro server. It is **not** a one-tap public standalone release or a Play Store build.
-Do not advertise it as production-ready. A standalone signed release APK requires
-persistent, securely stored Android signing credentials, a release build, and
-physical device acceptance before exposing a public direct-download button.
+Installation: allow **Install unknown apps** for the browser or Files app only
+if you trust the file's publisher, open the downloaded APK, and follow Android's
+confirmation prompts. For a pre-existing older debug build that reports
+`App not installed` or a signature conflict, uninstall the older
+**Winter Smog Assistant** first; **this erases locally stored preferences and
+anonymous-device progress**. Avoid uninstalling until you can afford that loss.
+Check free space and Android OS compatibility if installation still fails.
+
+**Important:** This is a developer/test prerelease signed using the generated
+Android debug/test certificate, not a production signing key. It is not a
+Play Store release or a certified public health application. Please do not
+treat it as production-ready or depend on it for emergency decisions.
+A phone-specific test is still necessary, and older Android versions may
+not be supported. The running app needs network access for live AQI, WHO/CPCB
+source answers, and community features.
 
 ## Included mobile flows
 

@@ -3,12 +3,12 @@
     "name":"Winter Smog Assistant",
     "slug":"winter-smog-assistant",
     "scheme":"wintersmog",
-    "version":"0.9.0",
+    "version":"0.9.1",
     "orientation":"portrait",
     "userInterfaceStyle":"light",
     "newArchEnabled":true,
     "ios":{"supportsTablet":true,"bundleIdentifier":"com.winter.smogassistant"},
-    "android":{"package":"com.winter.smogassistant","edgeToEdgeEnabled":true},
+    "android":{"package":"com.winter.smogassistant","versionCode":2,"edgeToEdgeEnabled":true},
     "plugins":["expo-localization","expo-secure-store"],
     "extra":{"apiBase":"https://winter-smog-fastapi.onrender.com","communityBase":"https://winter-smog-community.1nc24cs197.workers.dev"}
   }

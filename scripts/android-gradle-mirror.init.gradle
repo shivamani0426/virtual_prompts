@@ -1,0 +1,26 @@
+// CI-only Maven Central mirror. Keep Gradle Plugin Portal and Google Maven intact.
+// See Gradle "Good Neighbors" guide and Google Cloud hosted Maven Central mirror.
+import org.gradle.api.artifacts.repositories.MavenArtifactRepository
+
+def mirror = 'https://maven-central.storage-download.googleapis.com/maven2/'
+def useMirror = { repositories ->
+  repositories.withType(MavenArtifactRepository).configureEach { repository ->
+    if (repository.name == 'MavenRepo') {
+      repository.url = uri(mirror)
+    }
+  }
+}
+
+gradle.beforeSettings { settings ->
+  useMirror(settings.buildscript.repositories)
+  useMirror(settings.pluginManagement.repositories)
+}
+gradle.settingsEvaluated { settings ->
+  useMirror(settings.dependencyResolutionManagement.repositories)
+}
+gradle.beforeProject { project ->
+  useMirror(project.buildscript.repositories)
+}
+gradle.afterProject { project ->
+  useMirror(project.repositories)
+}
