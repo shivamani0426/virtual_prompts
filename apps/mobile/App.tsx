@@ -20,7 +20,7 @@ const TABS:Tab[]=["home","assistant","community","challenges","alerts"];
 const LOCALE_KEY="winter-smog-mobile-locale-v1";
 const failure=(error:unknown)=>error instanceof Error?error.message:"Service temporarily unavailable.";
 const INITIAL_AIR_PLACE:Place={name:"Bengaluru",admin1:"Karnataka",country:"India",
-  latitude:CITIES.Bengaluru.lat,longitude:CITIES.Bengaluru.lon};
+  latitude:CITIES.Bengaluru!.lat,longitude:CITIES.Bengaluru!.lon};
 function locationWithTimeout<T>(promise:Promise<T>,ms=15000):Promise<T>{
   return new Promise<T>((resolve,reject)=>{
     const timer=setTimeout(()=>reject(new Error("Location timed out. Search for a city instead.")),ms);
