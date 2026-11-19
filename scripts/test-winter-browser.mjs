@@ -33,6 +33,14 @@ try {
   assert.equal(await page.locator(".focus-task").count(),3);
   assert.equal(await page.locator("main #community").count(),0);
   log("Compact dashboard shows only AQI, cited AI, and three daily actions");
+  const android = page.getByRole("link", { name: "Get Android test APK from GitHub Actions (preview only)" });
+  await android.waitFor();
+  assert.equal(await android.getAttribute("href"),
+    "https://github.com/shivamani0426/virtual_prompts/actions/workflows/android-debug-preview.yml");
+  assert.equal(await android.getAttribute("target"), "_blank");
+  assert.match(await android.getAttribute("rel")||"", /noopener/);
+  log("Android preview link is visible and opens the trusted GitHub build workflow");
+
 
   // Verify actual browser -> FastAPI -> model or evidence fallback -> browser citation.
   const assistant = page.locator("#assistant");
@@ -101,6 +109,10 @@ try {
   await smallPage.goto(URL, { waitUntil: "domcontentloaded", timeout: 90000 });
   await smallPage.locator("#assistant").waitFor();
   await smallPage.locator("#planner").waitFor();
+  await smallPage.getByRole("link", {
+    name: "Get Android test APK from GitHub Actions (preview only)"
+  }).waitFor();
+
   for (const width of [320, 360, 390, 412, 480]) {
     await smallPage.setViewportSize({ width, height: 844 });
     const dimensions = await smallPage.evaluate(() => ({
