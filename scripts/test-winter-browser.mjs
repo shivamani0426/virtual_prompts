@@ -29,8 +29,10 @@ try {
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto(URL, { waitUntil: "domcontentloaded", timeout: 90000 });
   await page.locator("#assistant").getByRole("heading", { name: "Ask about the air. Check the source." }).waitFor();
-  await page.locator("#impact").getByRole("heading", { name: "Small actions, visible progress." }).waitFor();
-  log("Assistant and impact are mounted on the live React dashboard");
+  await page.locator("#planner").getByRole("heading", { name: "Three small actions for today" }).waitFor();
+  assert.equal(await page.locator(".focus-task").count(),3);
+  assert.equal(await page.locator("main #community").count(),0);
+  log("Compact dashboard shows only AQI, cited AI, and three daily actions");
 
   // Verify actual browser -> FastAPI -> model or evidence fallback -> browser citation.
   const assistant = page.locator("#assistant");
@@ -47,23 +49,20 @@ try {
   assert.match(mode, /ai paraphrase|reviewed source summaries/);
   log("Live assistant returns a relevant response, exact reviewed evidence and WHO citation");
 
-  // Verify same-tab event propagation, save, reload, undo, and badge revocation.
-  const planner = page.locator("#planner");
-  const impact = page.locator("#impact");
-  const count = impact.locator(".impact-stat").first().locator("strong");
-  await waitForText(count, "0");
-  await planner.getByRole("button", { name: "Mark done" }).first().click();
-  await waitForText(count, "1");
-  assert.match((await impact.locator(".impact-badge").first().innerText()), /unlocked/i);
-  log("Completing one activity immediately increments impact and unlocks First Step");
+  // Verify today's plan completion and undo without a giant badge dashboard.
+  const planner=page.locator("#planner");
+  const count=planner.locator(".focus-progress");
+  await waitForText(count,"0 / 3 done");
+  await planner.getByRole("button",{name:"Mark done"}).first().click();
+  await waitForText(count,"1 / 3 done");
+  log("Today plan saves one completed action");
 
-  await page.reload({ waitUntil: "domcontentloaded" });
-  const refreshed = page.locator("#impact");
-  await waitForText(refreshed.locator(".impact-stat").first().locator("strong"), "1");
-  await page.locator("#planner").getByRole("button", { name: "Completed" }).first().click();
-  await waitForText(refreshed.locator(".impact-stat").first().locator("strong"), "0");
-  assert.doesNotMatch((await refreshed.locator(".impact-badge").first().innerText()), /unlocked/i);
-  log("Activity persists after reload; undo revokes impact and badge");
+  await page.reload({waitUntil:"domcontentloaded"});
+  const refreshed=page.locator("#planner");
+  await waitForText(refreshed.locator(".focus-progress"),"1 / 3 done");
+  await refreshed.getByRole("button",{name:"Done"}).first().click();
+  await waitForText(refreshed.locator(".focus-progress"),"0 / 3 done");
+  log("Today's action survives refresh and can be undone");
 
   // Check mobile layout without testing sensitive personal data or geolocation.
   const mobile = await browser.newContext({
@@ -74,14 +73,14 @@ try {
   smallPage.on("pageerror", (error) => errors.push(error.message));
   await smallPage.goto(URL, { waitUntil: "domcontentloaded", timeout: 90000 });
   await smallPage.locator("#assistant").waitFor();
-  await smallPage.locator("#impact").waitFor();
+  await smallPage.locator("#planner").waitFor();
   const dimensions = await smallPage.evaluate(() => ({
     viewport: document.documentElement.clientWidth,
     content: document.documentElement.scrollWidth,
   }));
   assert.ok(dimensions.content <= dimensions.viewport + 2,
     "Unexpected mobile horizontal overflow " + JSON.stringify(dimensions));
-  log("Mobile (390 px) layout exposes assistant and impact without page horizontal overflow");
+  log("Mobile (390 px) layout exposes AI and today's compact plan without overflow");
   assert.deepEqual(errors, [], "React browser errors encountered");
   log("No uncaught browser JavaScript errors");
   await mobile.close();
