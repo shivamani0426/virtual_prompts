@@ -1,17 +1,23 @@
-name: Build Android debug APK — mobile preview
+name: Build installable Android test preview APK
 on:
   push:
     branches: [main]
     paths:
       - '.github/workflows/android-debug-preview.yml'
       - 'apps/mobile/**'
+  pull_request:
+    paths:
+      - '.github/workflows/android-debug-preview.yml'
+      - 'apps/mobile/**'
   workflow_dispatch:
+
 permissions:
   contents: read
+
 jobs:
-  android-debug:
+  android-preview:
     runs-on: ubuntu-24.04
-    timeout-minutes: 35
+    timeout-minutes: 55
     defaults:
       run:
         working-directory: apps/mobile
@@ -27,22 +33,85 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      # Ubuntu GitHub-hosted runners already include a configured Android SDK.
-      # Avoid setup-android@v3 which requests obsolete 'tools' packages on SDK 16.
-      - name: Install Expo and verify TypeScript
+      - name: Verify mobile code and install Expo
         run: |
           npm install --no-audit --no-fund
           npm run typecheck
           npm test
-      - name: Generate Android native project with Expo prebuild
+      - name: Generate Android native project
         run: npx expo prebuild --platform android --clean
-      - name: Build Android debug APK
+      - name: Bundle JS inside standalone release-variant APK
         working-directory: apps/mobile/android
-        run: ./gradlew assembleDebug --no-daemon
-      - name: Upload untrusted local-testing APK
+        run: ./gradlew :app:assembleRelease --no-daemon
+      - name: Verify signed APK, embedded JavaScript bundle and correct package
+        run: |
+          set -euo pipefail
+          apk="android/app/build/outputs/apk/release/app-release.apk"
+          test -s "$apk"
+          apksigner="$(find "$ANDROID_HOME/build-tools" -maxdepth 2 -type f -name apksigner | sort -V | tail -n1)"
+          aapt="$(find "$ANDROID_HOME/build-tools" -maxdepth 2 -type f -name aapt | sort -V | tail -n1)"
+          test -x "$apksigner"
+          test -x "$aapt"
+          "$apksigner" verify --verbose --print-certs "$apk"
+          "$aapt" dump badging "$apk" | grep -F "package: name='com.winter.smogassistant'"
+          unzip -Z1 "$apk" | grep -Fqx "assets/index.android.bundle"
+          echo "PASS: Android preview APK is signed and embeds the offline launch JS bundle."
+      - name: Allow Android emulator KVM hardware acceleration
+        run: |
+          if [ -e /dev/kvm ]; then sudo chown "$USER" /dev/kvm; fi
+      - name: Install and cold-launch APK in Android 15 emulator (no Metro)
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          profile: pixel_4
+          disable-animations: true
+          script: |
+            set -euo pipefail
+            adb install -r apps/mobile/android/app/build/outputs/apk/release/app-release.apk
+            adb shell pm path com.winter.smogassistant | grep -F "package:"
+            adb logcat -c
+            adb shell am start -W -n com.winter.smogassistant/.MainActivity
+            sleep 12
+            adb shell pidof com.winter.smogassistant
+            if adb logcat -d -b crash | grep -F "com.winter.smogassistant"; then
+              echo "App crashed after launch" >&2
+              exit 1
+            fi
+            echo "PASS: APK installed, launched, and remained running without Metro."
+      - name: Upload installable APK after emulator verification
         uses: actions/upload-artifact@v4
         with:
-          name: winter-smog-android-debug-preview
-          path: apps/mobile/android/app/build/outputs/apk/debug/app-debug.apk
+          name: clearskies-android-standalone-preview
+          path: apps/mobile/android/app/build/outputs/apk/release/app-release.apk
           if-no-files-found: error
           retention-days: 14
+
+  publish-preview:
+    if: github.event_name != 'pull_request'
+    needs: android-preview
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: clearskies-android-standalone-preview
+          path: output
+      - name: Publish stable GitHub prerelease direct-download APK
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          BUILD_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          mv output/app-release.apk output/clearskies-android-preview.apk
+          test -s output/clearskies-android-preview.apk
+          if ! gh release view android-preview >/dev/null 2>&1; then
+            gh release create android-preview --target "$BUILD_SHA" --title "ClearSkies Android — installable test preview" --prerelease --notes "Installable standalone Android preview. Builds embed the JS bundle; no Metro server is needed. NOT Google Play approved or production-signed. Do not use for emergency decisions. Remove an older debug build first if Android reports a signature mismatch." output/clearskies-android-preview.apk
+          else
+            gh release upload android-preview output/clearskies-android-preview.apk --clobber
+            gh release edit android-preview --notes "Installable standalone Android preview built from commit $BUILD_SHA. APK embeds the JS bundle and passed emulator cold launch. NOT Google Play approved or production-signed; debug/test signing is used. Uninstall old debug builds if Android reports a signature mismatch."
+          fi
+          echo "Preview download: https://github.com/$GH_REPO/releases/download/android-preview/clearskies-android-preview.apk"
