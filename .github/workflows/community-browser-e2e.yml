@@ -1,0 +1,27 @@
+name: Community public browser E2E and cleanup
+on:
+  push:
+    paths:
+      - 'scripts/test-community-browser.mjs'
+      - '.github/workflows/community-browser-e2e.yml'
+  pull_request:
+    paths:
+      - 'scripts/test-community-browser.mjs'
+      - '.github/workflows/community-browser-e2e.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser-community:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - name: Install pinned Playwright
+        run: |
+          npm install --no-save --no-package-lock playwright@1.58.2
+          npx playwright install --with-deps chromium
+      - name: Verify real public report / badge / alert workflows and erase temporary data
+        run: node scripts/test-community-browser.mjs
