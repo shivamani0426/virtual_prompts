@@ -33,13 +33,13 @@ try {
   assert.equal(await page.locator(".focus-task").count(),3);
   assert.equal(await page.locator("main #community").count(),0);
   log("Compact dashboard shows only AQI, cited AI, and three daily actions");
-  const android = page.getByRole("link", { name: "Get Android test APK from GitHub Actions (preview only)" });
+  const android = page.getByRole("link", { name: "Download standalone ClearSkies Android test APK (preview)" });
   await android.waitFor();
   assert.equal(await android.getAttribute("href"),
-    "https://github.com/shivamani0426/virtual_prompts/actions/workflows/android-debug-preview.yml");
+    "https://github.com/shivamani0426/virtual_prompts/releases/download/android-preview/clearskies-android-preview.apk");
   assert.equal(await android.getAttribute("target"), "_blank");
   assert.match(await android.getAttribute("rel")||"", /noopener/);
-  log("Android preview link is visible and opens the trusted GitHub build workflow");
+  log("Android preview link is visible and points directly to the APK prerelease asset");
 
 
   // Verify actual browser -> FastAPI -> model or evidence fallback -> browser citation.
