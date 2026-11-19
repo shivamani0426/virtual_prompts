@@ -570,3 +570,111 @@ h2 { letter-spacing: -.045em; }
 .browser-voice button:disabled {opacity:.5;}
 .browser-voice>span {color:#8a9b8e;font-size:10px;line-height:1.5;max-width:520px;}
 @media(max-width:700px){.language-control select{width:80px;}.topbar-actions {gap:7px;}.browser-voice>span{flex-basis:100%;}}
+
+
+/* Focused dashboard — three purposeful blocks, no giant hero or stacked sub-apps */
+.focus-layout {grid-template-columns:210px minmax(0,1fr);}
+.focus-sidebar {padding:28px 16px 17px;}
+.focus-sidebar .brand {padding:0 8px 23px;}
+.focus-sidebar .sidebar-nav {gap:3px;}
+.focus-sidebar .sidebar-nav a {min-height:43px;font-size:12px;gap:12px;padding:10px 12px;}
+.focus-topbar {height:65px;padding-inline:clamp(16px,3vw,40px);}
+.focus-content {max-width:1100px;padding:24px clamp(15px,3vw,40px) 35px;}
+.focus-page-intro {display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:15px;}
+.focus-page-intro h1 {color:#254937;font-size:clamp(23px,2.8vw,35px);letter-spacing:-.052em;margin:0 0 5px;}
+.focus-page-intro .eyebrow {margin-bottom:8px;}
+.focus-page-intro p:not(.eyebrow) {font-size:12px;color:#789080;line-height:1.65;margin:0;}
+.focus-back {border:1px solid #d5e6d7;border-radius:10px;color:#3f7252;background:#eef5ed;padding:11px 14px;font-weight:700;font-size:12px;white-space:nowrap;}
+.focus-location {margin:12px 0 18px;padding:14px 18px;border-radius:14px;gap:10px;}
+.focus-location .location-current {gap:10px;}
+.focus-location .location-pin {width:38px;height:38px;}
+.focus-location .location-current h2 {font-size:15px;}
+.focus-location .location-controls {max-width:340px;}
+.focus-location .city-form {height:40px;}
+.focus-location .locate-button {height:40px;width:40px;}
+.focus-data {min-height:0;}
+.focus-data .loading-panel,.focus-data .error-panel {min-height:170px;padding:24px;}
+.focus-heading {display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:13px;}
+.focus-heading .eyebrow {margin:0 0 5px;}
+.focus-heading h2 {font-size:clamp(19px,2.1vw,25px);color:#294737;letter-spacing:-.045em;margin:0;}
+.focus-source {display:inline-flex;gap:6px;align-items:center;color:#437b59;font-weight:700;font-size:11px;white-space:nowrap;}
+.focus-air-card {background:#fff;border:1px solid #dfebdf;border-radius:17px;overflow:hidden;box-shadow:0 4px 15px #2045320a;}
+.focus-air-primary {display:flex;align-items:center;gap:22px;padding:19px 22px;}
+.focus-aqi {flex:none;background:linear-gradient(125deg,#286f53,#3a8663);color:#fff;width:112px;height:112px;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;}
+.focus-aqi strong {font-size:42px;font-family:"Manrope",sans-serif;font-weight:800;letter-spacing:-.06em;line-height:1;}
+.focus-aqi span {font-size:10px;font-weight:800;}
+.focus-meta {color:#739383;font-size:11px;font-weight:700;}
+.focus-aqi-copy h3 {font-size:19px;color:#2a5740;margin:7px 0;}
+.focus-aqi-copy p {font-size:12px;line-height:1.6;margin:0;color:#627969;}
+.focus-air-details {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid #edf2e9;background:#fbfdf9;}
+.focus-air-details>div {padding:13px 19px;display:flex;justify-content:space-between;align-items:center;gap:7px;min-width:0;}
+.focus-air-details>div+div {border-left:1px solid #e7eee7;}
+.focus-air-details span {font-size:11px;color:#7c9082;}
+.focus-air-details strong {font-size:12px;color:#355840;text-align:right;}
+.focus-air-foot {display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:11px 1px 0;font-size:10px;color:#7d9382;line-height:1.6;}
+.focus-air-foot strong {font-size:10px;font-weight:700;color:#5c7b66;}
+.focus-weather-note {font-size:11px;margin:8px 0;color:#926a41;}
+.focus-plan {margin-top:24px;scroll-margin-top:20px;}
+.focus-plan-subtitle {font-size:12px;color:#758a7a;margin:0 0 13px;line-height:1.6;}
+.focus-progress {font-size:12px;color:#357454;font-weight:800;background:#e9f4e8;border-radius:99px;padding:7px 12px;white-space:nowrap;}
+.focus-household-tip {display:flex;gap:8px;align-items:start;margin:0 0 12px;background:#eef6ea;border:1px solid #d8e8d5;color:#466a52;border-radius:10px;padding:11px 13px;font-size:12px;line-height:1.7;}
+.focus-household-tip svg {flex:none;margin-top:2px;}
+.focus-task-list {border:1px solid #deeadf;border-radius:16px;overflow:hidden;background:#fff;}
+.focus-task {display:grid;grid-template-columns:37px minmax(0,1fr) auto;gap:14px;align-items:center;padding:16px 18px;}
+.focus-task+.focus-task {border-top:1px solid #e9f0e8;}
+.focus-task-icon {width:35px;height:35px;background:#eaf4e9;color:#397854;border-radius:10px;display:grid;place-items:center;}
+.focus-task-description {min-width:0;}
+.focus-task-description span {font-size:9px;letter-spacing:.11em;text-transform:uppercase;color:#7a9881;font-weight:800;}
+.focus-task-description h3 {font-size:13px;color:#345641;letter-spacing:-.015em;margin:4px 0;}
+.focus-task-description p {font-size:11px;color:#7a8a7c;line-height:1.55;margin:0;}
+.focus-task-action {border:1px solid #cde3cf;background:#eef7ed;color:#357952;padding:9px 12px;border-radius:10px;white-space:nowrap;display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;}
+.focus-task-action.done {border-color:#b9dac0;background:#dcf0df;}
+.focus-impact-line {display:flex;align-items:start;gap:9px;padding:13px 2px;font-size:11px;line-height:1.65;color:#799081;}
+.focus-impact-line svg {flex:none;margin-top:1px;}
+.focus-settings {border:1px solid #dce9dc;background:#fff;border-radius:13px;margin-top:9px;scroll-margin-top:15px;}
+.focus-settings>summary {padding:15px 18px;display:flex;align-items:center;gap:10px;cursor:pointer;color:#3a714f;font-size:12px;font-weight:800;}
+.focus-settings>summary span {margin-left:auto;font-size:10px;font-weight:500;color:#93a499;}
+.focus-settings[open]>summary {border-bottom:1px solid #ebf0e9;}
+.focus-settings .household-section {padding:0 18px 18px;margin:0;}
+.focus-settings .household-section .section-head {margin:17px 0;}
+.focus-settings .household-section .section-head h2 {font-size:19px;}
+.focus-settings .household-layout {gap:13px;}
+.focus-footer {font-size:11px;padding:16px clamp(15px,3vw,40px);}
+.focus-content .trusted-ai-section {margin-top:23px;scroll-margin-top:20px;}
+.focus-content .trusted-ai-section .section-head {margin:0 0 12px;}
+.focus-content .trusted-ai-section .section-head h2 {font-size:clamp(19px,2.1vw,25px);}
+.focus-content .assistant-empty {padding:16px 14px 8px;}
+.focus-content .assistant-empty h3 {font-size:13px;margin:0 0 8px;}
+.focus-content .assistant-examples {margin:0 auto;gap:8px;}
+.focus-content .assistant-examples button {padding:10px;font-size:11px;}
+.focus-content .assistant-form {padding:13px 17px;}
+.focus-content .assistant-form textarea {min-height:66px;}
+.focus-content .assistant-privacy {padding:6px 17px 13px;}
+.focus-content .assistant-shell {border-radius:16px;}
+@media(max-width:950px) {
+  .focus-layout {grid-template-columns:1fr;}
+  .focus-sidebar {padding:14px 16px;}
+  .focus-sidebar .brand {padding:0 5px 6px;}
+  .focus-sidebar .sidebar-bottom {display:none;}
+}
+@media(max-width:620px) {
+  .focus-topbar {height:auto;min-height:62px;padding:9px 12px;}
+  .focus-topbar .topbar-trail {font-size:10px;letter-spacing:.04em;}
+  .focus-topbar .refresh-button {font-size:0;gap:0;}
+  .focus-topbar .refresh-button svg {width:18px;height:18px;}
+  .focus-page-intro h1 {font-size:24px;}
+  .focus-location {padding:12px;}
+  .focus-location .location-controls {max-width:none;width:100%;}
+  .focus-air-primary {padding:14px;gap:12px;}
+  .focus-aqi {width:92px;height:100px;}
+  .focus-aqi strong {font-size:35px;}
+  .focus-aqi-copy h3 {font-size:16px;}
+  .focus-air-details>div {padding:10px;display:flex;flex-direction:column;align-items:flex-start;gap:4px;}
+  .focus-air-details>div strong {font-size:11px;text-align:left;}
+  .focus-task {grid-template-columns:34px minmax(0,1fr);gap:8px;padding:12px;}
+  .focus-task-action {grid-column:2;justify-self:start;margin-top:3px;}
+  .focus-settings>summary {padding:14px;}
+  .focus-settings>summary span {display:none;}
+  .focus-content .assistant-examples {grid-template-columns:1fr;}
+  .focus-content .assistant-empty {padding:14px 12px 4px;}
+}

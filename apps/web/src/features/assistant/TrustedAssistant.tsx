@@ -1,4 +1,4 @@
-import { AlertCircle, ArrowUpRight, BookOpenCheck, Bot, Send, ShieldCheck, Sparkles } from "lucide-react";
+import { AlertCircle, ArrowUpRight, BookOpenCheck, Send, ShieldCheck } from "lucide-react";
 import { useRef, useState } from "react";
 import { BrowserVoice } from "./BrowserVoice";
 import { t } from "../language/locale";
@@ -10,8 +10,6 @@ import type { AssistantAnswer } from "../../lib/api";
 const SUGGESTIONS = [
   "What does WHO recommend for PM2.5?",
   "How is CPCB AQI different from US AQI?",
-  "What helps reduce indoor smoke?",
-  "Who is more sensitive to air pollution?",
 ];
 
 type Message = { id: number; question: string; response: AssistantAnswer };
@@ -72,29 +70,16 @@ export function TrustedAssistant({locale="en"}:{locale?:Locale}) {
     <section id="assistant" className="trusted-ai-section" aria-labelledby="trusted-ai-title">
       <div className="section-head">
         <div>
-          <p className="eyebrow">03 / YOUR EVIDENCE ASSISTANT</p>
+          <p className="eyebrow">02 / WHO &amp; CPCB EVIDENCE</p>
           <h2 id="trusted-ai-title">Ask about the air. Check the source.</h2>
-          <p>Reviewed WHO and CPCB references, linked citations and honest uncertainty.</p>
+          <p>Clear explanations with original WHO/CPCB links. Unsupported questions get an honest refusal.</p>
         </div>
-        <span className="plan-badge"><BookOpenCheck size={16} aria-hidden="true"/> Source grounded</span>
+        <span className="plan-badge"><BookOpenCheck size={16} aria-hidden="true"/> Official references</span>
       </div>
       <div className="assistant-shell">
-        <div className="assistant-banner">
-          <span className="assistant-banner-mark"><Bot size={28} aria-hidden="true"/></span>
-          <div>
-            <strong>Evidence first. AI second.</strong>
-            <p>
-              This assistant only answers questions supported by our reviewed WHO/CPCB source
-              registry. It does not use your location, medical history or live AQI, and it
-              cannot tell whether your street is safe right now.
-            </p>
-          </div>
-        </div>
         {history.length === 0 ? (
           <div className="assistant-empty">
-            <Sparkles size={24} aria-hidden="true"/>
-            <h3>What would you like to understand?</h3>
-            <p>Choose an example or write your own question. We&apos;ll show the evidence alongside each answer.</p>
+            <h3>Ask a question—or try one below.</h3>
             <div className="assistant-examples">
               {SUGGESTIONS.map((suggestion) => (
                 <button key={suggestion} type="button" disabled={busy} onClick={() => void ask(suggestion)}>
