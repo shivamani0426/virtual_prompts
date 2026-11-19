@@ -37,6 +37,35 @@ A phone-specific test is still necessary, and older Android versions may
 not be supported. The running app needs network access for live AQI, WHO/CPCB
 source answers, and community features.
 
+## City and location selection (Android preview v0.9.2)
+
+On **Air outlook**, type any supported city or town into **Search any city or town**,
+then tap **Search city** and select a returned result. This queries the existing
+`/api/v1/places` geocoding endpoint rather than a fixed eight-city list. If the
+geocoding provider has no result or the network is offline, the previous city
+remains selected and the app displays an error rather than inventing coordinates.
+
+**Use my location** is optional and must be tapped to request **foreground**
+device location permission. No location permission is requested on startup and
+no background tracking is implemented. The GPS coordinates are rounded to
+**two decimal degrees** before air-quality requests (approximately kilometer
+precision). Locality naming is best-effort; when reverse geocoding is unavailable
+the app shows "Near my location" rather than inventing a city name. Coordinates
+are not saved to SecureStore and are not sent to the community reporting service.
+If location permission is denied or location services are off, ordinary city
+search remains available.
+
+**Scope note:** Community reports and advisory preferences still use the
+moderated, supported city list; dynamic place search and device geolocation
+are for the **air outlook** only. The displayed reading is modelled **US AQI**,
+not an official CPCB measurement.
+
+**Android phone acceptance:** In v0.9.2, check both city results and
+**Use my location** on a real phone: allow approximate location, deny the
+permission, disable location services, retry offline, and check the displayed
+area and AQI. The emulator install-and-launch CI is not a physical GPS or
+translation-verification pass.
+
 ## Included mobile flows
 
 - Real modelled **US AQI** by city; missing readings never become made-up numbers.
