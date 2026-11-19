@@ -191,7 +191,7 @@ export default function App(){
   const cityOptions=Object.keys(CITIES).map(value=>({value,label:value}));
   const typeOptions=Object.entries(REPORT_TYPES).map(([value,label])=>({value,label}));
   return <SafeAreaProvider><SafeAreaView style={styles.root} edges={["top","bottom","left","right"]}>
-    <StatusBar barStyle="dark-content" backgroundColor={COLORS.bg}/>
+    <StatusBar barStyle="dark-content"/>
     <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag">
       <View style={styles.hero}>
         <Text style={styles.brand}>WINTER SMOG ASSISTANT</Text>
