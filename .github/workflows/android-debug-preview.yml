@@ -68,7 +68,7 @@ jobs:
           profile: pixel_4
           disable-animations: true
           script: |
-            set -euo pipefail
+            set -eu
             adb install -r apps/mobile/android/app/build/outputs/apk/release/app-release.apk
             adb shell pm path com.winter.smogassistant | grep -F "package:"
             adb logcat -c
