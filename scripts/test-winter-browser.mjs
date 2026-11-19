@@ -110,7 +110,7 @@ try {
   await smallPage.locator("#assistant").waitFor();
   await smallPage.locator("#planner").waitFor();
   await smallPage.getByRole("link", {
-    name: "Get Android test APK from GitHub Actions (preview only)"
+    name: "Download standalone ClearSkies Android test APK (preview)"
   }).waitFor();
 
   for (const width of [320, 360, 390, 412, 480]) {
