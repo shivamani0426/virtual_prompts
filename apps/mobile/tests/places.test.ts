@@ -14,6 +14,8 @@ test("Accept non-preset geocoded towns and reject invalid places",()=>{
   assert.ok(isPlace(p));
   assert.equal(placeLabel(p),"Chikkaballapur, Karnataka, India");
   assert.ok(isPlace({name:"My approximate location",latitude:13.4,longitude:77.7}));
+  assert.ok(isPlace({name:"Small town",latitude:14.2,longitude:75.4,admin1:null,country:"India"}));
+  assert.equal(placeLabel({name:"Small town",latitude:14.2,longitude:75.4,admin1:null,country:"India"}),"Small town, India");
   for(const bad of [{name:"",latitude:12,longitude:70},{name:"City",latitude:NaN,longitude:70},
     {name:"City",latitude:-91,longitude:70},{name:"City",latitude:12,longitude:"70"},null,{}]){
     assert.equal(isPlace(bad),false);
