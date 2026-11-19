@@ -154,10 +154,10 @@ export function App(){
         <div className="topbar-trail">WINTER SMOG ASSISTANT</div>
         <div className="topbar-actions">
           <a className="android-download-link"
-            href="https://github.com/shivamani0426/virtual_prompts/actions/workflows/android-debug-preview.yml"
+            href="https://github.com/shivamani0426/virtual_prompts/releases/download/android-preview/clearskies-android-preview.apk"
             target="_blank" rel="noopener noreferrer"
-            aria-label="Get Android test APK from GitHub Actions (preview only)"
-            title="Android test preview: open the latest successful GitHub Actions run and download the APK artifact. This is not a standalone release.">
+            aria-label="Download standalone ClearSkies Android test APK (preview)"
+            title="Installable, standalone Android preview APK. Test-signed; not Play Store certified or production-ready.">
             <Download size={16} aria-hidden="true"/>
             <span className="android-download-text">Android <small>test APK</small></span>
           </a>
