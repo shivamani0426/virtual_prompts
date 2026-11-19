@@ -2,7 +2,7 @@ name: Browser E2E — Winter Smog public assistant and impact
 on:
   push:
     branches: [main]
-    paths: [".github/workflows/browser-e2e.yml"]
+    paths: [".github/workflows/browser-e2e.yml", "scripts/test-winter-browser.mjs"]
   workflow_run:
     workflows: ["Deploy Winter Smog React to Cloudflare"]
     types: [completed]
