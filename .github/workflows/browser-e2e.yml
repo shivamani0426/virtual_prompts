@@ -1,18 +1,14 @@
 name: Browser E2E — Winter Smog public assistant and impact
 on:
-  push:
-    paths:
-      - 'scripts/test-winter-browser.mjs'
-      - '.github/workflows/browser-e2e.yml'
-  pull_request:
-    paths:
-      - 'scripts/test-winter-browser.mjs'
-      - '.github/workflows/browser-e2e.yml'
+  workflow_run:
+    workflows: ["Deploy Winter Smog React to Cloudflare"]
+    types: [completed]
   workflow_dispatch:
 permissions:
   contents: read
 jobs:
   browser:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:

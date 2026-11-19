@@ -70,6 +70,7 @@ function fakeFetch(mode: "normal" | "offline" | "weather-outage" = "normal") {
 
 beforeEach(() => {
   localStorage.clear();
+  window.history.replaceState({}, "", "/");
 });
 
 afterEach(() => {
@@ -87,6 +88,7 @@ describe("Dashboard API integration", () => {
     expect(screen.getByText("19.5 °C")).toBeInTheDocument();
     expect(screen.getByText(/not official CPCB AQI/i)).toBeInTheDocument();
     expect(screen.queryByText(/Shorten or reschedule strenuous outdoor play/i)).not.toBeInTheDocument();
+    fireEvent.click(screen.getByText(/Personalize my advice/i));
     fireEvent.click(screen.getByRole("checkbox", { name: /Children/i }));
     expect(screen.getByText(/Shorten or reschedule strenuous outdoor play/i)).toBeInTheDocument();
   });
@@ -110,6 +112,7 @@ describe("Dashboard API integration", () => {
     const fetchMock = fakeFetch();
     render(<App />);
     await screen.findByText("Unhealthy for sensitive groups");
+    fireEvent.click(screen.getByText(/Personalize my advice/i));
     fireEvent.click(screen.getByRole("checkbox", { name: /Older adults/i }));
     expect(screen.getByText(/Prefer indoor activities and limit strenuous outdoor walks/i)).toBeInTheDocument();
     const saved = localStorage.getItem("winter-smog:household-v1");
@@ -131,5 +134,41 @@ describe("Dashboard API integration", () => {
     await screen.findByText("Unhealthy for sensitive groups");
     await screen.findByText("Live readings are unavailable right now.");
     expect(screen.getByRole("img", { name: "US AQI 135" })).toBeInTheDocument();
+  });
+
+  it("shows only air, evidence AI, and today's actions on the default dashboard", async () => {
+    fakeFetch();
+    render(<App />);
+    await screen.findByText("Unhealthy for sensitive groups");
+    expect(document.querySelectorAll("main .focus-air,main .trusted-ai-section,main .focus-plan")).toHaveLength(3);
+    expect(document.querySelector("main #community")).toBeNull();
+    expect(document.querySelector("main #impact")).toBeNull();
+    expect(document.querySelector("main #forecast")).toBeNull();
+    expect(document.querySelectorAll(".focus-task")).toHaveLength(3);
+    expect(screen.getByText(/Personalize my advice/i)).toBeInTheDocument();
+  });
+
+  it("can mark and undo today's actions while retaining saved routine progress", async () => {
+    fakeFetch();
+    render(<App />);
+    await screen.findByText("Unhealthy for sensitive groups");
+    fireEvent.click(screen.getAllByRole("button", { name:"Mark done" })[0]!);
+    expect(screen.getByText("1 / 3 done")).toBeInTheDocument();
+    expect(localStorage.getItem("winter-smog:routines-v1")).toContain('"done"');
+    fireEvent.click(screen.getByRole("button", { name:"Done" }));
+    expect(screen.getByText("0 / 3 done")).toBeInTheDocument();
+  });
+
+  it("keeps community features accessible in a separate view instead of the dashboard", async () => {
+    fakeFetch();
+    render(<App />);
+    await screen.findByText("Unhealthy for sensitive groups");
+    fireEvent.click(screen.getByRole("link", { name:/Community tools/i }));
+    expect(document.querySelector("main #community")).not.toBeNull();
+    expect(document.querySelector("main #air")).toBeNull();
+    expect(document.querySelector("main #planner")).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name:/Back to today/i }));
+    await screen.findByText("Unhealthy for sensitive groups");
+    expect(document.querySelector("main #community")).toBeNull();
   });
 });

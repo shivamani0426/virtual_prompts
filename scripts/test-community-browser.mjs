@@ -45,6 +45,9 @@ try {
   page = await context.newPage();
   page.on("pageerror",error=>errors.push(error.message));
   await page.goto(site,{waitUntil:"domcontentloaded",timeout:90000});
+  assert.equal(await page.locator("main #community").count(),0,
+    "Community tools must not clutter the default dashboard");
+  await page.getByRole("link",{name:"Community tools"}).click();
   const hub=page.locator("#community");
   await hub.getByRole("heading",{name:/Cleaner air, together/}).waitFor({timeout:25000});
   await hub.locator(".community-challenge").first().getByRole("button",{name:"Join challenge"}).waitFor({timeout:35000});
@@ -93,6 +96,8 @@ try {
     const small=await mobile.newPage();
     small.on("pageerror",error=>errors.push(error.message));
     await small.goto(site,{waitUntil:"domcontentloaded",timeout:90000});
+    await small.getByRole("button",{name:"Open navigation"}).click();
+    await small.getByRole("link",{name:"Community tools"}).click();
     await small.locator("#community").getByRole("heading",{name:/Cleaner air, together/}).waitFor();
     const dims=await small.evaluate(()=>({
       viewport:document.documentElement.clientWidth,
