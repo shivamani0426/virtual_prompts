@@ -1,10 +1,12 @@
 import {useEffect,useState} from "react";
 import type {ReactNode} from "react";
-import {Alert,Linking,Pressable,SafeAreaView,ScrollView,StatusBar,Text,TextInput,View} from "react-native";
+import {Alert,Linking,Pressable,ScrollView,StatusBar,Text,TextInput,View,useWindowDimensions} from "react-native";
+import {SafeAreaProvider,SafeAreaView} from "react-native-safe-area-context";
 import {getLocales} from "expo-localization";
 import * as SecureStore from "expo-secure-store";
 import * as Speech from "expo-speech";
-import {styles,COLORS} from "./src/styles";
+import {styles} from "./src/styles";
+import {selectEnglishVoice} from "./src/voice";
 import {LANGUAGES,chooseLocale,translate} from "./src/i18n";
 import type {Locale} from "./src/i18n";
 import {API,CITIES,REPORT_TYPES,ask,community,getAir,officialURL} from "./src/api";
@@ -29,20 +31,24 @@ function Card({children,title}:{children:ReactNode;title?:string}){
   </View>;
 }
 function Info({text}:{text:string}){return <Text style={styles.muted}>{text}</Text>;}
-function ChoiceRow({options,value,onChange}:{
-  options:{value:string;label:string}[];value:string;onChange:(value:string)=>void;
+function ChoiceRow({options,value,onChange,wrap=false}:{
+  options:{value:string;label:string}[];value:string;onChange:(value:string)=>void;wrap?:boolean;
 }){
-  return <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips}>
-    {options.map(c=><Pressable key={c.value} accessibilityRole="button"
-      accessibilityState={{selected:value===c.value}}
-      onPress={()=>onChange(c.value)}
-      style={[styles.chip,value===c.value&&styles.selectedChip]}>
-      <Text style={[styles.chipText,value===c.value&&styles.selectedChipText]}>{c.label}</Text>
-    </Pressable>)}
-  </ScrollView>;
+  const choices=options.map(c=><Pressable key={c.value} accessibilityRole="button"
+    accessibilityState={{selected:value===c.value}}
+    accessibilityLabel={c.label}
+    onPress={()=>onChange(c.value)}
+    style={[styles.chip,value===c.value&&styles.selectedChip]}>
+    <Text style={[styles.chipText,value===c.value&&styles.selectedChipText]}>{c.label}</Text>
+  </Pressable>);
+  return wrap?<View style={styles.chipsWrap}>{choices}</View>:
+    <ScrollView horizontal nestedScrollEnabled showsHorizontalScrollIndicator={false}
+      contentContainerStyle={styles.chips}>{choices}</ScrollView>;
 }
 
 export default function App(){
+  const {width}=useWindowDimensions();
+  const compact=width<480;
   const [locale,setLocale]=useState<Locale>(chooseLocale(getLocales()[0]?.languageCode));
   const [tab,setTab]=useState<Tab>("home");
   const [city,setCity]=useState("Bengaluru");
@@ -60,6 +66,7 @@ export default function App(){
   const [busy,setBusy]=useState(false);
   const [error,setError]=useState("");
   const [notice,setNotice]=useState("");
+  const [speaking,setSpeaking]=useState(false);
   const tr=(key:Parameters<typeof translate>[1])=>translate(locale,key);
   useEffect(()=>{
     void SecureStore.getItemAsync(LOCALE_KEY).then(value=>{
@@ -111,14 +118,44 @@ export default function App(){
   },[tab,city]);
 
   async function askAI(){
+    await stopReading();
     await run(()=>ask(question),result=>{
       setAnswer(result);setQuestion("");
     });
   }
-  function readAnswer(){
+  async function stopReading(){
+    try{await Speech.stop();}
+    catch{setNotice("Could not stop speech playback on this device.");}
+    finally{setSpeaking(false);}
+  }
+  useEffect(()=>()=>{void Speech.stop();},[]);
+  useEffect(()=>{
+    if(tab!=="assistant"){void Speech.stop();setSpeaking(false);}
+  },[tab]);
+  async function readAnswer(){
     if(!answer?.answer)return;
-    Speech.stop();
-    Speech.speak(answer.answer.slice(0,2000),{language:"en-IN",rate:.92});
+    if(speaking){await stopReading();return;}
+    try{
+      await Speech.stop();
+      const voices=await Speech.getAvailableVoicesAsync();
+      const selected=selectEnglishVoice(voices);
+      if(voices.length>0&&!selected){
+        setNotice("No English text-to-speech voice is installed. Enable an English voice in Android speech settings.");
+        return;
+      }
+      if(voices.length===0)setNotice("Voice availability could not be verified. Device speech settings may be needed.");
+      Speech.speak(answer.answer.slice(0,1800),{
+        language:selected?.language||"en-IN",
+        ...(selected?{voice:selected.identifier}:{}),
+        rate:.92,
+        onDone:()=>setSpeaking(false),
+        onStopped:()=>setSpeaking(false),
+        onError:()=>{setSpeaking(false);setNotice("Speech playback failed. Read the answer on screen.");},
+      });
+      setSpeaking(true);
+    }catch{
+      setSpeaking(false);setNotice("Speech playback is unavailable. Read the answer on screen.");
+    }
   }
   async function submitReport(){
     await run(()=>community("/reports","POST",{city,category:reportType,description:reportText}),()=>{
@@ -153,18 +190,18 @@ export default function App(){
   }
   const cityOptions=Object.keys(CITIES).map(value=>({value,label:value}));
   const typeOptions=Object.entries(REPORT_TYPES).map(([value,label])=>({value,label}));
-  return <SafeAreaView style={styles.root}>
+  return <SafeAreaProvider><SafeAreaView style={styles.root} edges={["top","bottom","left","right"]}>
     <StatusBar barStyle="dark-content"/>
-    <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
+    <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag">
       <View style={styles.hero}>
         <Text style={styles.brand}>WINTER SMOG ASSISTANT</Text>
-        <Text style={styles.title}>A clearer day starts here.</Text>
+        <Text style={[styles.title,compact&&styles.titleCompact]}>A clearer day starts here.</Text>
         <Text style={styles.heroSub}>{tr("aqiNotice")} WHO/CPCB-backed education, no guaranteed safe outdoor period.</Text>
       </View>
       <Text style={styles.label}>{tr("language")}</Text>
       <ChoiceRow value={locale} onChange={changeLocale}
         options={Object.entries(LANGUAGES).map(([value,info])=>({value,label:info.label}))}/>
-      <ChoiceRow value={tab} onChange={value=>setTab(value as Tab)}
+      <ChoiceRow value={tab} onChange={value=>setTab(value as Tab)} wrap={compact}
         options={TABS.map(value=>({value,label:tr(value)}))}/>
       {error?<View style={styles.caution}><Text accessibilityRole="alert" style={styles.warningText}>{error}</Text></View>:null}
       {notice?<View style={styles.status}><Text style={styles.statusText}>{notice}</Text></View>:null}
@@ -201,8 +238,8 @@ export default function App(){
         {answer?<Card title={answer.mode==="generated"?"AI paraphrase — verify citations":
           answer.mode==="evidence_only"?"Reviewed source wording":"Could not verify / urgent safety"}>
           <Text style={styles.text}>{answer.answer}</Text>
-          <Action label={tr("speak")} onPress={readAnswer} secondary/>
-          <Action label="Stop reading" onPress={()=>Speech.stop()} secondary/>
+          <Info text="Speech reads English source evidence, not translated medical advice."/>
+          <Action label={speaking?"Stop reading":tr("speak")} onPress={()=>void readAnswer()} secondary/>
           <Text style={styles.label}>{tr("source")}</Text>
           {answer.citations.map(c=><View key={c.id} style={styles.smallCard}>
             <Text style={styles.text}>{c.publisher}: {c.section}</Text>
@@ -287,5 +324,5 @@ export default function App(){
         Regional UI labels require native-speaker review before a final public release.
         Do not use this application for emergency decisions.</Text>
     </ScrollView>
-  </SafeAreaView>;
+  </SafeAreaView></SafeAreaProvider>;
 }
