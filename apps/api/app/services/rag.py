@@ -11,8 +11,25 @@ from app.knowledge.retrieval import citation, registry, retrieve, tokens
 _MODEL_URL = "https://winter-smog-rag-ai.1nc24cs197.workers.dev/assist"
 _URGENT = re.compile(
     r"(?i)\b(can't breathe|cannot breathe|severe breath(?:ing)?|struggling to breathe|"
-    r"chest pain|fainting|blue lips|unconscious|emergency ambulance)\b"
+    r"chest pain|fainting|blue lips|unconscious|emergency ambulance|difficulty breathing|shortness of breath|breathless|severe wheezing)\b"
 )
+
+# Recognize high-risk phrases from the six supported regional-language inputs.
+# These explicit phrases trigger escalation, not personal medical assessment.
+_REGIONAL_URGENT = re.compile(
+    r"(सांस लेने में तकलीफ|साँस लेने में तकलीफ|सांस लेने में दिक्कत|"
+    r"साँस लेने में दिक्कत|सीने में दर्द|"
+    r"ಉಸಿರಾಡಲು ಕಷ್ಟ|ಎದೆ ನೋವು|"
+    r"శ్వాస తీసుకోవడం కష్టం|ఛాతీ నొప్పి|"
+    r"மூச்சு விட சிரமம்|நெஞ்சு வலி|"
+    r"শ্বাস নিতে কষ্ট|বুকে ব্যথা|"
+    r"श्वास घेण्यास त्रास|छातीत दुखणे|"
+    r"saans nahi aa rahi|saas nahi aa rahi)",
+    re.IGNORECASE,
+)
+# English-only reviewed evidence must not silently imply translated authority.
+_REGIONAL_SCRIPT = re.compile(r"[\u0900-\u097F\u0980-\u09FF\u0B80-\u0BFF\u0C00-\u0CFF]")
+
 _MEDICAL = re.compile(
     r"(?i)\b(stop|start|change|increase|decrease|dose|prescribe|prescription|"
     r"medicine|medication|inhaler|antibiotic|diagnos(?:e|is)|cure|treat my)\b"
@@ -117,7 +134,7 @@ class RAGAssistant:
 
     async def answer(self, question: str) -> dict:
         query = question.strip()
-        if _URGENT.search(query):
+        if _URGENT.search(query) or _REGIONAL_URGENT.search(query):
             return response(
                 mode="urgent_safety", passages=[],
                 text=(
@@ -151,6 +168,18 @@ class RAGAssistant:
                     "for India's AQI and current official warnings."
                 ),
                 limitations=["No live AQI or station observation is used to answer chat questions."],
+            )
+        if _REGIONAL_SCRIPT.search(query):
+            return response(
+                mode="abstained", passages=[],
+                text=(
+                    "The reviewed WHO/CPCB evidence assistant currently supports English "
+                    "questions only. Please ask in English; regional-language clinical "
+                    "translations have not been independently verified."
+                ),
+                limitations=[
+                    "Do not rely on an unverified translation for medical or emergency decisions."
+                ],
             )
         passages = retrieve(query)
         if not passages:
