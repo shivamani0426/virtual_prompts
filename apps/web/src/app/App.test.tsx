@@ -136,6 +136,19 @@ describe("Dashboard API integration", () => {
     expect(screen.getByRole("img", { name: "US AQI 135" })).toBeInTheDocument();
   });
 
+  it("shows Android test APK access in the header without a new dashboard block", async () => {
+    fakeFetch();
+    render(<App />);
+    const apk = screen.getByRole("link", { name: /Get Android test APK from GitHub Actions/i });
+    expect(apk).toHaveAttribute("href",
+      "https://github.com/shivamani0426/virtual_prompts/actions/workflows/android-debug-preview.yml");
+    expect(apk).toHaveAttribute("target", "_blank");
+    expect(apk).toHaveAttribute("rel", "noopener noreferrer");
+    expect(apk).toHaveAttribute("title", expect.stringMatching(/not a standalone release/i));
+    await screen.findByText("Unhealthy for sensitive groups");
+    expect(document.querySelectorAll("main .focus-air,main .trusted-ai-section,main .focus-plan")).toHaveLength(3);
+  });
+
   it("shows only air, evidence AI, and today's actions on the default dashboard", async () => {
     fakeFetch();
     render(<App />);

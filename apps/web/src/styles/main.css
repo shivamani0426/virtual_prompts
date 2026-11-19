@@ -572,6 +572,21 @@ h2 { letter-spacing: -.045em; }
 @media(max-width:700px){.language-control select{width:80px;}.topbar-actions {gap:7px;}.browser-voice>span{flex-basis:100%;}}
 
 
+/* One compact download affordance in the chrome; never add a dashboard section. */
+.android-download-link { display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  min-height:38px;padding:7px 10px;border-radius:10px;
+  background:#ecf5e9;border:1px solid #cfe4d0;color:#296345;
+  font-size:11px;font-weight:800;text-decoration:none;white-space:nowrap;flex:none; }
+.android-download-link:hover { background:#dfeddf;border-color:#abd2b5; }
+.android-download-link small { font-size:10px;font-weight:600;color:#547c63; }
+@media(max-width:700px) {
+  .android-download-link { width:40px;min-width:40px;min-height:40px;padding:8px; }
+  .android-download-text { display:none; }
+}
+@media(max-width:420px) {
+  .focus-topbar .topbar-trail { display:none; }
+}
+
 /* Focused dashboard — three purposeful blocks, no giant hero or stacked sub-apps */
 .focus-layout {grid-template-columns:210px minmax(0,1fr);}
 .focus-sidebar {padding:28px 16px 17px;}
