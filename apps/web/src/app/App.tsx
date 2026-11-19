@@ -1,5 +1,5 @@
 import {
-  ArrowRight, BookOpenCheck, Compass, Languages, LocateFixed, MapPin, Menu,
+  ArrowRight, BookOpenCheck, Compass, Download, Languages, LocateFixed, MapPin, Menu,
   RefreshCcw, Search, Settings2, UsersRound, Wind, X,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -153,6 +153,14 @@ export function App(){
         </button>
         <div className="topbar-trail">WINTER SMOG ASSISTANT</div>
         <div className="topbar-actions">
+          <a className="android-download-link"
+            href="https://github.com/shivamani0426/virtual_prompts/actions/workflows/android-debug-preview.yml"
+            target="_blank" rel="noopener noreferrer"
+            aria-label="Get Android test APK from GitHub Actions (preview only)"
+            title="Android test preview: open the latest successful GitHub Actions run and download the APK artifact. This is not a standalone release.">
+            <Download size={16} aria-hidden="true"/>
+            <span className="android-download-text">Android <small>test APK</small></span>
+          </a>
           <label className="language-control">
             <Languages size={16} aria-hidden="true"/>
             <span className="visually-hidden">{t(locale,"language")}</span>
