@@ -28,6 +28,7 @@ export const styles=StyleSheet.create({
   buttonAltText:{color:COLORS.forest,fontSize:14,fontWeight:"800",textAlign:"center",flexShrink:1},
   disabled:{opacity:.53},
   input:{borderColor:COLORS.border,borderWidth:1,borderRadius:11,backgroundColor:"#fcfefa",paddingHorizontal:14,paddingVertical:11,color:COLORS.ink,fontSize:14,minHeight:47},
+  searchResult:{minHeight:48,justifyContent:"center",borderColor:COLORS.border,borderWidth:1,borderRadius:11,backgroundColor:COLORS.white,paddingHorizontal:14,paddingVertical:10,marginBottom:6},
   multiline:{minHeight:101,textAlignVertical:"top"},
   caution:{backgroundColor:COLORS.warning,borderRadius:12,padding:14,marginVertical:11},
   warningText:{color:"#7e592f",fontSize:12,lineHeight:19},

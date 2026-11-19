@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import {LANGUAGES,chooseLocale,translate} from "../src/i18n";
 
 test("All seven language entries and every core interface key resolve",()=>{
-  const keys=["home","assistant","community","challenges","alerts","language","city","refresh","ask","askHint","speak","source","report","pending","join","checkIn","enableAlerts","save","check","aqiNotice","privacy","unavailable","threshold","myReports"] as const;
+  const keys=["home","assistant","community","challenges","alerts","language","city","refresh","ask","askHint","speak","source","report","pending","join","checkIn","enableAlerts","save","check","aqiNotice","privacy","unavailable","threshold","myReports","searchCity","searchHint","useLocation","showing","noMatches","locationDenied","locationUnavailable","locationApproximate","nearMe"] as const;
   assert.equal(Object.keys(LANGUAGES).length,7);
   for(const key of Object.keys(LANGUAGES) as Array<keyof typeof LANGUAGES>){
     assert.ok(LANGUAGES[key].label);
@@ -26,7 +26,7 @@ test("The India CPCB vs US AQI modelled-data disclaimer is never omitted",()=>{
 
 test("Regional interface keys are translated, not silently replaced by English",()=>{
   const keySet=["home","assistant","city","refresh","ask","askHint","myReports",
-    "speak","source","privacy","pending","unavailable"] as const;
+    "speak","source","privacy","pending","unavailable","searchCity","searchHint","useLocation","showing"] as const;
   for(const locale of Object.keys(LANGUAGES) as Array<keyof typeof LANGUAGES>){
     if(locale==="en")continue;
     for(const key of keySet){

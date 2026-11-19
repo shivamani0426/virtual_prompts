@@ -57,6 +57,7 @@ jobs:
           test -x "$aapt"
           "$apksigner" verify --verbose --print-certs "$apk"
           "$aapt" dump badging "$apk" | grep -F "package: name='com.winter.smogassistant'"
+          "$aapt" dump permissions "$apk" | grep -F "android.permission.ACCESS_COARSE_LOCATION"
           unzip -Z1 "$apk" | grep -Fqx "assets/index.android.bundle"
           echo "PASS: Android preview APK is signed and embeds the offline launch JS bundle."
       - name: Allow Android emulator KVM hardware acceleration
@@ -78,6 +79,7 @@ jobs:
             adb shell am start -W -n com.winter.smogassistant/.MainActivity
             sleep 12
             adb shell pidof com.winter.smogassistant
+            sh apps/mobile/ci/verify-location-controls.sh
             if adb logcat -d -b crash | grep -F "com.winter.smogassistant"; then echo "App crashed after launch" >&2; exit 1; fi
             echo "PASS: APK installed, launched, and remained running without Metro."
       - name: Upload installable APK after emulator verification

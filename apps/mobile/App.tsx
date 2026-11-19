@@ -1,21 +1,35 @@
-import {useEffect,useState} from "react";
+import {useEffect,useRef,useState} from "react";
 import type {ReactNode} from "react";
 import {Alert,Linking,Pressable,ScrollView,StatusBar,Text,TextInput,View,useWindowDimensions} from "react-native";
 import {SafeAreaProvider,SafeAreaView} from "react-native-safe-area-context";
 import {getLocales} from "expo-localization";
 import * as SecureStore from "expo-secure-store";
 import * as Speech from "expo-speech";
+import * as Location from "expo-location";
 import {styles} from "./src/styles";
 import {selectEnglishVoice} from "./src/voice";
+import {approximateCoordinates,placeLabel} from "./src/places";
+import type {Place} from "./src/places";
 import {LANGUAGES,chooseLocale,translate} from "./src/i18n";
 import type {Locale} from "./src/i18n";
-import {API,CITIES,REPORT_TYPES,ask,community,getAir,officialURL} from "./src/api";
+import {CITIES,REPORT_TYPES,ask,community,getAir,officialURL,searchCities} from "./src/api";
 import type {Air,Assistant,Challenge,Report,ReportType,AlertStatus,AlertPref} from "./src/api";
 
 type Tab="home"|"assistant"|"community"|"challenges"|"alerts";
 const TABS:Tab[]=["home","assistant","community","challenges","alerts"];
 const LOCALE_KEY="winter-smog-mobile-locale-v1";
 const failure=(error:unknown)=>error instanceof Error?error.message:"Service temporarily unavailable.";
+const INITIAL_AIR_PLACE:Place={name:"Bengaluru",admin1:"Karnataka",country:"India",
+  latitude:CITIES.Bengaluru!.lat,longitude:CITIES.Bengaluru!.lon};
+function locationWithTimeout<T>(promise:Promise<T>,ms=15000):Promise<T>{
+  return new Promise<T>((resolve,reject)=>{
+    const timer=setTimeout(()=>reject(new Error("Location timed out. Search for a city instead.")),ms);
+    void promise.then(
+      value=>{clearTimeout(timer);resolve(value);},
+      error=>{clearTimeout(timer);reject(error);}
+    );
+  });
+}
 function Action({label,onPress,disabled=false,secondary=false}:{
   label:string;onPress:()=>void;disabled?:boolean;secondary?:boolean;
 }){
@@ -51,7 +65,15 @@ export default function App(){
   const compact=width<480;
   const [locale,setLocale]=useState<Locale>(chooseLocale(getLocales()[0]?.languageCode));
   const [tab,setTab]=useState<Tab>("home");
+  // Community reporting still uses moderated preset cities; AQI can use any geocoded town.
   const [city,setCity]=useState("Bengaluru");
+  const [airPlace,setAirPlace]=useState<Place>(INITIAL_AIR_PLACE);
+  const [cityQuery,setCityQuery]=useState("");
+  const [cityMatches,setCityMatches]=useState<Place[]>([]);
+  const [citySearchError,setCitySearchError]=useState("");
+  const [citySearching,setCitySearching]=useState(false);
+  const searchVersion=useRef(0);
+  const [locating,setLocating]=useState(false);
   const [air,setAir]=useState<Air|null>(null);
   const [question,setQuestion]=useState("");
   const [answer,setAnswer]=useState<Assistant|null>(null);
@@ -83,10 +105,74 @@ export default function App(){
     catch(e){setError(failure(e));}
     finally{setBusy(false);}
   }
-  async function refreshAir(location=city){
-    await run(()=>getAir(location),setAir);
+  async function refreshAir(){
+    await run(()=>getAir(airPlace),setAir);
   }
-  useEffect(()=>{void refreshAir(city);},[city]);
+  useEffect(()=>{
+    let active=true;
+    setAir(null);
+    setError("");
+    setBusy(true);
+    void getAir(airPlace).then(data=>{if(active)setAir(data);})
+      .catch(e=>{if(active)setError(failure(e));})
+      .finally(()=>{if(active)setBusy(false);});
+    return()=>{active=false;};
+  },[airPlace]);
+  async function findCity(){
+    const version=++searchVersion.current;
+    setCityMatches([]);
+    setCitySearchError("");
+    setCitySearching(true);
+    try{
+      const found=await searchCities(cityQuery);
+      if(version===searchVersion.current){
+        setCityMatches(found);
+        if(!found.length)setCitySearchError(tr("noMatches"));
+      }
+    }catch(e){
+      if(version===searchVersion.current)setCitySearchError(failure(e));
+    }finally{
+      if(version===searchVersion.current)setCitySearching(false);
+    }
+  }
+  function selectAirPlace(place:Place){
+    searchVersion.current++;
+    setAirPlace(place);
+    setCityQuery("");
+    setCitySearching(false);
+    setCityMatches([]);
+    setCitySearchError("");
+  }
+  async function useMyLocation(){
+    setLocating(true);
+    setNotice("");
+    try{
+      // Never prompt for location on app launch; only after this button is tapped.
+      const permission=await Location.requestForegroundPermissionsAsync();
+      if(!permission.granted){
+        setNotice(tr("locationDenied"));
+        return;
+      }
+      if(!await Location.hasServicesEnabledAsync()){
+        setNotice(tr("locationUnavailable"));
+        return;
+      }
+      const position=await locationWithTimeout(
+        Location.getCurrentPositionAsync({accuracy:Location.Accuracy.Balanced})
+      );
+      const coords=approximateCoordinates(position.coords.latitude,position.coords.longitude);
+      // Reverse geocoding is best-effort. AQI works from the rounded coordinates alone.
+      const addresses=await locationWithTimeout(
+        Location.reverseGeocodeAsync(coords).catch(()=>[]),5000
+      ).catch(()=>[]);
+      const address=addresses[0];
+      const locality=address?.city||address?.subregion||address?.region;
+      selectAirPlace({name:locality||tr("nearMe"),...coords});
+      setNotice(tr("locationApproximate"));
+    }catch(e){
+      setNotice(failure(e));
+    }finally{setLocating(false);}
+  }
   async function refreshCommunity(location=city){
     await run(async()=>{
       const [feed,mine]=await Promise.all([
@@ -209,8 +295,23 @@ export default function App(){
       {tab==="home"?<>
         <Text style={styles.sectionTitle}>{tr("home")}</Text>
         <Text style={styles.label}>{tr("city")}</Text>
-        <ChoiceRow value={city} onChange={setCity} options={cityOptions}/>
-        <Card title={city+" · modelled US AQI"}>
+        <Info text={tr("showing")+": "+placeLabel(airPlace)}/>
+        <TextInput style={styles.input} maxLength={80} value={cityQuery}
+          onChangeText={value=>{searchVersion.current++;setCityQuery(value);setCitySearching(false);setCityMatches([]);setCitySearchError("");}}
+          placeholder={tr("searchHint")} accessibilityLabel={tr("searchHint")}
+          autoCapitalize="words" autoCorrect={false} returnKeyType="search"
+          onSubmitEditing={()=>{if(cityQuery.trim().length>=2)void findCity();}}/>
+        <Action label={citySearching?"Searching…":tr("searchCity")} secondary
+          onPress={()=>void findCity()} disabled={citySearching||locating||cityQuery.trim().length<2}/>
+        <Action label={locating?"Locating…":tr("useLocation")} secondary
+          onPress={()=>void useMyLocation()} disabled={citySearching||locating}/>
+        {citySearchError?<Text accessibilityRole="alert" style={styles.warningText}>{citySearchError}</Text>:null}
+        {cityMatches.map((place,index)=><Pressable key={place.name+":"+place.latitude+":"+place.longitude+":"+index}
+          accessibilityRole="button" accessibilityLabel={placeLabel(place)}
+          onPress={()=>selectAirPlace(place)} style={styles.searchResult}>
+          <Text style={styles.text}>{placeLabel(place)}</Text>
+        </Pressable>)}
+        <Card title={placeLabel(airPlace)+" · modelled US AQI"}>
           {air?<><Text style={styles.large}>{Math.round(air.current.us_aqi)}</Text>
             <Text style={styles.cardTitle}>{air.category.level}</Text>
             <Text style={styles.text}>{air.category.advice}</Text>

@@ -1,4 +1,6 @@
 import * as SecureStore from "expo-secure-store";
+import {approximateCoordinates,isPlace} from "./places";
+import type {Place} from "./places";
 export const API="https://winter-smog-fastapi.onrender.com/api/v1";
 export const COMMUNITY="https://winter-smog-community.1nc24cs197.workers.dev";
 const STORAGE="winter-smog-mobile-community-session-v1";
@@ -47,13 +49,22 @@ async function getJson<T>(url:string,init?:RequestInit):Promise<T>{
     return parsed;
   } finally {clearTimeout(timer);}
 }
-export async function getAir(city:string):Promise<Air>{
-  const location=CITIES[city];
-  if(!location)throw new Error("Unsupported city");
-  const data=await getJson<Air>(API+"/air-quality?lat="+location.lat+"&lon="+location.lon);
+export async function getAir(place:Place):Promise<Air>{
+  const location=approximateCoordinates(place.latitude,place.longitude);
+  const data=await getJson<Air>(API+"/air-quality?lat="+location.latitude.toFixed(2)+
+    "&lon="+location.longitude.toFixed(2));
   if(data.aqi_scale!=="US_AQI"||data.official_cpcb_aqi!==false||
-    !Number.isFinite(data.current?.us_aqi))throw new Error("No verified usable modelled US AQI.");
+    !Number.isFinite(data.current?.us_aqi)||data.current.us_aqi<0)
+    throw new Error("No verified usable modelled US AQI.");
   return data;
+}
+/** Searches the existing geocoding backend; not restricted to the preset city list. */
+export async function searchCities(text:string):Promise<Place[]>{
+  const q=text.trim();
+  if(q.length<2||q.length>80||/[<>]/.test(q))throw new Error("Enter 2–80 characters for a city or town.");
+  const response=await getJson<{results?:unknown}>(API+"/places?q="+encodeURIComponent(q));
+  if(!Array.isArray(response.results))throw new Error("City search is temporarily unavailable.");
+  return response.results.filter(isPlace).slice(0,8);
 }
 export async function ask(question:string):Promise<Assistant>{
   const prompt=question.trim();
