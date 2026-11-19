@@ -1,18 +1,14 @@
 name: Community public browser E2E and cleanup
 on:
-  push:
-    paths:
-      - 'scripts/test-community-browser.mjs'
-      - '.github/workflows/community-browser-e2e.yml'
-  pull_request:
-    paths:
-      - 'scripts/test-community-browser.mjs'
-      - '.github/workflows/community-browser-e2e.yml'
+  workflow_run:
+    workflows: ["Deploy Winter Smog React to Cloudflare"]
+    types: [completed]
   workflow_dispatch:
 permissions:
   contents: read
 jobs:
   browser-community:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:

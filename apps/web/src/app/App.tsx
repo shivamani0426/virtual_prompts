@@ -63,7 +63,11 @@ export function App(){
   useEffect(()=>{
     const handler=()=>setView(routeView());
     window.addEventListener("hashchange",handler);
-    return ()=>window.removeEventListener("hashchange",handler);
+    window.addEventListener("popstate",handler);
+    return ()=>{
+      window.removeEventListener("hashchange",handler);
+      window.removeEventListener("popstate",handler);
+    };
   },[]);
   useEffect(()=>{
     if(view!=="dashboard")return;
@@ -112,19 +116,22 @@ export function App(){
     },()=>setLocationMessage("Location permission denied or unavailable. Search for a city instead."),
     {enableHighAccuracy:false,timeout:10000,maximumAge:600000});
   }
-  function navigate(next:View){setView(next);setMobileMenuOpen(false);}
+  function navigate(next:View,destination:"#main"|"#community"){
+    window.history.pushState({}, "", destination);
+    setView(next);setMobileMenuOpen(false);
+  }
   return <div className="app-layout focus-layout">
     <a className="skip-link" href="#main">Skip to main content</a>
     <aside className={"sidebar focus-sidebar"+(mobileMenuOpen?" sidebar-open":"")}
       aria-label="Main navigation">
-      <a className="brand" href="#main" onClick={()=>navigate("dashboard")}
+      <a className="brand" href="#main" onClick={event=>{event.preventDefault();navigate("dashboard","#main");}}
         aria-label="Winter Smog Assistant home">
         <span className="brand-icon"><Wind size={23} aria-hidden="true"/></span>
         <span><strong>winter<span>smog.</span></strong><small>YOUR AIR COMPANION</small></span>
       </a>
       <nav className="sidebar-nav" aria-label="Page sections">
         <a href="#main" className={view==="dashboard"?"nav-active":""}
-          onClick={()=>navigate("dashboard")}><Compass size={19}/> Today</a>
+          onClick={event=>{event.preventDefault();navigate("dashboard","#main");}}><Compass size={19}/> Today</a>
         {view==="dashboard"&&<>
           <a href="#assistant" onClick={()=>setMobileMenuOpen(false)}>
             <BookOpenCheck size={19}/> Ask the AI</a>
@@ -132,7 +139,7 @@ export function App(){
             <ArrowRight size={19}/> Today's actions</a>
         </>}
         <a href="#community" className={view==="community"?"nav-active":""}
-          onClick={()=>navigate("community")}><UsersRound size={19}/> Community tools</a>
+          onClick={event=>{event.preventDefault();navigate("community","#community");}}><UsersRound size={19}/> Community tools</a>
       </nav>
       <div className="sidebar-bottom"><p className="sidebar-copyright">
         General guidance. Not an official CPCB warning.</p></div>
@@ -170,7 +177,7 @@ export function App(){
               <p>Reports, challenges and alerts live here—not on your daily dashboard.</p>
             </div>
             <button type="button" className="focus-back" onClick={()=>{
-              navigate("dashboard");window.location.hash="#main";
+              navigate("dashboard","#main");
             }}>Back to today</button>
           </div>
           <CommunityHub selectedCity={city.name} locale={locale}/>
