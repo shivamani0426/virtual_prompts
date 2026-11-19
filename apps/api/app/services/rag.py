@@ -101,6 +101,40 @@ def reviewed_numerical_claims_only(answer: str, passages: list[dict]) -> bool:
     return True
 
 
+
+_CLAIM_QUALIFIERS = re.compile(
+    r"\b(?:can|cannot|could|may|must|should|not|no|never|always|"
+    r"safe|unsafe|reduce|increase|avoid|guarantee|guaranteed|"
+    r"higher|lower|more|less|all|none|every)\b",
+    re.IGNORECASE,
+)
+
+
+def reviewed_qualitative_claims_only(answer: str, passages: list[dict]) -> bool:
+    """Reject ungrounded sentence-level changes in advice or certainty.
+
+    This is intentionally conservative. Matching qualifiers and vocabulary is
+    defense in depth; it is not proof of semantic entailment.
+    """
+    def split(value: str) -> list[str]:
+        return re.split(r"(?<=[.!?])\s+(?=[A-Za-z0-9])", value.strip())
+
+    facts = [sentence for p in passages for sentence in split(p["fact"])]
+    for sentence in split(answer):
+        if re.search(r"\d", sentence):
+            continue  # Numeric claims have a stricter exact-evidence rule.
+        words = tokens(sentence)
+        if not words:
+            return False
+        qualifiers = set(_CLAIM_QUALIFIERS.findall(sentence.casefold()))
+        if not any(
+            len(words & tokens(fact)) / len(words) >= 0.80
+            and qualifiers == set(_CLAIM_QUALIFIERS.findall(fact.casefold()))
+            for fact in facts
+        ):
+            return False
+    return True
+
 def generation_supported(answer: str, passages: list[dict]) -> bool:
     if not isinstance(answer, str) or len(answer) < 30 or len(answer) > 950:
         return False
@@ -113,6 +147,8 @@ def generation_supported(answer: str, passages: list[dict]) -> bool:
     if not generated_numbers.issubset(evidence_numbers):
         return False
     if not reviewed_numerical_claims_only(answer, passages):
+        return False
+    if not reviewed_qualitative_claims_only(answer, passages):
         return False
     meaningful = tokens(answer)
     supported = tokens(evidence)
