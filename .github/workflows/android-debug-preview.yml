@@ -78,10 +78,7 @@ jobs:
             adb shell am start -W -n com.winter.smogassistant/.MainActivity
             sleep 12
             adb shell pidof com.winter.smogassistant
-            if adb logcat -d -b crash | grep -F "com.winter.smogassistant"; then
-              echo "App crashed after launch" >&2
-              exit 1
-            fi
+            if adb logcat -d -b crash | grep -F "com.winter.smogassistant"; then echo "App crashed after launch" >&2; exit 1; fi
             echo "PASS: APK installed, launched, and remained running without Metro."
       - name: Upload installable APK after emulator verification
         uses: actions/upload-artifact@v4
