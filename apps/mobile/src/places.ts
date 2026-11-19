@@ -3,8 +3,8 @@ export type Place={
   name:string;
   latitude:number;
   longitude:number;
-  country?:string;
-  admin1?:string;
+  country?:string|null;
+  admin1?:string|null;
 };
 
 export function approximateCoordinates(latitude:number,longitude:number){
@@ -22,8 +22,8 @@ export function isPlace(value:unknown):value is Place{
     typeof p.latitude==="number"&&typeof p.longitude==="number"&&
     Number.isFinite(p.latitude)&&Number.isFinite(p.longitude)&&
     p.latitude>=-90&&p.latitude<=90&&p.longitude>=-180&&p.longitude<=180&&
-    (p.country===undefined||typeof p.country==="string")&&
-    (p.admin1===undefined||typeof p.admin1==="string");
+    (p.country==null||typeof p.country==="string")&&
+    (p.admin1==null||typeof p.admin1==="string");
 }
 
 export function placeLabel(place:Place):string{
