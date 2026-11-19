@@ -17,7 +17,7 @@ _URGENT = re.compile(
 # Recognize high-risk phrases from the six supported regional-language inputs.
 # These explicit phrases trigger escalation, not personal medical assessment.
 _REGIONAL_URGENT = re.compile(
-    r"(सांस लेने में तकलीफ|साँस लेने में तकलीफ|सांस लेने में दिक्कत|"
+    r"(सांस लेने में तकलीफ|साँस लेने में तकलीफ|सांस लेने में तकलीफ़|साँस लेने में तकलीफ़|सांस लेने में दिक्कत|"
     r"साँस लेने में दिक्कत|सीने में दर्द|"
     r"ಉಸಿರಾಡಲು ಕಷ್ಟ|ಎದೆ ನೋವು|"
     r"శ్వాస తీసుకోవడం కష్టం|ఛాతీ నొప్పి|"
