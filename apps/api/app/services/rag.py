@@ -45,7 +45,7 @@ _INJECTION = re.compile(
     r"disable safety|fake (source|citation)|fabricate a (source|citation))"
 )
 _INVALID = re.compile(
-    r"(?i)(\b(?:100\s*%|guarantee(?:d|s)?|risk.free|perfectly safe|"
+    r"(?i)(\b(?:100\s*%|guarantee(?:d|s)?\\s+(?:safe|safety|zero\\s+risk|no\\s+risk)|risk.free|perfectly safe|"
     r"cure(?:s|d)?|always safe|no health risk|stop medication)\b|"
     r"<script|javascript:|https?://|\[\d+\])"
 )
