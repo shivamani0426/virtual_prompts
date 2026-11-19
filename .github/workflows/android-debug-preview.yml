@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/android-debug-preview.yml'
+      - 'apps/mobile/**'
   workflow_dispatch:
 permissions:
   contents: read
