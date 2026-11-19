@@ -139,12 +139,12 @@ describe("Dashboard API integration", () => {
   it("shows Android test APK access in the header without a new dashboard block", async () => {
     fakeFetch();
     render(<App />);
-    const apk = screen.getByRole("link", { name: /Get Android test APK from GitHub Actions/i });
+    const apk = screen.getByRole("link", { name: /Download standalone ClearSkies Android test APK/i });
     expect(apk).toHaveAttribute("href",
-      "https://github.com/shivamani0426/virtual_prompts/actions/workflows/android-debug-preview.yml");
+      "https://github.com/shivamani0426/virtual_prompts/releases/download/android-preview/clearskies-android-preview.apk");
     expect(apk).toHaveAttribute("target", "_blank");
     expect(apk).toHaveAttribute("rel", "noopener noreferrer");
-    expect(apk).toHaveAttribute("title", expect.stringMatching(/not a standalone release/i));
+    expect(apk).toHaveAttribute("title", expect.stringMatching(/standalone Android preview/i));
     await screen.findByText("Unhealthy for sensitive groups");
     expect(document.querySelectorAll("main .focus-air,main .trusted-ai-section,main .focus-plan")).toHaveLength(3);
   });
