@@ -1,4 +1,4 @@
-import {useEffect,useState} from "react";
+import {useEffect,useRef,useState} from "react";
 import type {ReactNode} from "react";
 import {Alert,Linking,Pressable,ScrollView,StatusBar,Text,TextInput,View,useWindowDimensions} from "react-native";
 import {SafeAreaProvider,SafeAreaView} from "react-native-safe-area-context";
@@ -72,6 +72,7 @@ export default function App(){
   const [cityMatches,setCityMatches]=useState<Place[]>([]);
   const [citySearchError,setCitySearchError]=useState("");
   const [citySearching,setCitySearching]=useState(false);
+  const searchVersion=useRef(0);
   const [locating,setLocating]=useState(false);
   const [air,setAir]=useState<Air|null>(null);
   const [question,setQuestion]=useState("");
@@ -118,19 +119,27 @@ export default function App(){
     return()=>{active=false;};
   },[airPlace]);
   async function findCity(){
+    const version=++searchVersion.current;
     setCityMatches([]);
     setCitySearchError("");
     setCitySearching(true);
     try{
       const found=await searchCities(cityQuery);
-      setCityMatches(found);
-      if(!found.length)setCitySearchError(tr("noMatches"));
-    }catch(e){setCitySearchError(failure(e));}
-    finally{setCitySearching(false);}
+      if(version===searchVersion.current){
+        setCityMatches(found);
+        if(!found.length)setCitySearchError(tr("noMatches"));
+      }
+    }catch(e){
+      if(version===searchVersion.current)setCitySearchError(failure(e));
+    }finally{
+      if(version===searchVersion.current)setCitySearching(false);
+    }
   }
   function selectAirPlace(place:Place){
+    searchVersion.current++;
     setAirPlace(place);
     setCityQuery("");
+    setCitySearching(false);
     setCityMatches([]);
     setCitySearchError("");
   }
@@ -288,7 +297,7 @@ export default function App(){
         <Text style={styles.label}>{tr("city")}</Text>
         <Info text={tr("showing")+": "+placeLabel(airPlace)}/>
         <TextInput style={styles.input} maxLength={80} value={cityQuery}
-          onChangeText={value=>{setCityQuery(value);setCityMatches([]);setCitySearchError("");}}
+          onChangeText={value=>{searchVersion.current++;setCityQuery(value);setCitySearching(false);setCityMatches([]);setCitySearchError("");}}
           placeholder={tr("searchHint")} accessibilityLabel={tr("searchHint")}
           autoCapitalize="words" autoCorrect={false} returnKeyType="search"
           onSubmitEditing={()=>{if(cityQuery.trim().length>=2)void findCity();}}/>
