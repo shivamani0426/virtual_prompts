@@ -13,6 +13,21 @@ npx expo start
 
 Install the compatible [Expo Go](https://expo.dev/go) on your Android phone or iPhone, then scan the QR code. The app fetches live environmental data through the existing Python FastAPI/Uvicorn backend at `winter-smog-fastapi.onrender.com`, and D1-backed community state through the independent `winter-smog-community.1nc24cs197.workers.dev` Worker.
 
+## Download Android test APK (developer preview)
+
+The web dashboard's header includes a compact **Android test APK** link. It opens the
+[Android debug preview workflow](https://github.com/shivamani0426/virtual_prompts/actions/workflows/android-debug-preview.yml).
+Choose the latest successful run, open its **Artifacts** section and download
+`winter-smog-android-debug-preview` (GitHub may require sign-in).
+Extract `app-debug.apk` from the ZIP before installing on a test device.
+Artifacts expire after 14 days; the workflow page is a stable entry point.
+
+**Important:** This APK is a debug/development preview and may require a local Expo
+Metro server. It is **not** a one-tap public standalone release or a Play Store build.
+Do not advertise it as production-ready. A standalone signed release APK requires
+persistent, securely stored Android signing credentials, a release build, and
+physical device acceptance before exposing a public direct-download button.
+
 ## Included mobile flows
 
 - Real modelled **US AQI** by city; missing readings never become made-up numbers.
