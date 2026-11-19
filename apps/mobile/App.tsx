@@ -5,7 +5,7 @@ import {SafeAreaProvider,SafeAreaView} from "react-native-safe-area-context";
 import {getLocales} from "expo-localization";
 import * as SecureStore from "expo-secure-store";
 import * as Speech from "expo-speech";
-import {styles,COLORS} from "./src/styles";
+import {styles} from "./src/styles";
 import {selectEnglishVoice} from "./src/voice";
 import {LANGUAGES,chooseLocale,translate} from "./src/i18n";
 import type {Locale} from "./src/i18n";
