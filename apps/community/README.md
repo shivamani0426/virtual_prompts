@@ -29,3 +29,9 @@ COMMUNITY_DRY_RUN=1 node scripts/deploy-community.mjs
 ## Known limits
 
 No account login, no community photos or user-location history, no abuse appeal queue yet, no scheduled push delivery. The `Daily community privacy retention` workflow now prunes report records after 14 days, expired pseudonymous sessions and their linked challenge/alert data, and obsolete rate records (48 hours). It is scheduled via GitHub Actions and may be delayed by GitHub's scheduler. The final release still requires a complete privacy-policy, deletion/export audit and independent moderators. An actual moderator must review test reports before public posts can appear.
+
+## Verified live acceptance (19 November 2026)
+
+The separate Cloudflare D1 database and `winter-smog-community` Worker are now deployed successfully on the intended Cloudflare account. The existing React site was updated only after verifying D1 health. [Deployment evidence](https://github.com/shivamani0426/virtual_prompts/actions/runs/44383641879) includes a real D1 moderation-isolation and challenge/alert smoke. [React deployment](https://github.com/shivamani0426/virtual_prompts/actions/runs/44382069385) passed. [Real browser evidence](https://github.com/shivamani0426/virtual_prompts/actions/runs/44511930008) confirms community reports, browser refresh, check-ins, foreground preference changes, temporary QA report removal and mobile layout.
+
+The `CLOUDFLARE_D1_API_TOKEN` is configured as a GitHub Actions secret; its value must never be logged or committed. Foreground alerts are **not** guaranteed push notifications. Human moderators are still required to approve actual reports; no official authority verification is implied.
